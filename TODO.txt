@@ -1,0 +1,9 @@
+- create a function that calculates all possible non-cyclic paths from start node to end node
+- create path object that represents a list of nodes
+- Create agent object with: 
+    - int as start node 
+    - int as end node
+    - data structure for a list of non-cyclic paths that lead the agent from x to y
+- Maak een instance van bovenstaande code voor het voorbeeld muis-naar-kaas ding, check of de paden kloppen
+
+- doe een dansje en lees de paper nogmaals over hoe je nu iets exacter het ICTS algoritme kan implementeren, breek dit op in volbrengbare taken zoals hierboven

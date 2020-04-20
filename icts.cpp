@@ -4,9 +4,9 @@ using namespace std;
 //graph class for DFS travesal
 class DFSGraph
 {
-    int V;                                // No. of vertices
-    list<int> *adjList;                   // adjacency list
-    void DFS_util(int v, bool visited[]); // A function used by DFS
+    int V;                                        // No. of vertices
+    list<int> *adjList;                           // adjacency list
+    int DFS_util(int v, bool visited[], int end); // A function used by DFS
 public:
     // class Constructor
     DFSGraph(int V)
@@ -20,46 +20,66 @@ public:
         adjList[v].push_back(w); // Add w to v’s list.
     }
 
-    void DFS(); // DFS traversal function
+    void DFS(int start, int end); // DFS traversal function
 };
-void DFSGraph::DFS_util(int v, bool visited[])
+int DFSGraph::DFS_util(int v, bool visited[], int end)
 {
+    if (v == end)
+    {
+        cout << v << "\n";
+        return 1;
+    }
+
     // current node v is visited
     visited[v] = true;
     cout << v << " ";
 
-    // recursively process all the adjacent vertices of the node
-    list<int>::iterator i;
-    for (i = adjList[v].begin(); i != adjList[v].end(); ++i)
-        if (!visited[*i])
-            DFS_util(*i, visited);
+    for (int i : adjList[v])
+    {
+        if (!visited[i])
+            if (1 == DFS_util(i, visited, end))
+                return 1;
+    }
 }
 
 // DFS traversal
-void DFSGraph::DFS()
+void DFSGraph::DFS(int start, int end)
 {
+
+    for (auto iter = adjList[start].begin(); iter != adjList[start].end(); iter++)
+    {
+        cout << *iter << endl;
+    }
+
     // initially none of the vertices are visited
     bool *visited = new bool[V];
     for (int i = 0; i < V; i++)
         visited[i] = false;
 
-    // explore the vertices one by one by recursively calling  DFS_util
-    for (int i = 0; i < V; i++)
-        if (visited[i] == false)
-            DFS_util(i, visited);
+    // explore the
+    for (int i = 0; i < 2; i++)
+    {
+        visited[0] = false;
+        visited[3] = false;
+        DFS_util(start, visited, end);
+    }
 }
 
 int main()
 {
-    // Create a graph
-    DFSGraph gdfs(4);
+    // Create a graph (will be created from file input later on)
+    DFSGraph gdfs(5);
     gdfs.addEdge(0, 1);
     gdfs.addEdge(1, 3);
     gdfs.addEdge(0, 2);
-    gdfs.addEdge(2, 2);
-    
+    gdfs.addEdge(2, 3);
+    gdfs.addEdge(0, 4);
+    gdfs.addEdge(4, 3);
+
     cout << "Depth-first traversal for the given graph:" << endl;
-    gdfs.DFS();
+
+    // here start and end are hardcoded, they will be based on the specific agent later on
+    gdfs.DFS(0, 3);
 
     return 0;
 }

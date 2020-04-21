@@ -21,7 +21,7 @@ class Graph
 public: 
     Graph(int V); // Constructor
     void addEdge(int u, int v);
-    void generateAllPaths(int s, int d, int maxCost);
+    void generateAllPaths(int s, int d, int exactCost);
     list<list<int>> pathsTaken; // list of paths nodes that are traversed
 };
 
@@ -38,7 +38,7 @@ void Graph::addEdge(int u, int v)
 }
 
 // Prints all paths from 's' to 'd'
-void Graph::generateAllPaths(int s, int d, int maxCost)
+void Graph::generateAllPaths(int s, int d, int exactCost)
 {
     // Mark all the vertices as not visited
     bool *visited = new bool[V];
@@ -52,7 +52,7 @@ void Graph::generateAllPaths(int s, int d, int maxCost)
         visited[i] = false;
 
     // Call the recursive helper function to print all paths
-    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, maxCost);
+    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost);
 }
 
 // A recursive function to print all paths from 'u' to 'd'.
@@ -71,9 +71,9 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
     path[path_index] = u;
     path_index++;
 
-    // If current vertex is same as destination, then print
-    // current path[]
-    if (u == d)
+    // If current vertex is same as destination and we're at exactly the right amount of steps, 
+    // print current path[]
+    if (u == d && numberOfStepsAllowed == 0)
     {
         // add a new list
         list<int> newList;
@@ -100,7 +100,7 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
 }
 
 // Driver program
-list<list<int>> generatePaths(string filename, int start, int end, int maxCost)
+list<list<int>> generatePaths(string filename, int start, int end, int exactCost)
 {
 
     // Reading in the edges from a file
@@ -127,7 +127,7 @@ list<list<int>> generatePaths(string filename, int start, int end, int maxCost)
         cout << "generatePaths: Unable to open file. Sorry" << endl;
     }
 
-    g.generateAllPaths(start, end, maxCost);
+    g.generateAllPaths(start, end, exactCost);
 
     return g.pathsTaken;
 }

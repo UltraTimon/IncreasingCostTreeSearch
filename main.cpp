@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-    int maxCost = 2;
+    int exactCost = 3;
 
     // get list of agent objects read form file
     list<Agent> agentList = importAgents("resources/agents.txt");
@@ -13,7 +13,7 @@ int main() {
     // generate paths for each agent, add paths to agent object
     list<Agent>::iterator it;
     for(it = agentList.begin(); it != agentList.end(); ++it) {
-        list<list<int>> generatedPaths = generatePaths("resources/graph.txt", it->start, it->end, maxCost);
+        list<list<int>> generatedPaths = generatePaths("resources/graph.txt", it->start, it->end, exactCost);
         it->setPaths(generatedPaths);
     }
 

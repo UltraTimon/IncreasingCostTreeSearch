@@ -15,13 +15,13 @@ class Graph
     list<int> *adj;      // Pointer to an array containing adjacency lists
     int pathCounter = 0; // index of which path is being filled up now
 
-    // A recursive function used by printAllPaths()
-    void printAllPathsUtil(int, int, bool[], int[], int &, int start);
+    // A recursive function used by generateAllPaths()
+    void generateAllPathsRecursivePart(int, int, bool[], int[], int &, int start);
 
 public:
     Graph(int V); // Constructor
     void addEdge(int u, int v);
-    void printAllPaths(int s, int d);
+    void generateAllPaths(int s, int d);
     list<list<int>> pathsTaken; // list of paths nodes that are traversed
 };
 
@@ -38,7 +38,7 @@ void Graph::addEdge(int u, int v)
 }
 
 // Prints all paths from 's' to 'd'
-void Graph::printAllPaths(int s, int d)
+void Graph::generateAllPaths(int s, int d)
 {
     // Mark all the vertices as not visited
     bool *visited = new bool[V];
@@ -52,14 +52,14 @@ void Graph::printAllPaths(int s, int d)
         visited[i] = false;
 
     // Call the recursive helper function to print all paths
-    printAllPathsUtil(s, d, visited, path, indexOfCurrentPath, s);
+    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s);
 }
 
 // A recursive function to print all paths from 'u' to 'd'.
 // visited[] keeps track of vertices in current path.
 // path[] stores actual vertices and path_index is current
 // index in path[]
-void Graph::printAllPathsUtil(int u, int d, bool visited[],
+void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
                               int path[], int &path_index, int start)
 {
 
@@ -88,7 +88,7 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
         list<int>::iterator i;
         for (i = adj[u].begin(); i != adj[u].end(); ++i)
             if (!visited[*i])
-                printAllPathsUtil(*i, d, visited, path, path_index, start);
+                generateAllPathsRecursivePart(*i, d, visited, path, path_index, start);
     }
 
     // Remove current vertex from path[] and mark it as unvisited
@@ -97,7 +97,7 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
 }
 
 // Driver program
-list<list<int>> generatePaths(string filename)
+list<list<int>> generatePaths(string filename, int start, int end)
 {
 
     // Reading in the edges from a file
@@ -124,11 +124,7 @@ list<list<int>> generatePaths(string filename)
         cout << "Unable to open file. Sorry" << endl;
     }
 
-    int s = 0, d = 5;
-    cout << "All different paths from " << s
-         << " to " << d << ": " << endl;
-
-    g.printAllPaths(s, d);
+    g.generateAllPaths(start, end);
 
     return g.pathsTaken;
 }

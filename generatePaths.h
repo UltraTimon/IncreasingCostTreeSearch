@@ -6,4 +6,4 @@
 
 using namespace std;
 
-list<list<int>> generatePaths(string filename);
+list<list<int>> generatePaths(string filename, int start, int end);

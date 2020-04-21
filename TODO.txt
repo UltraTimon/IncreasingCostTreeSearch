@@ -1,1 +1,0 @@
-- all elements get pushed to the same deque which is printed by accessing the deque as an element of g afterwards

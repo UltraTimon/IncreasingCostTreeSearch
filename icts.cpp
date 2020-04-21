@@ -65,7 +65,6 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
     visited[u] = true;
     path[path_index] = u;
     path_index++;
-    cout << "visiting: " << u << endl;
 
     // If current vertex is same as destination, then print
     // current path[]
@@ -77,7 +76,6 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
         // print elements & add to list of lists
         for (int i = 0; i < path_index; i++)
         {
-            cout << path[i] << " ";
             pathsTaken.back().push_back(path[i]);
         }
         cout << endl;
@@ -125,15 +123,6 @@ int main()
     {
         cout << "Unable to open file. Sorry" << endl;
     }
-
-    // Create a graph given in the above diagram
-    // Graph g(6);
-    // g.addEdge(0, 1);
-    // g.addEdge(1, 2);
-    // g.addEdge(1, 3);
-    // g.addEdge(2, 4);
-    // g.addEdge(3, 4);
-    // g.addEdge(4, 5);
 
     int s = 0, d = 5;
     cout << "Following are all different paths from " << s

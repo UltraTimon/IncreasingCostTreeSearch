@@ -57,7 +57,7 @@ void DFSGraph::DFS(int start, int end)
         visited[i] = false;
 
     // explore the
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 3; i++)
     {
         visited[0] = false;
         visited[3] = false;

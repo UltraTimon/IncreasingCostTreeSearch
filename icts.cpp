@@ -78,7 +78,6 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
         {
             pathsTaken.back().push_back(path[i]);
         }
-        cout << endl;
         pathCounter++;
     }
     else // If current vertex is not destination
@@ -113,7 +112,6 @@ int main()
     {
         while (myfile >> nodeA >> nodeB)
         {
-            cout << nodeA << ' ' << nodeB << endl;
             g.addEdge(nodeA, nodeB);
             g.addEdge(nodeB, nodeA);
         }
@@ -125,13 +123,11 @@ int main()
     }
 
     int s = 0, d = 5;
-    cout << "Following are all different paths from " << s
-         << " to " << d << endl;
+    cout << "All different paths from " << s
+         << " to " << d << ": " << endl;
 
     g.printAllPaths(s, d);
 
-    cout << "all traversed nodes in a list: " << endl;
-    list<int>::iterator outerIterator;
     int printPathCounter = 0;
     for (auto list : g.pathsTaken)
     {

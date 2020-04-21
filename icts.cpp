@@ -71,6 +71,7 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
     visited[u] = true; 
     path[path_index] = u; 
     path_index++; 
+    cout << "visiting: " << u << endl;
 
   
     // If current vertex is same as destination, then print 

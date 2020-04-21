@@ -1,5 +1,11 @@
 #include "lowlevelsearch.h"
 
+/* 2 paths have a conflict if either:
+    - they visit the same node at the same time, i.e. at most one agent may
+        be at a node per time unit
+    - one path uses an edge (a, b) at the same time another path 
+        uses the edge (b, a), i.e. at most one agent may use an edge per time unit 
+*/
 bool pathsHaveConflict(list<int> pathA, list<int> pathB) {
     list<int>::iterator a, b;
     a = pathA.begin();

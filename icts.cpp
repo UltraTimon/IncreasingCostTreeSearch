@@ -59,13 +59,6 @@ void Graph::printAllPaths(int s, int d)
 void Graph::printAllPathsUtil(int u, int d, bool visited[], 
                             int path[], int &path_index, int start) 
 { 
-    // we're at the first node, so we're starting a new path. 
-    // We add a new list to the list of lists so the nodes get added to the new list
-    if(u == start) {
-        list<int> newList;
-        pathsTaken.push_back(newList);
-        cout << "new list!" << endl;
-    }
 
     // Mark the current node and store it in path[] 
     visited[u] = true; 
@@ -78,6 +71,10 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
     // current path[] 
     if (u == d) 
     { 
+        // add a new list
+        list<int> newList;
+        pathsTaken.push_back(newList);
+        // print elements & add to list of lists
         for (int i = 0; i < path_index; i++) {
             cout << path[i] << " "; 
             pathsTaken.back().push_back(path[i]);
@@ -117,7 +114,7 @@ int main()
 
     g.printAllPaths(s, d); 
 
-    cout << "all traversed nodes in a list: ";
+    cout << "all traversed nodes in a list: " << endl;
     list<int>::iterator outerIterator;
     int printPathCounter = 0;
     for(auto list : g.pathsTaken) {

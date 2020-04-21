@@ -6,6 +6,8 @@
 #include <fstream>
 using namespace std;
 
+#include "generatePaths.h"
+
 // A directed graph using adjacency list representation
 class Graph
 {
@@ -95,11 +97,11 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
 }
 
 // Driver program
-int main()
+list<list<int>> generatePaths(string filename)
 {
 
     // Reading in the edges from a file
-    ifstream myfile("graph.txt");
+    ifstream myfile(filename);
     int nodeA, nodeB; 
     int nrOfNodes = 999;
     if (myfile.is_open())
@@ -128,17 +130,5 @@ int main()
 
     g.printAllPaths(s, d);
 
-    int printPathCounter = 0;
-    for (auto list : g.pathsTaken)
-    {
-        cout << "path " << printPathCounter << ": ";
-        printPathCounter++;
-        for (auto i : list)
-        {
-            cout << i << " ";
-        }
-        cout << endl;
-    }
-
-    return 0;
+    return g.pathsTaken;
 }

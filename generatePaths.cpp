@@ -6,7 +6,7 @@
 #include <fstream>
 using namespace std;
 
-#include "header.h"
+#include "generatePaths.h"
 
 // A directed graph using adjacency list representation
 class Graph

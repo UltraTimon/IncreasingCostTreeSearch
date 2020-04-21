@@ -1,22 +1,14 @@
-#include "header.h"
+#include "agent.h"
 
-class Agent {
-    public:
-        int start;
-        int end;
-        list<list<int>> paths;
+Agent::Agent(int givenStart, int givenEnd) {
+    start = givenStart;
+    end = givenEnd;
+}
 
-    public:
-        Agent(int start, int end) {
-            this->start = start;
-            this->end = end;
-        }
+void Agent::setPaths(list<list<int>> givenPaths) {
+    paths = givenPaths;
+}
 
-    public:
-        void setPaths(list<list<int>> paths) {
-            this->paths = paths;
-        }
-};
 
 list<Agent> importAgents(string filename) {
     list<Agent> agentList;
@@ -28,7 +20,8 @@ list<Agent> importAgents(string filename) {
     {
         while (myfile >> start >> end)
         {
-            agentList.push_back(Agent(start, end));
+            Agent newAgent = Agent(start, end);
+            agentList.push_back(newAgent);
         }
         myfile.close();
     }

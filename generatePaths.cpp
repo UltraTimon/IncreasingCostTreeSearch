@@ -6,7 +6,7 @@
 #include <fstream>
 using namespace std;
 
-#include "generatePaths.h"
+#include "header.h"
 
 // A directed graph using adjacency list representation
 class Graph
@@ -121,7 +121,7 @@ list<list<int>> generatePaths(string filename, int start, int end)
     }
     else
     {
-        cout << "Unable to open file. Sorry" << endl;
+        cout << "generatePaths: Unable to open file. Sorry" << endl;
     }
 
     g.generateAllPaths(start, end);

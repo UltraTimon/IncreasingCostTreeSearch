@@ -1,11 +1,4 @@
-// C++ program to print all paths from a source to destination.
-#include <iostream>
-#include <list>
-#include <string>
-#include <iostream>
-#include <fstream>
-
-#include "generatePaths.h"
+#include "header.h"
 
 using namespace std;
 

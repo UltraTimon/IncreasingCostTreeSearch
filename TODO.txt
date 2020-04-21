@@ -1,8 +1,0 @@
-- create agent object with:
-    - start
-    - end
-    - data structure to hold all paths
-- create text file with agent data
-- create agent objects from data read from file
-- set up the cheese & mouse thing from the paper
-- check whether all paths are calculated correctly

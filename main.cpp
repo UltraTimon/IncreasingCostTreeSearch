@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-    int exactCost = 3;
+    int exactCost = 2;
 
     // get list of agent objects read form file
     list<Agent> agentList = importAgents("resources/agents.txt");
@@ -58,9 +58,8 @@ int main() {
     int pairIndex = 0;
     list<pair<list<int>, list<int>>> multiAgentPathPairsWithoutConflict;
     for(auto currentPair : multiAgentPathPairs) {
-        if(pathsHaveConflict(currentPair.first, currentPair.second)) {
-            cout << "conflict!" << endl;
-        } else {
+        // If no conflict, add pair to no-conflict list
+        if(!pathsHaveConflict(currentPair.first, currentPair.second)) {
             multiAgentPathPairsWithoutConflict.push_back(currentPair);
         }
     }

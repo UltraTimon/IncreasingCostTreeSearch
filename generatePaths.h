@@ -7,4 +7,4 @@
 using namespace std;
 
 // generatePaths.cpp
-list<list<int>> generatePaths(string filename, int start, int end);
+list<list<int>> generatePaths(string filename, int start, int end, int maxCost);

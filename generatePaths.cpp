@@ -16,12 +16,12 @@ class Graph
     int pathCounter = 0; // index of which path is being filled up now
 
     // A recursive function used by generateAllPaths()
-    void generateAllPathsRecursivePart(int, int, bool[], int[], int &, int start);
+    void generateAllPathsRecursivePart(int, int, bool[], int[], int &, int start, int numberOfStepsAllowed);
 
-public:
+public: 
     Graph(int V); // Constructor
     void addEdge(int u, int v);
-    void generateAllPaths(int s, int d);
+    void generateAllPaths(int s, int d, int maxCost);
     list<list<int>> pathsTaken; // list of paths nodes that are traversed
 };
 
@@ -38,7 +38,7 @@ void Graph::addEdge(int u, int v)
 }
 
 // Prints all paths from 's' to 'd'
-void Graph::generateAllPaths(int s, int d)
+void Graph::generateAllPaths(int s, int d, int maxCost)
 {
     // Mark all the vertices as not visited
     bool *visited = new bool[V];
@@ -52,7 +52,7 @@ void Graph::generateAllPaths(int s, int d)
         visited[i] = false;
 
     // Call the recursive helper function to print all paths
-    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s);
+    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, maxCost);
 }
 
 // A recursive function to print all paths from 'u' to 'd'.
@@ -60,8 +60,11 @@ void Graph::generateAllPaths(int s, int d)
 // path[] stores actual vertices and path_index is current
 // index in path[]
 void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
-                              int path[], int &path_index, int start)
+                              int path[], int &path_index, int start, int numberOfStepsAllowed)
 {
+    // check if we are allowed another step
+    if(numberOfStepsAllowed < 0)
+        return;
 
     // Mark the current node and store it in path[]
     visited[u] = true;
@@ -88,7 +91,7 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
         list<int>::iterator i;
         for (i = adj[u].begin(); i != adj[u].end(); ++i)
             if (!visited[*i])
-                generateAllPathsRecursivePart(*i, d, visited, path, path_index, start);
+                generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1);
     }
 
     // Remove current vertex from path[] and mark it as unvisited
@@ -97,7 +100,7 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
 }
 
 // Driver program
-list<list<int>> generatePaths(string filename, int start, int end)
+list<list<int>> generatePaths(string filename, int start, int end, int maxCost)
 {
 
     // Reading in the edges from a file
@@ -124,7 +127,7 @@ list<list<int>> generatePaths(string filename, int start, int end)
         cout << "generatePaths: Unable to open file. Sorry" << endl;
     }
 
-    g.generateAllPaths(start, end);
+    g.generateAllPaths(start, end, maxCost);
 
     return g.pathsTaken;
 }

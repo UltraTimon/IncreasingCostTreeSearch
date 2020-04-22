@@ -142,45 +142,6 @@ int main(int argc, char **argv)
     generateNextLevel(&root);
     generateNextLevel(&root);
 
-    cout << "root level children data: ";
-    for(auto it2 : root.data) {
-        cout << it2 << " ";
-    }
-    cout << endl;  
-
-    cout << "1st level children data: ";
-    for(auto it : root.children) {
-        for(auto it2 : it.data) {
-            cout << it2 << " ";
-        }
-        cout << "- ";
-    }
-    cout << endl;  
-
-    cout << "2nd level children data: ";
-    for(auto parentIt : root.children) {
-        for(auto childIt : parentIt.children) {
-            for(int data : childIt.data) {
-                cout << data << " ";
-            }
-            cout << " - ";
-        }
-    }
-    cout << endl;    
-
-    cout << "3d level children data: ";
-    for(auto parentIt : root.children) {
-        for(auto childIt : parentIt.children) {
-            for(auto semiChild : childIt.children) {
-                for(int data : semiChild.data) {
-                    cout << data << " ";
-                }
-            }
-            cout << " - ";
-        }
-    }
-    cout << endl;
-
     printTree(&root); 
 
 

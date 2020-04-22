@@ -1,4 +1,26 @@
-int main () {
+#include "generatePaths.h"
+#include "agent.h"
+#include "lowlevelsearch.h"
+
+using namespace std;
+
+int main (int argc, char** argv) {
+    int exactCost = atoi(argv[1]);
+
+    // get list of agent objects read form file
+    list<Agent> agentList = importAgents("resources/agents.txt");
+
+    // actually add the paths to the agent objects
+    list<Agent>::iterator agentIterator;
+    for(agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator) {
+        list<list<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
+        agentIterator->setPaths(generatedPaths);
+    }
+
+    list<pair<list<int>, list<int>>> multiAgentPathPairs;
+    list<Agent>::iterator masterIterator;
+    list<Agent>::iterator subIterator;
+
     // loop over agents one by one, pair up paths for conflict checking
     for(masterIterator = agentList.begin(); masterIterator != agentList.end(); ++masterIterator) {
         // sub is 1 agent ahead of master

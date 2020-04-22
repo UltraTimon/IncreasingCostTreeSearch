@@ -138,19 +138,7 @@ int main(int argc, char **argv)
     
     Node root = generateRoot(optimalCost, numberOfAgents);
     root.children = generateNextLevelOfChildren(root);
-    // list<Node> firstGenChilderenA, firstGenChilderenB;
 
-    // for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
-    //     fgIt->children = generateNextLevelOfChildren(*fgIt);
-    // } 
-
-    // for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
-    //     for(list<Node>::iterator sgIt = fgIt->children.begin(); sgIt != fgIt->children.end(); ++sgIt) {
-    //         sgIt->children = generateNextLevelOfChildren(*sgIt);
-    //     }
-    // }
-
-    generateNextLevel(&root);
     generateNextLevel(&root);
     generateNextLevel(&root);
 
@@ -191,7 +179,9 @@ int main(int argc, char **argv)
             cout << " - ";
         }
     }
-    cout << endl; 
+    cout << endl;
+
+    printTree(&root); 
 
 
     return 0;

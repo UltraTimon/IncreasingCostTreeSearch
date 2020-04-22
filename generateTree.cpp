@@ -44,8 +44,33 @@ void generateNextLevel(Node *tree) {
         for(list<Node>::iterator it = tree->children.begin(); it != tree->children.end(); ++it) {
             generateNextLevel(&(*it));
         } 
-        // for(auto child : tree->children) {
-        //     generateNextLevel(&child);
-        // }
     }
+}
+
+int depthOfTree(Node *tree) {
+    if(tree->children.size() > 0) 
+        return 1 + depthOfTree(&(tree->children.front()));
+    else
+        return 1;
+}
+
+void printTreeRecursive(Node *tree, int level) {
+    if(level == 0) {
+        for(auto i : tree->data) {
+            cout << i << " ";
+        }
+        cout << " - ";
+    } else {
+        for(auto child : tree->children) {
+            printTreeRecursive(&child, level - 1);
+        }
+    }
+}
+
+void printTree(Node *tree) {
+    int depth = depthOfTree(tree);
+    for(int i = 0; i < depth; i++) {
+        printTreeRecursive(tree, i);
+        cout << endl;
+    } 
 }

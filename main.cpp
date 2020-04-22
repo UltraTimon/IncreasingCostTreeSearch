@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         2) If yes, and we are going to examine this cost node, does there exist a path for each agent of that cost that do not conflict?
     */
 
-    // Create ICT for up to 3 levels
+    // Create ICT for up to 3 levels!
     // hardcoded value for optimalCost for testing:
     optimalCost = 10;
     // root

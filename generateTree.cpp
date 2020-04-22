@@ -29,8 +29,16 @@ list<Node> generateNextLevelOfChildren(Node tree) {
         }
         Node childNode = Node();
         childNode.data = childData;
-        children.push_back(childNode);
         childNode.parent = &tree;
+        children.push_back(childNode);
     }
     return children;
 }
+
+// void generateNextLevel(Node tree) {
+//     if(tree.children.size() == 0) {
+//         generateNextLevelOfChildren(tree);
+//     } else {
+
+//     }
+// }

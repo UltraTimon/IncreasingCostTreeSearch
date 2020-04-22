@@ -137,29 +137,26 @@ int main(int argc, char **argv)
     optimalCost = 10;
     
     Node root = generateRoot(optimalCost, numberOfAgents);
-    cout << "right before entering generateRoot! " << root.data.size() << endl;
     root.children = generateNextLevelOfChildren(root);
+    list<Node> firstGenChilderenA, firstGenChilderenB;
 
-    for(auto firstGen : root.children) {
-        list<Node> children = generateNextLevelOfChildren(firstGen);
-        firstGen.children = children;
-    }
-    for(auto firstGen : root.children) {
-        for(auto secondGen : firstGen.children) {
-            list<Node> children = generateNextLevelOfChildren(secondGen);
-            secondGen.children = children;
-        }
-    }
-    for(auto firstGen : root.children) {
-        for(auto secondGen : firstGen.children) {
-            for(auto thirdGen : secondGen.children) {
-                list<Node> children = generateNextLevelOfChildren(thirdGen);
-                thirdGen.children = children;
-            }
+    for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
+        fgIt->children = generateNextLevelOfChildren(*fgIt);
+    } 
+
+    for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
+        for(list<Node>::iterator sgIt = fgIt->children.begin(); sgIt != fgIt->children.end(); ++sgIt) {
+            sgIt->children = generateNextLevelOfChildren(*sgIt);
         }
     }
 
-    cout << "first level children data: ";
+    cout << "root level children data: ";
+    for(auto it2 : root.data) {
+        cout << it2 << " ";
+    }
+    cout << endl;  
+
+    cout << "1st level children data: ";
     for(auto it : root.children) {
         for(auto it2 : it.data) {
             cout << it2 << " ";
@@ -168,29 +165,16 @@ int main(int argc, char **argv)
     }
     cout << endl;  
 
-    cout << "second level children data: ";
+    cout << "2nd level children data: ";
     for(auto parentIt : root.children) {
         for(auto childIt : parentIt.children) {
             for(int data : childIt.data) {
                 cout << data << " ";
             }
-            cout << "- ";
+            cout << " - ";
         }
     }
-    cout << endl;  
-
-    cout << "third level children data: ";
-    for(auto outer : root.children) {
-        for(auto middle : outer.children) {
-            for(auto lower : middle.children) {
-                for(int data : lower.data) {
-                    cout << data << " ";
-                }
-                cout << "- ";
-            }
-        }
-    }
-    cout << endl;  
+    cout << endl;    
 
     return 0;
 }

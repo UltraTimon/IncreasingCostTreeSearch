@@ -34,3 +34,45 @@ bool pathsHaveConflict(list<int> pathA, list<int> pathB) {
     return false;
 }
 
+list<list<int>> getAtLeastOnePathPerAgentWithoutConflict() {
+    // get list of agent objects read from file
+    list<Agent> agentList = importAgents("resources/agents.txt");
+    int optimalCost = 3;
+
+    // actually add the paths to the agent objects
+    for(auto it = agentList.begin(); it != agentList.end(); ++it) {
+        list<list<int>> generatedPaths = generatePaths("resources/graph.txt", it->start, it->end, optimalCost);
+        it->setPaths(generatedPaths);
+    }
+
+    // print paths
+    int agentCounter = 0;
+    for(auto agent : agentList) {
+        cout << "Agent " << agentCounter << ":" << endl;
+        agentCounter++;
+
+        int printPathCounter = 0;
+        for (auto list : agent.paths)
+        {
+            cout << "path " << printPathCounter << ": ";
+            printPathCounter++;
+            for (auto i : list)
+            {
+                cout << i << " ";
+            }
+            cout << endl;
+        }
+    }
+
+    list<list<int>> stub;
+
+    // // create sets of k paths, 1 for each agent and getting all permutations
+    // for(auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator) {
+    //     for(auto outerPathIterator = agentIterator->paths.begin(); agentIterator != agentList.end(); ++agentIterator) {
+            
+    //     }
+    // }
+    
+    return stub;
+}
+

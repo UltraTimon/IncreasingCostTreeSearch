@@ -73,7 +73,7 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
 
     // If current vertex is same as destination and we're at exactly the right amount of steps, 
     // print current path[]
-    if (u == d && numberOfStepsAllowed == 0) // ----------------------- TODO: ADD steps == 0 back after testing!
+    if (u == d && numberOfStepsAllowed == 0)
     {
         // add a new list
         list<int> newList;

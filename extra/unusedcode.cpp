@@ -1,12 +1,10 @@
-#include "generatePaths.h"
-#include "agent.h"
-#include "lowlevelsearch.h"
+#include "../lowlevelsearch.h"
 
 using namespace std;
 
 
 int main (int argc, char** argv) {
-    int exactCost = atoi(argv[1]);
+    int optimalCost = 2;
 
     // get list of agent objects read form file
     list<Agent> agentList = importAgents("resources/agents.txt");

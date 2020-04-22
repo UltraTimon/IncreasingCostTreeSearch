@@ -17,12 +17,12 @@ int main(int argc, char **argv)
     list<Agent> agentList = importAgents("resources/agents.txt");
     int numberOfAgents = agentList.size();
 
-
     int optimalCost = calculateOptimalCost(agentList);
 
     Node root = generateRoot(optimalCost, numberOfAgents);
-    root.children = generateNextLevelOfChildren(root);
+    // root.children = generateNextLevelOfChildren(root);
 
+    generateNextLevel(&root);
     generateNextLevel(&root);
     generateNextLevel(&root);
 

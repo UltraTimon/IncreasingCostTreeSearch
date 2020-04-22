@@ -4,6 +4,13 @@
         "iosfwd": "cpp",
         "string": "cpp",
         "fstream": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "utility": "cpp",
+        "valarray": "cpp"
     }
 }

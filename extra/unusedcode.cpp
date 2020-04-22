@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 int main (int argc, char** argv) {
     int exactCost = atoi(argv[1]);
 

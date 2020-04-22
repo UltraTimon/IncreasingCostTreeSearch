@@ -9,9 +9,7 @@ using namespace std;
 class Node {
     public: 
         list<int> data;
-        Node(list<int> givenData) {
-            data = givenData;
-        }
+        Node() {}
         Node *parent;
         list<Node> children;
 };

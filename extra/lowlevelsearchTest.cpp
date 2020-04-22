@@ -31,6 +31,7 @@ bool longListEdgeConflict() {
     return pathsHaveConflict(a, b) == true;
 }
 
+
 int main() {
     if(sameNode() && seperateNodes() && sameEdge() && longListNoConflict() && longListNodeConflict() && longListEdgeConflict()) {
         cout << "All test passed" << endl;

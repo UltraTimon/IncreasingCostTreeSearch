@@ -4,8 +4,8 @@
 
 using namespace std;
 
-int main() {
-    int exactCost = 2;
+int main(int argc, char** argv) {
+    int exactCost = atoi(argv[1]);
 
     // get list of agent objects read form file
     list<Agent> agentList = importAgents("resources/agents.txt");

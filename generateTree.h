@@ -11,3 +11,5 @@ using namespace std;
 Node generateRoot(int rootCost, int numberOfAgents);
 
 list<Node> generateNextLevelOfChildren(Node tree);
+
+void generateNextLevel(Node *tree);

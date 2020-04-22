@@ -138,17 +138,21 @@ int main(int argc, char **argv)
     
     Node root = generateRoot(optimalCost, numberOfAgents);
     root.children = generateNextLevelOfChildren(root);
-    list<Node> firstGenChilderenA, firstGenChilderenB;
+    // list<Node> firstGenChilderenA, firstGenChilderenB;
 
-    for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
-        fgIt->children = generateNextLevelOfChildren(*fgIt);
-    } 
+    // for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
+    //     fgIt->children = generateNextLevelOfChildren(*fgIt);
+    // } 
 
-    for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
-        for(list<Node>::iterator sgIt = fgIt->children.begin(); sgIt != fgIt->children.end(); ++sgIt) {
-            sgIt->children = generateNextLevelOfChildren(*sgIt);
-        }
-    }
+    // for(list<Node>::iterator fgIt = root.children.begin(); fgIt != root.children.end(); ++fgIt) {
+    //     for(list<Node>::iterator sgIt = fgIt->children.begin(); sgIt != fgIt->children.end(); ++sgIt) {
+    //         sgIt->children = generateNextLevelOfChildren(*sgIt);
+    //     }
+    // }
+
+    generateNextLevel(&root);
+    generateNextLevel(&root);
+    generateNextLevel(&root);
 
     cout << "root level children data: ";
     for(auto it2 : root.data) {
@@ -175,6 +179,20 @@ int main(int argc, char **argv)
         }
     }
     cout << endl;    
+
+    cout << "3d level children data: ";
+    for(auto parentIt : root.children) {
+        for(auto childIt : parentIt.children) {
+            for(auto semiChild : childIt.children) {
+                for(int data : semiChild.data) {
+                    cout << data << " ";
+                }
+            }
+            cout << " - ";
+        }
+    }
+    cout << endl; 
+
 
     return 0;
 }

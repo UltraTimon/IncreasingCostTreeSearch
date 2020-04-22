@@ -34,44 +34,47 @@ bool pathsHaveConflict(list<int> pathA, list<int> pathB) {
     return false;
 }
 
-list<list<int>> getAtLeastOnePathPerAgentWithoutConflict() {
-    // get list of agent objects read from file
-    list<Agent> agentList = importAgents("resources/agents.txt");
-    int optimalCost = 3;
-
-    // actually add the paths to the agent objects
+list<list<list<int>>> getAtLeastOnePathPerAgentWithoutConflict(list<Agent> agentList, int optimalCost) {
+    // add the paths to the agent objects
     for(auto it = agentList.begin(); it != agentList.end(); ++it) {
         list<list<int>> generatedPaths = generatePaths("resources/graph.txt", it->start, it->end, optimalCost);
         it->setPaths(generatedPaths);
     }
 
-    // print paths
-    int agentCounter = 0;
-    for(auto agent : agentList) {
-        cout << "Agent " << agentCounter << ":" << endl;
-        agentCounter++;
 
-        int printPathCounter = 0;
-        for (auto list : agent.paths)
-        {
-            cout << "path " << printPathCounter << ": ";
-            printPathCounter++;
-            for (auto i : list)
-            {
+    // inner list; path
+    // middle list; combination of one path for agent A, one path for agent B
+    // outer list: list of combinations
+    list<list<list<int>>> stub;
+
+    // create sets of 2 paths, 1 for each agent and getting all permutations
+    // all have the same amount of paths
+    for(auto outerAgentIt = agentList.begin(); outerAgentIt != agentList.end(); ++outerAgentIt) {
+        for(auto innerAgentIt = next(outerAgentIt, 1); innerAgentIt != agentList.end(); ++innerAgentIt) {
+            for(auto outerPathIt = outerAgentIt->paths.begin(); outerPathIt != outerAgentIt->paths.end(); ++outerPathIt) {
+                for(auto innerPathIt = outerAgentIt->paths.begin(); innerPathIt != outerAgentIt->paths.end(); ++innerPathIt) {
+                    list<list<int>> temp;
+                    if(!pathsHaveConflict(*outerPathIt, *innerPathIt)) {
+                        temp.push_back(*outerPathIt);
+                        temp.push_back(*innerPathIt);
+                        stub.push_back(temp);
+                    }
+                }
+            }    
+        }
+    }
+    
+    // print paths
+    cout << "Paths without conflict for optimalCost = " << optimalCost << ": " << endl;
+    int agentCounter = 0;
+    for(auto outer : stub) {
+        for(auto middle : outer) {
+            for(auto i : middle) {
                 cout << i << " ";
             }
             cout << endl;
         }
     }
-
-    list<list<int>> stub;
-
-    // // create sets of k paths, 1 for each agent and getting all permutations
-    // for(auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator) {
-    //     for(auto outerPathIterator = agentIterator->paths.begin(); agentIterator != agentList.end(); ++agentIterator) {
-            
-    //     }
-    // }
     
     return stub;
 }

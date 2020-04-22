@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 
     Node root = generateRoot(optimalCost, numberOfAgents);
 
-    getAtLeastOnePathPerAgentWithoutConflict();
+    getAtLeastOnePathPerAgentWithoutConflict(agentList, 3);
 
 
     // generateNextLevel(&root);

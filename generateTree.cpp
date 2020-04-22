@@ -37,10 +37,8 @@ list<Node> generateNextLevelOfChildren(Node tree) {
 
 void generateNextLevel(Node *tree) {
     if(tree->children.size() == 0) {
-        cout << "gen. children..." << endl;
         tree->children = generateNextLevelOfChildren(*tree);
     } else {
-        cout << "children exist, #children: " << tree->children.size() << ", passing the call to the children" << endl;
         for(list<Node>::iterator it = tree->children.begin(); it != tree->children.end(); ++it) {
             generateNextLevel(&(*it));
         } 

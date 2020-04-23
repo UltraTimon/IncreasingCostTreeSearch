@@ -71,7 +71,6 @@ list<list<list<int>>> getAtLeastOnePathPerAgentWithoutConflict(list<Agent> agent
     
     // print paths
     cout << "# Path pairs without conflict: " << stub.size() << endl;
-    int agentCounter = 0;
     for(auto pair : stub) {
         for(auto path : pair) {
             for(auto i : path) {

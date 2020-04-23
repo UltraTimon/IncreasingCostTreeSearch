@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -8,6 +8,6 @@
 
 using namespace std;
 
-bool pathsHaveConflict(list<int> pathA, list<int> pathB);
+bool pathsHaveConflict(vector<int> pathA, vector<int> pathB);
 
-list<list<list<int>>> getAtLeastOnePathPerAgentWithoutConflict(list<Agent> agentList, list<int> optimalCostList);
+vector<vector<vector<int>>> getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList);

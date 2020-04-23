@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -9,6 +9,6 @@ using namespace std;
 #include "agent.h"
 
 // generatePaths.cpp
-list<list<int>> generatePaths(string filename, int start, int end, int exactCost);
+vector<vector<int>> generatePaths(string filename, int start, int end, int exactCost);
 
-list<int> calculateOptimalCost(list<Agent> agentList);
+vector<int> calculateOptimalCost(vector<Agent> agentList);

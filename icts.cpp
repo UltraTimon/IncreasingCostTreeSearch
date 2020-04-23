@@ -1,18 +1,19 @@
 #include "icts.h"
 
-void ICTS(list<Agent> agentList, list<Node> queue) {
+void ICTS(vector<Agent> agentList, list<Node> queue) {
     Node currentNode = queue.front();
     queue.pop_front();
-    list<int> optimalCostList = currentNode.data;
+    vector<int> optimalCostList = currentNode.data;
 
-    list<list<list<int>>> atLeastOnePathPerAgentWithoutConflict = getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
+    cout << "Costs: ";
+    printTree(&currentNode, 1);
+
+
+    vector<vector<vector<int>>> atLeastOnePathPerAgentWithoutConflict = getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
     if (atLeastOnePathPerAgentWithoutConflict.size() > 0)
     {
         // announce the happy news
         cout << "Ladies and Gentleman, we've got a solution!!" << endl;
-
-        // print paths
-        cout << "# Path pairs without conflict: " << atLeastOnePathPerAgentWithoutConflict.size() << endl;
         for (auto pair : atLeastOnePathPerAgentWithoutConflict)
         {
             for (auto path : pair)
@@ -26,15 +27,15 @@ void ICTS(list<Agent> agentList, list<Node> queue) {
             cout << endl;
         }
     } else {
+        // give error message
+        cout << "No paths found" << endl;
+
         // generate the next level of the tree, add those nodes to the queue and go to the next node
         generateNextLevel(&currentNode);
-        cout << "Next cost values:";
-        printTree(&currentNode, 1);
-        cout << endl;
-
         for(auto child : currentNode.children) {
             queue.push_back(child);
         }
+
         ICTS(agentList, queue);
     }
 }

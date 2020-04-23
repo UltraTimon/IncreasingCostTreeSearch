@@ -1,8 +1,9 @@
 #include <iostream>
-#include <list>
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <list>
 
 using namespace std;
 
@@ -11,9 +12,9 @@ class Agent {
     public:
         int start;
         int end;
-        list<list<int>> paths;
+        vector<vector<int>> paths;
         Agent(int start, int end);
-        void setPaths(list<list<int>> paths);
+        void setPaths(vector<vector<int>> paths);
 };
 
-list<Agent> importAgents(string filename);
+vector<Agent> importAgents(string filename);

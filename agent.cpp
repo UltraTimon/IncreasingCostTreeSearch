@@ -5,13 +5,13 @@ Agent::Agent(int givenStart, int givenEnd) {
     end = givenEnd;
 }
 
-void Agent::setPaths(list<list<int>> givenPaths) {
+void Agent::setPaths(vector<vector<int>> givenPaths) {
     paths = givenPaths;
 }
 
 
-list<Agent> importAgents(string filename) {
-    list<Agent> agentList;
+vector<Agent> importAgents(string filename) {
+    vector<Agent> agentList;
 
     ifstream myfile(filename);
     int start, end;

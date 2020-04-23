@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -8,8 +8,8 @@ using namespace std;
 
 class Node {
     public: 
-        list<int> data;
+        vector<int> data;
         Node() {}
         Node *parent;
-        list<Node> children;
+        vector<Node> children;
 };

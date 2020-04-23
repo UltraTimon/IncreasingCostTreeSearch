@@ -1,4 +1,4 @@
-#include "icts.h"
+#include "mdd.h"
 
 using namespace std;
 
@@ -11,9 +11,9 @@ int main(int argc, char **argv)
         2) If yes, and if we are going to examine this cost node, does there exist a path for each agent of cost x that do not conflict?
     */
 
-    list<Agent> agentList = importAgents("resources/agents.txt");
+    vector<Agent> agentList = importAgents("resources/agents.txt");
 
-    list<int> optimalCostList = calculateOptimalCost(agentList);
+    vector<int> optimalCostList = calculateOptimalCost(agentList);
 
     Node root = generateRoot(optimalCostList);
 

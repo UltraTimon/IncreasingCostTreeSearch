@@ -1,16 +1,16 @@
 #include "generateTree.h"
 
-Node generateRoot(list<int> rootCostList) {
+Node generateRoot(vector<int> rootCostList) {
     Node root = Node();
     root.data = rootCostList;
     root.parent = nullptr;
     return root;
 }
 
-list<Node> generateNextLevelOfChildren(Node tree) {
-    list<Node> children;
+vector<Node> generateNextLevelOfChildren(Node tree) {
+    vector<Node> children;
     for(int outer = 0; outer < tree.data.size(); ++outer) {
-        list<int> childData;
+        vector<int> childData;
         int inner = 0;
         for (auto parentDataIt = tree.data.begin(); parentDataIt != tree.data.end(); ++parentDataIt)
         {
@@ -34,7 +34,7 @@ void generateNextLevel(Node *tree) {
     if(tree->children.size() == 0) {
         tree->children = generateNextLevelOfChildren(*tree);
     } else {
-        for(list<Node>::iterator it = tree->children.begin(); it != tree->children.end(); ++it) {
+        for(vector<Node>::iterator it = tree->children.begin(); it != tree->children.end(); ++it) {
             generateNextLevel(&(*it));
         } 
     }

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -8,9 +8,9 @@
 
 using namespace std;
 
-Node generateRoot(list<int> rootCostList);
+Node generateRoot(vector<int> rootCostList);
 
-list<Node> generateNextLevelOfChildren(Node tree);
+vector<Node> generateNextLevelOfChildren(Node tree);
 
 void generateNextLevel(Node *tree);
 

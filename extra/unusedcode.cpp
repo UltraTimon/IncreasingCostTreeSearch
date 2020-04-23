@@ -6,19 +6,19 @@ using namespace std;
 int main (int argc, char** argv) {
     int optimalCost = 2;
 
-    // get list of agent objects read form file
-    list<Agent> agentList = importAgents("resources/agents.txt");
+    // get vector of agent objects read form file
+    vector<Agent> agentList = importAgents("resources/agents.txt");
 
     // actually add the paths to the agent objects
-    list<Agent>::iterator agentIterator;
+    vector<Agent>::iterator agentIterator;
     for(agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator) {
-        list<list<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
+        vector<vector<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
         agentIterator->setPaths(generatedPaths);
     }
 
-    list<pair<list<int>, list<int>>> multiAgentPathPairs;
-    list<Agent>::iterator masterIterator;
-    list<Agent>::iterator subIterator;
+    vector<pair<vector<int>, vector<int>>> multiAgentPathPairs;
+    vector<Agent>::iterator masterIterator;
+    vector<Agent>::iterator subIterator;
 
     // loop over agents one by one, pair up paths for conflict checking
     for(masterIterator = agentList.begin(); masterIterator != agentList.end(); ++masterIterator) {
@@ -31,7 +31,7 @@ int main (int argc, char** argv) {
             for(auto pathA : masterIterator->paths) {
                 // loop over paths from sub agent, one by one
                 for(auto pathB : subIterator->paths) {
-                    pair<list<int>, list<int>> newPathPair = pair<list<int>, list<int>>(pathA, pathB);
+                    pair<vector<int>, vector<int>> newPathPair = pair<vector<int>, vector<int>>(pathA, pathB);
                     multiAgentPathPairs.push_back(newPathPair);
                 }
             }
@@ -44,9 +44,9 @@ int main (int argc, char** argv) {
     cout << "nr of pairs before coflict check: " << multiAgentPathPairs.size() <<  endl;
     bool conflicts = false;
     int pairIndex = 0;
-    list<pair<list<int>, list<int>>> multiAgentPathPairsWithoutConflict;
+    vector<pair<vector<int>, vector<int>>> multiAgentPathPairsWithoutConflict;
     for(auto currentPair : multiAgentPathPairs) {
-        // If no conflict, add pair to no-conflict list
+        // If no conflict, add pair to no-conflict vector
         if(!pathsHaveConflict(currentPair.first, currentPair.second)) {
             multiAgentPathPairsWithoutConflict.push_back(currentPair);
         }
@@ -64,11 +64,11 @@ int main (int argc, char** argv) {
         agentCounter++;
 
         int printPathCounter = 0;
-        for (auto list : agent.paths)
+        for (auto vector : agent.paths)
         {
             cout << "path " << printPathCounter << ": ";
             printPathCounter++;
-            for (auto i : list)
+            for (auto i : vector)
             {
                 cout << i << " ";
             }

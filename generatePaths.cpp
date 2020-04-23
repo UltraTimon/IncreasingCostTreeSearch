@@ -1,6 +1,6 @@
 // C++ program to print all paths from a source to destination.
 #include <iostream>
-#include <list>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -8,11 +8,11 @@ using namespace std;
 
 #include "generatePaths.h"
 
-// A directed graph using adjacency list representation
+// A directed graph using adjacency vector representation
 class Graph
 {
     int V;               // No. of vertices in graph
-    list<int> *adj;      // Pointer to an array containing adjacency lists
+    vector<int> *adj;      // Pointer to an array containing adjacency vectors
     int pathCounter = 0; // index of which path is being filled up now
 
     // A recursive function used by generateAllPaths()
@@ -22,19 +22,19 @@ public:
     Graph(int V); // Constructor
     void addEdge(int u, int v);
     void generateAllPaths(int s, int d, int exactCost);
-    list<list<int>> pathsTaken; // list of paths nodes that are traversed
+    vector<vector<int>> pathsTaken; // vector of paths nodes that are traversed
 };
 
 Graph::Graph(int V)
 {
     this->V = V;
-    adj = new list<int>[V];
+    adj = new vector<int>[V];
     this->pathCounter = 0;
 }
 
 void Graph::addEdge(int u, int v)
 {
-    adj[u].push_back(v); // Add v to u’s list.
+    adj[u].push_back(v); // Add v to u’s vector.
 }
 
 // Prints all paths from 's' to 'd'
@@ -75,10 +75,10 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
     // print current path[]
     if (u == d && numberOfStepsAllowed == 0)
     {
-        // add a new list
-        list<int> newList;
+        // add a new vector
+        vector<int> newList;
         pathsTaken.push_back(newList);
-        // print elements & add to list of lists
+        // print elements & add to vector of vectors
         for (int i = 0; i < path_index; i++)
         {
             pathsTaken.back().push_back(path[i]);
@@ -88,7 +88,7 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
     else // If current vertex is not destination
     {
         // Recur for all the vertices adjacent to current vertex
-        list<int>::iterator i;
+        vector<int>::iterator i;
         for (i = adj[u].begin(); i != adj[u].end(); ++i)
             if (!visited[*i])
                 generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1);
@@ -100,7 +100,7 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
 }
 
 // Driver program
-list<list<int>> generatePaths(string filename, int start, int end, int exactCost)
+vector<vector<int>> generatePaths(string filename, int start, int end, int exactCost)
 {
 
     // Reading in the edges from a file
@@ -135,14 +135,14 @@ list<list<int>> generatePaths(string filename, int start, int end, int exactCost
 // generate paths for each agent, add paths to agent object
 // This will first only determine what the optimal cost is for every agent by calculating paths with an iteratively increasing cost until
 //      each agent has at least one path with that cost
-list<int> calculateOptimalCost(list<Agent> agentList) {
-    list<int> optimalCostList;
+vector<int> calculateOptimalCost(vector<Agent> agentList) {
+    vector<int> optimalCostList;
 
     for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
     {
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
         while(true) {
-            list<list<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
+            vector<vector<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
             if (generatedPaths.size() == 0)
             {
                 optimalCost++;

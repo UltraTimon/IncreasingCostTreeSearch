@@ -1,13 +1,8 @@
 #include "generateTree.h"
 
-Node generateRoot(int rootCost, int numberOfAgents) {
-    list<int> rootData;
-    for (int i = 0; i < numberOfAgents; i++)
-    {
-        rootData.push_back(rootCost);
-    }
+Node generateRoot(list<int> rootCostList) {
     Node root = Node();
-    root.data = rootData;
+    root.data = rootCostList;
     root.parent = nullptr;
     return root;
 }

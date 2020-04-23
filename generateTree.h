@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Node generateRoot(int rootCost, int numberOfAgents);
+Node generateRoot(list<int> rootCostList);
 
 list<Node> generateNextLevelOfChildren(Node tree);
 

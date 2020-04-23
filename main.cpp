@@ -13,20 +13,22 @@ int main(int argc, char **argv)
     */
 
     list<Agent> agentList = importAgents("resources/agents.txt");
-    int numberOfAgents = agentList.size();
 
-    int optimalCost = calculateOptimalCost(agentList);
+    list<int> optimalCostList = calculateOptimalCost(agentList);
 
-    Node root = generateRoot(optimalCost, numberOfAgents);
-
-    getAtLeastOnePathPerAgentWithoutConflict(agentList, 3);
-
+    Node root = generateRoot(optimalCostList);
 
     // generateNextLevel(&root);
     // generateNextLevel(&root);
     // generateNextLevel(&root);
 
     printTree(&root); 
+
+    getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
+
+
+
+    
 
     return 0;
 }

@@ -135,28 +135,26 @@ list<list<int>> generatePaths(string filename, int start, int end, int exactCost
 // generate paths for each agent, add paths to agent object
 // This will first only determine what the optimal cost is for every agent by calculating paths with an iteratively increasing cost until
 //      each agent has at least one path with that cost
-int calculateOptimalCost(list<Agent> agentList) {
-    int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
-    bool everyAgentHasAtLeastOnePath = false;
-    list<Agent>::iterator agentIterator;
+list<int> calculateOptimalCost(list<Agent> agentList) {
+    list<int> optimalCostList;
 
-    while (!everyAgentHasAtLeastOnePath)
+    for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
     {
-        for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
-        {
+        int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
+        while(true) {
             list<list<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
             if (generatedPaths.size() == 0)
             {
                 optimalCost++;
-                break;
             }
             else
             {
-                cout << "OptimalCost: " << optimalCost << endl;
-                everyAgentHasAtLeastOnePath = true;
+                optimalCostList.push_back(optimalCost);
                 break;
             }
         }
     }
-    return optimalCost;
+
+
+    return optimalCostList;
 }

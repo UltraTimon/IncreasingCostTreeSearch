@@ -11,4 +11,4 @@ using namespace std;
 // generatePaths.cpp
 list<list<int>> generatePaths(string filename, int start, int end, int exactCost);
 
-int calculateOptimalCost(list<Agent> agentList);
+list<int> calculateOptimalCost(list<Agent> agentList);

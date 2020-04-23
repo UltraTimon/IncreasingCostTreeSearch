@@ -16,7 +16,6 @@ int main(int argc, char **argv)
     list<int> optimalCostList = calculateOptimalCost(agentList);
 
     Node root = generateRoot(optimalCostList);
-    printTree(&root);
 
     list<Node> queue;
     queue.push_back(root);

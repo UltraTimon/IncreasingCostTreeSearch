@@ -67,3 +67,10 @@ void printTree(Node *tree) {
         cout << endl;
     } 
 }
+
+void printTree(Node *tree, int depth) {
+    for(int i = 0; i < depth; i++) {
+        printTreeRecursive(tree, i);
+        cout << endl;
+    } 
+}

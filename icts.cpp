@@ -28,7 +28,10 @@ void ICTS(list<Agent> agentList, list<Node> queue) {
     } else {
         // generate the next level of the tree, add those nodes to the queue and go to the next node
         generateNextLevel(&currentNode);
-        printTree(&currentNode);
+        cout << "Next cost values:";
+        printTree(&currentNode, 1);
+        cout << endl;
+
         for(auto child : currentNode.children) {
             queue.push_back(child);
         }

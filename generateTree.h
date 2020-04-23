@@ -15,3 +15,5 @@ list<Node> generateNextLevelOfChildren(Node tree);
 void generateNextLevel(Node *tree);
 
 void printTree(Node *tree);
+
+void printTree(Node *tree, int depth);

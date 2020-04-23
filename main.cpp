@@ -31,6 +31,7 @@ int main(int argc, char **argv)
 void ICTS(list<Agent> agentList, list<Node> queue) {
 
         Node currentNode = queue.front();
+        queue.pop_front();
         list<int> optimalCostList = currentNode.data;
 
         list<list<list<int>>> atLeastOnePathPerAgentWithoutConflict = getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
@@ -54,9 +55,11 @@ void ICTS(list<Agent> agentList, list<Node> queue) {
                 cout << endl;
             }
         } else {
+            // generate the next level of the tree, add those nodes to the queue and go to the next node
             generateNextLevel(&currentNode);
             for(auto child : currentNode.children) {
-                ICTS(agentList, child);
+                queue.push_back(child);
             }
+            ICTS(agentList, queue);
         }
 }

@@ -1,15 +1,5 @@
 #include "icts.h"
 
-class Destination
-{
-public:
-    int data;
-    vector<MDD> parents;
-    Destination(int i)
-    {
-        data = i;
-    }
-};
 
 class MDD
 {
@@ -59,5 +49,16 @@ private:
             printMDDRecursive(mdd, i);
             cout << endl;
         }
+    }
+};
+
+class Destination
+{
+public:
+    int data;
+    vector<MDD> parents;
+    Destination(int i)
+    {
+        data = i;
     }
 };

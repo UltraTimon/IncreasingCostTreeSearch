@@ -40,10 +40,6 @@ void Graph::generateAllPaths(int s, int d, int exactCost)
 MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
                               int path[], int &path_index, int start, int numberOfStepsAllowed, Destination dest)
 {
-    // check if we are allowed another step
-    if(numberOfStepsAllowed < 0)
-        return;
-
     // Mark the current node and store it in path[]
     visited[u] = true;
     path[path_index] = u;
@@ -75,7 +71,7 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
         // Recur for all the vertices adjacent to current vertex
         vector<int>::iterator i;
         for (i = adj[u].begin(); i != adj[u].end(); ++i) {
-            if (!visited[*i]) {
+            if (!visited[*i] && numberOfStepsAllowed > 0) {
                 MDD child = generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1, dest);
                 if(child.pathLeadsToDestination) {
                     newMDD.children.push_back(child);

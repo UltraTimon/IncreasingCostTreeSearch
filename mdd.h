@@ -2,14 +2,19 @@
 
 class MDD {
     public:
-        int nodeNumber;
-        vector<int> edges;
-        MDD() {
-            nodeNumber = -1;
-        }
-        MDD(int n) {
-            this->nodeNumber = n;
+        int data;
+        vector<MDD> children;
+        vector<MDD> parents;
+        MDD(int i) {
+            data = i;
         }
 };
 
-MDD generateMDD(vector<vector<int>> pathList, int numberOfNodes);
+class Destination {
+    public:
+        int data;
+        vector<MDD> parents;
+        Destination(int i) {
+            data = i;
+        }
+};

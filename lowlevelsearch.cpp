@@ -38,6 +38,7 @@ vector<vector<vector<int>>> getAtLeastOnePathPerAgentWithoutConflict(vector<Agen
     auto it = agentList.begin();
     auto costIt = optimalCostList.begin();
     while(it != agentList.end() && costIt != optimalCostList.end()) {
+        // cout << "optimalCost index: " << *costIt << endl;
         vector<vector<int>> generatedPaths = generatePaths("resources/graph.txt", it->start, it->end, *costIt);
         it->setPaths(generatedPaths);
         ++it;

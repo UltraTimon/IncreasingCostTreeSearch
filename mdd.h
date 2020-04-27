@@ -25,3 +25,5 @@ public:
         data = i;
     }
 };
+
+void convertMDDToPathList(int start, Destination & dest, vector<vector<int>> & paths);

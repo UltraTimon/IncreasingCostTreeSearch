@@ -13,7 +13,7 @@ void Graph::addEdge(int u, int v)
 }
 
 // Prints all paths from 's' to 'd'
-MDD Graph::generateAllPaths(int s, int d, int exactCost)
+MDD Graph::generateAllPaths(int s, int d, int exactCost, Destination & dest)
 {
     // Mark all the vertices as not visited
     bool *visited = new bool[V];
@@ -22,15 +22,14 @@ MDD Graph::generateAllPaths(int s, int d, int exactCost)
     for (int i = 0; i < V; i++)
         visited[i] = false;
 
-    // MDD that serves as endpoint
-    Destination dest = Destination(d);
-
     // Create an array to store paths
     int *path = new int[V];
     int indexOfCurrentPath = 0; // Initialize path[] as empty
 
+    MDD temp = MDD(s);
+
     // Call the recursive helper function to print all paths
-    return generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost, dest);
+    return generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost, dest, temp);
 }
 
 // A recursive function to print all paths from 'u' to 'd'.
@@ -38,13 +37,15 @@ MDD Graph::generateAllPaths(int s, int d, int exactCost)
 // path[] stores actual vertices and path_index is current
 // index in path[]
 MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
-                              int path[], int &path_index, int start, int numberOfStepsAllowed, Destination dest)
+                              int path[], int &path_index, int start, int numberOfStepsAllowed, Destination & dest, MDD previous)
 {
     // Mark the current node and store it in path[]
     visited[u] = true;
     path[path_index] = u;
     path_index++;
     MDD newMDD = MDD(u);
+
+
 
     // If current vertex is same as destination and we're at exactly the right amount of steps, 
     // we're done. Add MDD to parents of dest and be done
@@ -60,12 +61,11 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
         }
         pathCounter++;
 
-        // Add newMDD to list of parents of dest since we ended up at dest via newMDD
-        dest.parents.push_back(newMDD);
-        // Set flag to true so previous parents know they're important
-        newMDD.pathLeadsToDestination = true;
+        // set previous MDD's flag to true and add it to the parents list
+        previous.pathLeadsToDestination = true;
+        dest.parents.push_back(previous);
 
-        return newMDD;
+        return previous;
     }
     else // If current vertex is not destination
     {
@@ -73,10 +73,11 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
         vector<int>::iterator i;
         for (i = adj[u].begin(); i != adj[u].end(); ++i) {
             if (!visited[*i] && numberOfStepsAllowed > 0) {
-                MDD child = generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1, dest);
+                MDD child = generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1, dest, newMDD);
                 if(child.pathLeadsToDestination) {
                     newMDD.children.push_back(child);
                     newMDD.pathLeadsToDestination = true;
+                    child.parent = &newMDD;
                 }
             }
         }
@@ -123,9 +124,17 @@ vector<vector<int>> generatePaths(string filename, int start, int end, int exact
         cout << "generatePaths: Unable to open file. Sorry" << endl;
     }
 
-    MDD mdd = g.generateAllPaths(start, end, exactCost);
 
-    return g.pathsTaken;
+    Destination dest = Destination(end);
+    MDD mdd = g.generateAllPaths(start, end, exactCost, dest);
+    cout << "-- #parents: " << dest.parents.size() << endl;
+
+    vector<vector<int>> paths;
+    convertMDDToPathList(start, dest, paths);
+    cout << "mdd generated, #paths: " << paths.size() << endl;
+
+    // retuen g.pathsTaken;
+    return paths;
 }
 
 // generate paths for each agent, add paths to agent object

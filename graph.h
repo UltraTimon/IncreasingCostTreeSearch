@@ -17,11 +17,11 @@ class Graph
     int pathCounter = 0; // index of which path is being filled up now
 
     // A recursive function used by generateAllPaths()
-    MDD generateAllPathsRecursivePart(int, int, bool[], int[], int &, int start, int numberOfStepsAllowed, Destination dest);
+    MDD generateAllPathsRecursivePart(int, int, bool[], int[], int &, int start, int numberOfStepsAllowed, Destination & dest, MDD previous);
 
 public: 
     Graph(int V); // Constructor
     void addEdge(int u, int v);
-    MDD generateAllPaths(int s, int d, int exactCost);
+    MDD generateAllPaths(int s, int d, int exactCost, Destination & dest);
     vector<vector<int>> pathsTaken; // vector of paths nodes that are traversed
 };

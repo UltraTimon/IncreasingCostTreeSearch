@@ -4,7 +4,7 @@ class MDD {
     public:
         int data;
         vector<MDD> children;
-        vector<MDD> parents;
+        MDD *parent;
         MDD(int i) {
             data = i;
         }

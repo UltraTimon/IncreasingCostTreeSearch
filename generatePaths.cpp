@@ -13,7 +13,7 @@ void Graph::addEdge(int u, int v)
 }
 
 // Prints all paths from 's' to 'd'
-void Graph::generateAllPaths(int s, int d, int exactCost)
+MDD Graph::generateAllPaths(int s, int d, int exactCost)
 {
     // Mark all the vertices as not visited
     bool *visited = new bool[V];
@@ -30,7 +30,7 @@ void Graph::generateAllPaths(int s, int d, int exactCost)
     int indexOfCurrentPath = 0; // Initialize path[] as empty
 
     // Call the recursive helper function to print all paths
-    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost, dest);
+    return generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost, dest);
 }
 
 // A recursive function to print all paths from 'u' to 'd'.
@@ -64,6 +64,7 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
         dest.parents.push_back(newMDD);
         // Set flag to true so previous parents know they're important
         newMDD.pathLeadsToDestination = true;
+
         return newMDD;
     }
     else // If current vertex is not destination
@@ -75,6 +76,7 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
                 MDD child = generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1, dest);
                 if(child.pathLeadsToDestination) {
                     newMDD.children.push_back(child);
+                    newMDD.pathLeadsToDestination = true;
                 }
             }
         }
@@ -83,6 +85,13 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
     // Remove current vertex from path[] and mark it as unvisited
     path_index--;
     visited[u] = false;
+
+    if(newMDD.pathLeadsToDestination) {
+        cout << "p: " << newMDD.data << endl;
+        for(auto child : newMDD.children)
+            cout << "c: " << child.data << endl;
+            
+    }
     return newMDD;
 }
 
@@ -114,7 +123,7 @@ vector<vector<int>> generatePaths(string filename, int start, int end, int exact
         cout << "generatePaths: Unable to open file. Sorry" << endl;
     }
 
-    g.generateAllPaths(start, end, exactCost);
+    MDD mdd = g.generateAllPaths(start, end, exactCost);
 
     return g.pathsTaken;
 }

@@ -22,6 +22,6 @@ class Graph
 public: 
     Graph(int V); // Constructor
     void addEdge(int u, int v);
-    void generateAllPaths(int s, int d, int exactCost);
+    MDD generateAllPaths(int s, int d, int exactCost);
     vector<vector<int>> pathsTaken; // vector of paths nodes that are traversed
 };

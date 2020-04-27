@@ -1,29 +1,4 @@
-// C++ program to print all paths from a source to destination.
-#include <iostream>
-#include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
-using namespace std;
-
-#include "generatePaths.h"
-
-// A directed graph using adjacency vector representation
-class Graph
-{
-    int V;               // No. of vertices in graph
-    vector<int> *adj;      // Pointer to an array containing adjacency vectors
-    int pathCounter = 0; // index of which path is being filled up now
-
-    // A recursive function used by generateAllPaths()
-    void generateAllPathsRecursivePart(int, int, bool[], int[], int &, int start, int numberOfStepsAllowed);
-
-public: 
-    Graph(int V); // Constructor
-    void addEdge(int u, int v);
-    void generateAllPaths(int s, int d, int exactCost);
-    vector<vector<int>> pathsTaken; // vector of paths nodes that are traversed
-};
+#include "graph.h"
 
 Graph::Graph(int V)
 {
@@ -43,24 +18,27 @@ void Graph::generateAllPaths(int s, int d, int exactCost)
     // Mark all the vertices as not visited
     bool *visited = new bool[V];
 
-    // Create an array to store paths
-    int *path = new int[V];
-    int indexOfCurrentPath = 0; // Initialize path[] as empty
-
     // Initialize all vertices as not visited
     for (int i = 0; i < V; i++)
         visited[i] = false;
 
+    // MDD that serves as endpoint
+    Destination dest = Destination(d);
+
+    // Create an array to store paths
+    int *path = new int[V];
+    int indexOfCurrentPath = 0; // Initialize path[] as empty
+
     // Call the recursive helper function to print all paths
-    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost);
+    generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost, dest);
 }
 
 // A recursive function to print all paths from 'u' to 'd'.
 // visited[] keeps track of vertices in current path.
 // path[] stores actual vertices and path_index is current
 // index in path[]
-void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
-                              int path[], int &path_index, int start, int numberOfStepsAllowed)
+MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
+                              int path[], int &path_index, int start, int numberOfStepsAllowed, Destination dest)
 {
     // check if we are allowed another step
     if(numberOfStepsAllowed < 0)
@@ -70,9 +48,10 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
     visited[u] = true;
     path[path_index] = u;
     path_index++;
+    MDD newMDD = MDD(u);
 
     // If current vertex is same as destination and we're at exactly the right amount of steps, 
-    // print current path[]
+    // we're done. Add MDD to parents of dest and be done
     if (u == d && numberOfStepsAllowed == 0)
     {
         // add a new vector
@@ -84,19 +63,31 @@ void Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
             pathsTaken.back().push_back(path[i]);
         }
         pathCounter++;
+
+        // Add newMDD to list of parents of dest since we ended up at dest via newMDD
+        dest.parents.push_back(newMDD);
+        // Set flag to true so previous parents know they're important
+        newMDD.pathLeadsToDestination = true;
+        return newMDD;
     }
     else // If current vertex is not destination
     {
         // Recur for all the vertices adjacent to current vertex
         vector<int>::iterator i;
-        for (i = adj[u].begin(); i != adj[u].end(); ++i)
-            if (!visited[*i])
-                generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1);
+        for (i = adj[u].begin(); i != adj[u].end(); ++i) {
+            if (!visited[*i]) {
+                MDD child = generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1, dest);
+                if(child.pathLeadsToDestination) {
+                    newMDD.children.push_back(child);
+                }
+            }
+        }
     }
 
     // Remove current vertex from path[] and mark it as unvisited
     path_index--;
     visited[u] = false;
+    return newMDD;
 }
 
 // Driver program

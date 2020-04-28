@@ -54,18 +54,18 @@ vector<vector<vector<int>>> getAtLeastOnePathPerAgentWithoutConflict(vector<Agen
     // create sets of 2 paths, 1 for each agent and getting all permutations
     // all have the same amount of paths
     for(auto outerAgentIt = agentList.begin(); outerAgentIt != agentList.end(); ++outerAgentIt) {
-        for(auto innerAgentIt = next(outerAgentIt, 1); innerAgentIt != agentList.end(); ++innerAgentIt) {
+        // for(auto innerAgentIt = next(outerAgentIt, 1); innerAgentIt != agentList.end(); ++innerAgentIt) {
             for(auto outerPathIt = outerAgentIt->paths.begin(); outerPathIt != outerAgentIt->paths.end(); ++outerPathIt) {
-                for(auto innerPathIt = innerAgentIt->paths.begin(); innerPathIt != innerAgentIt->paths.end(); ++innerPathIt) {
-                    if(!pathsHaveConflict(*outerPathIt, *innerPathIt)) {
+                // for(auto innerPathIt = innerAgentIt->paths.begin(); innerPathIt != innerAgentIt->paths.end(); ++innerPathIt) {
+                    // if(!pathsHaveConflict(*outerPathIt, *innerPathIt)) {
                         vector<vector<int>> temp;
                         temp.push_back(*outerPathIt);
-                        temp.push_back(*innerPathIt);
+                        // temp.push_back(*innerPathIt);
                         stub.push_back(temp);
-                    }
-                }
+                    // }
+                // }
             }    
-        }
+        // }
     }
     
     return stub;

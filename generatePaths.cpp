@@ -45,7 +45,12 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
     path_index++;
     MDD newMDD = MDD(u);
 
-
+    if(numberOfStepsAllowed < 0) {
+        // Remove current vertex from path[] and mark it as unvisited
+        path_index--;
+        visited[u] = false;
+        return newMDD;
+    }
 
     // If current vertex is same as destination and we're at exactly the right amount of steps, 
     // we're done. Add MDD to parents of dest and be done
@@ -71,14 +76,18 @@ MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
     {
         // Recur for all the vertices adjacent to current vertex
         vector<int>::iterator i;
+        // for each adjacent vertex ...
         for (i = adj[u].begin(); i != adj[u].end(); ++i) {
+            // if we did not visit it yet and we are allowed to make more steps
             if (!visited[*i] && numberOfStepsAllowed > 0) {
+                // generate the MDD for the child node, storing all child nodes in the child list of the generated MDD
                 MDD child = generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1, dest, newMDD);
-                if(child.pathLeadsToDestination) {
+                // ... but only if it leads to the destination. Otherwise we don't need that path, so we don't need this child
+                // if(child.pathLeadsToDestination) {
                     newMDD.children.push_back(child);
                     newMDD.pathLeadsToDestination = true;
                     child.parent = &newMDD;
-                }
+                // }
             }
         }
     }
@@ -127,14 +136,14 @@ vector<vector<int>> generatePaths(string filename, int start, int end, int exact
 
     Destination dest = Destination(end);
     MDD mdd = g.generateAllPaths(start, end, exactCost, dest);
-    cout << "-- #parents: " << dest.parents.size() << endl;
+    // cout << "-- #parents: " << dest.parents.size() << endl;
 
-    vector<vector<int>> paths;
-    convertMDDToPathList(start, dest, paths);
-    cout << "mdd generated, #paths: " << paths.size() << endl;
+    // vector<vector<int>> paths;
+    // convertMDDToPathList(start, dest, paths);
+    // cout << "mdd generated, #paths: " << paths.size() << endl;
 
-    // retuen g.pathsTaken;
-    return paths;
+    return g.pathsTaken;
+    // return paths;
 }
 
 // generate paths for each agent, add paths to agent object

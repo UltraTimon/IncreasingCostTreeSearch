@@ -9,6 +9,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
 
     if(stepsLeft == 0 && current == end) {
         g->nodes[current].useful = true;
+        cout << current << "is useful and final" << endl;
         return 1;
     }
 
@@ -16,6 +17,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
         for(int i : g->nodes[current].edges) {
             if(nodeIsUseful(i, end, stepsLeft - 1, g, visited)) {
                 g->nodes[current].useful = true;
+                cout << current << "is useful" << endl;
             }
         }
     }

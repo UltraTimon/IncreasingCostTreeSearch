@@ -13,96 +13,73 @@ void Graph::addEdge(int u, int v)
 }
 
 // Prints all paths from 's' to 'd'
-MDD Graph::generateAllPaths(int s, int d, int exactCost, Destination & dest)
+MDD Graph::generateAllPaths(int s, int d, int exactCost, vector<MDD> & endPoints)
 {
-    // Mark all the vertices as not visited
-    bool *visited = new bool[V];
-
     // Initialize all vertices as not visited
+    bool *visited = new bool[V];
     for (int i = 0; i < V; i++)
         visited[i] = false;
 
-    // Create an array to store paths
-    int *path = new int[V];
-    int indexOfCurrentPath = 0; // Initialize path[] as empty
-
-    MDD temp = MDD(s);
+    MDD startMDD = MDD(s);
 
     // Call the recursive helper function to print all paths
-    return generateAllPathsRecursivePart(s, d, visited, path, indexOfCurrentPath, s, exactCost, dest, temp);
+    return generateAllPathsRecursivePart(s, d, visited, exactCost, endPoints, startMDD);
 }
 
-// A recursive function to print all paths from 'u' to 'd'.
-// visited[] keeps track of vertices in current path.
-// path[] stores actual vertices and path_index is current
-// index in path[]
-MDD Graph::generateAllPathsRecursivePart(int u, int d, bool visited[],
-                              int path[], int &path_index, int start, int numberOfStepsAllowed, Destination & dest, MDD previous)
+// DFS path builder that recursively walks through the graph, building a tree of MDD objects which will be later converted to paths
+MDD Graph::generateAllPathsRecursivePart(int currentNode, int endNode, bool visited[], int numberOfStepsAllowed, vector<MDD> endPoints, MDD & previousMDD)
 {
-    // Mark the current node and store it in path[]
-    visited[u] = true;
-    path[path_index] = u;
-    path_index++;
-    MDD newMDD = MDD(u);
+    // Mark the current node as visited
+    visited[currentNode] = true;
 
     if(numberOfStepsAllowed < 0) {
         // Remove current vertex from path[] and mark it as unvisited
-        path_index--;
-        visited[u] = false;
-        return newMDD;
+        return previousMDD;
     }
+
+    // create MDD object for current Node to store parent and children
+    MDD currentMDD = MDD(currentNode);
+    currentMDD.parent = &previousMDD;
 
     // If current vertex is same as destination and we're at exactly the right amount of steps, 
     // we're done. Add MDD to parents of dest and be done
-    if (u == d && numberOfStepsAllowed == 0)
+    if (currentNode == endNode && numberOfStepsAllowed == 0)
     {
-        // add a new vector
-        vector<int> newList;
-        pathsTaken.push_back(newList);
-        // print elements & add to vector of vectors
-        for (int i = 0; i < path_index; i++)
-        {
-            pathsTaken.back().push_back(path[i]);
-        }
-        pathCounter++;
+        // set current flag to true
+        currentMDD.pathLeadsToDestination = true;
 
-        // set previous MDD's flag to true and add it to the parents list
-        previous.pathLeadsToDestination = true;
-        dest.parents.push_back(previous);
+        // set currentMDD as one of the endpoints s.t. we can trace back from it later on
+        endPoints.push_back(currentMDD);
 
-        return previous;
+        // return currentMDD s.t. its parent can set its flag to true and add this node to its children
+        return currentMDD;
     }
-    else // If current vertex is not destination
+    // If current vertex is not destination but we are allowed to make steps
+    else if(currentNode != endNode && numberOfStepsAllowed > 0) 
     {
-        // Recur for all the vertices adjacent to current vertex
-        vector<int>::iterator i;
         // for each adjacent vertex ...
-        for (i = adj[u].begin(); i != adj[u].end(); ++i) {
-            // if we did not visit it yet and we are allowed to make more steps
-            if (!visited[*i] && numberOfStepsAllowed > 0) {
-                // generate the MDD for the child node, storing all child nodes in the child list of the generated MDD
-                MDD child = generateAllPathsRecursivePart(*i, d, visited, path, path_index, start, numberOfStepsAllowed - 1, dest, newMDD);
+        for (int i : adj[currentNode]) {
+            // if we did not visit it yet
+            if (!visited[i]) {
+                // generate the MDD for the child node, storing all child nodes in the child list of the generated MDD...
+                MDD child = generateAllPathsRecursivePart(i, endNode, visited, numberOfStepsAllowed - 1, endpoints, currentMDD);
                 // ... but only if it leads to the destination. Otherwise we don't need that path, so we don't need this child
-                // if(child.pathLeadsToDestination) {
-                    newMDD.children.push_back(child);
-                    newMDD.pathLeadsToDestination = true;
-                    child.parent = &newMDD;
-                // }
+                if(child.pathLeadsToDestination) {
+                    currentMDD.children.push_back(child);
+                    currentMDD.pathLeadsToDestination = true;
+                    child.parent = &currentMDD;
+                    // return the current MDD with its child add to its list
+                }
             }
         }
+        return currentMDD;
+    } 
+    // We're out of steps and current Node is not the endNode. Return currentMDD but without the flag enabled
+    // This way it will be ignored at the parent
+    else {
+        visited[currentNode] = false;
+        return currentMDD;
     }
-
-    // Remove current vertex from path[] and mark it as unvisited
-    path_index--;
-    visited[u] = false;
-
-    if(newMDD.pathLeadsToDestination) {
-        cout << "p: " << newMDD.data << endl;
-        for(auto child : newMDD.children)
-            cout << "c: " << child.data << endl;
-            
-    }
-    return newMDD;
 }
 
 // Driver program

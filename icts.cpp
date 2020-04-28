@@ -8,7 +8,6 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
     cout << "Costs: ";
     printTree(&currentNode, 1);
 
-
     vector<vector<vector<int>>> atLeastOnePathPerAgentWithoutConflict = getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
     if (atLeastOnePathPerAgentWithoutConflict.size() > 0)
     {

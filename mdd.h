@@ -1,4 +1,5 @@
 #include "icts.h"
+#include <deque>
 
 
 class MDD
@@ -6,7 +7,7 @@ class MDD
 public:
     int data;
     bool pathLeadsToDestination;
-    vector<MDD> children;
+    vector<int> children;
     MDD *parent;
     MDD(int i)
     {
@@ -26,4 +27,4 @@ public:
     }
 };
 
-void convertMDDToPathList(int start, Destination & dest, vector<vector<int>> & paths);
+void convertMDDToPathList(int start, deque<MDD> & endPoints, vector<vector<int>> & pathList);

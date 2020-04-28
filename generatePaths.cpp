@@ -1,5 +1,25 @@
 #include "graph.h"
 
+bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[]) {
+    
+    if(stepsLeft < 0 || (stepsLeft == 0 && current != end))
+        return 0;
+    
+    visited[current] = true;
+
+    if(stepsLeft == 0 && current == end) {
+        g->nodes[current].useful = true;
+        return 1;
+    }
+
+    if(stepsLeft > 0) {
+        for(int i : g->nodes[current].edges) {
+            if(nodeIsUseful(i, end, stepsLeft - 1, g, visited)) {
+                g->nodes[current].useful = true;
+            }
+        }
+    }
+}
 
 // Driver program
 void generatePaths(string filename, int start, int end, int exactCost, vector<vector<int>> *paths)
@@ -29,6 +49,20 @@ void generatePaths(string filename, int start, int end, int exactCost, vector<ve
     }
 
     // find paths
+    bool visited[nrOfNodes];
+    for (int i = 0; i < nrOfNodes; i++)
+    {
+        visited[i] = false;
+    }
+    nodeIsUseful(start, end, exactCost, &g, visited);
+    
+    cout << "all useful nodes: ";
+    for (int i = 0; i < nrOfNodes; i++)
+    {
+        if(g.nodes[i].useful) {
+            cout << i << " ";
+        }
+    }
 }
 
 // generate paths for each agent, add paths to agent object
@@ -55,5 +89,6 @@ vector<int> calculateOptimalCost(vector<Agent> agentList) {
     }
 
 
-    return optimalCostList;
+    // return optimalCostList;
+    return 3;
 }

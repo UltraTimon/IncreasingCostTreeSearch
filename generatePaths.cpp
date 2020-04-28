@@ -111,16 +111,15 @@ vector<vector<int>> generatePaths(string filename, int start, int end, int exact
     }
 
 
-    Destination dest = Destination(end);
-    MDD mdd = g.generateAllPaths(start, end, exactCost, dest);
-    // cout << "-- #parents: " << dest.parents.size() << endl;
+    vector<MDD> endPoints;
+    MDD mdd = g.generateAllPaths(start, end, exactCost, endPoints);
+    cout << "-- #endPoints: " << endPoints.size() << endl;
 
-    // vector<vector<int>> paths;
-    // convertMDDToPathList(start, dest, paths);
-    // cout << "mdd generated, #paths: " << paths.size() << endl;
+    vector<vector<int>> paths;
+    convertMDDToPathList(start, endPoints, paths);
+    cout << "mdd generated, #paths: " << paths.size() << endl;
 
-    return g.pathsTaken;
-    // return paths;
+    return paths;
 }
 
 // generate paths for each agent, add paths to agent object

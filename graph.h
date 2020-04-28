@@ -18,6 +18,7 @@ class GraphNode
         bool useful;
         GraphNode(int i) {
             id = i;
+            useful = false;
         }
 };
 

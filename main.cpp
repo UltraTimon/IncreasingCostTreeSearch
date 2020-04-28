@@ -15,6 +15,9 @@ int main(int argc, char **argv)
 
     vector<int> optimalCostList = calculateOptimalCost(agentList);
 
+    vector<vector<int>> pathss;
+    generatePaths("resources/graph.txt", 0, 6, 4, &pathss);
+
     Node root = generateRoot(optimalCostList);
 
     list<Node> queue;

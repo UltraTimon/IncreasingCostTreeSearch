@@ -26,7 +26,6 @@ class Graph
     public:
         vector<GraphNode> nodes;
         Graph(int nrOfNodes) {
-            nodes = vector<GraphNode>(nrOfNodes);
             for (int i = 0; i < nrOfNodes; i++)
             {
                 GraphNode node = GraphNode(i);

@@ -71,24 +71,25 @@ void generatePaths(string filename, int start, int end, int exactCost, vector<ve
 vector<int> calculateOptimalCost(vector<Agent> agentList) {
     vector<int> optimalCostList;
 
-    for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
-    {
-        int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
-        while(true) {
-            vector<vector<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
-            if (generatedPaths.size() == 0)
-            {
-                optimalCost++;
-            }
-            else
-            {
-                optimalCostList.push_back(optimalCost);
-                break;
-            }
-        }
-    }
+    // for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
+    // {
+    //     int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
+    //     while(true) {
+    //         vector<vector<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
+    //         if (generatedPaths.size() == 0)
+    //         {
+    //             optimalCost++;
+    //         }
+    //         else
+    //         {
+    //             optimalCostList.push_back(optimalCost);
+    //             break;
+    //         }
+    //     }
+    // }
 
+    // for testing
+    optimalCostList.push_back(3);
 
-    // return optimalCostList;
-    return 3;
+    return optimalCostList;
 }

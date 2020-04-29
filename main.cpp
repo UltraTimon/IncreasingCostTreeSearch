@@ -1,4 +1,5 @@
-#include "mdd.h"
+#include "icts.h"
+#include "generateTree.h"
 
 using namespace std;
 
@@ -12,11 +13,13 @@ int main(int argc, char **argv)
     */
 
     vector<Agent> agentList = importAgents("resources/agents.txt");
+    Graph g = importGraph("resources/graph.txt");
 
-    vector<int> optimalCostList = calculateOptimalCost(agentList);
+    vector<int> optimalCostList = calculateOptimalCost(agentList, &g);
 
+    // TESTING generatePaths() -------------
     vector<vector<int>> pathss;
-    generatePaths("resources/graph.txt", 0, 6, 4, &pathss);
+    generatePaths(&g, 0, 6, 4, &pathss);
     
     // print paths
     cout << "paths: " << endl;
@@ -26,10 +29,7 @@ int main(int argc, char **argv)
         }
         cout << endl;
     }
-
-
-
-
+    // end of TESTING generatePaths() -------------
 
     Node root = generateRoot(optimalCostList);
 

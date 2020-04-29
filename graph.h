@@ -1,14 +1,7 @@
-// C++ program to print all paths from a source to destination.
-#include <iostream>
-#include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <deque>
-using namespace std;
+#ifndef GRAPH_Header
+#define GRAPH_Header
 
-// #include "generatePaths.h"
-#include "mdd.h"
+#include "basics.h"
 
 class GraphNode 
 {
@@ -34,3 +27,7 @@ class Graph
             }
         }
 };
+
+Graph importGraph(string filename);
+
+#endif

@@ -1,12 +1,8 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
+#ifndef GENTREE_H
+#define GENTREE_H
 
 #include "tree.h"
-
-using namespace std;
+#include "basics.h"
 
 Node generateRoot(vector<int> rootCostList);
 
@@ -17,3 +13,5 @@ void generateNextLevel(Node *tree);
 void printTree(Node *tree);
 
 void printTree(Node *tree, int depth);
+
+#endif

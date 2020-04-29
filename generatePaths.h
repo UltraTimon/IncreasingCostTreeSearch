@@ -1,14 +1,13 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
+#ifndef GENPATHS_H
+#define GENPATHS_H
 
-using namespace std;
-
+#include "basics.h"
 #include "agent.h"
+#include "graph.h"
 
 // generatePaths.cpp
-bool generatePaths(string filename, int start, int end, int exactCost, vector<vector<int>> *paths);
+bool generatePaths(Graph *g, int start, int end, int exactCost, vector<vector<int>> *paths);
 
-vector<int> calculateOptimalCost(vector<Agent> agentList);
+vector<int> calculateOptimalCost(vector<Agent> agentList, Graph *g);
+
+#endif

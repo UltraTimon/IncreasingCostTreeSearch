@@ -1,13 +1,8 @@
-#include <iostream>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <list>
+#ifndef AGENT_H
+#define AGENT_H
 
-using namespace std;
+#include "basics.h"
 
-// Agent.cpp
 class Agent {
     public:
         int start;
@@ -18,3 +13,5 @@ class Agent {
 };
 
 vector<Agent> importAgents(string filename);
+
+#endif

@@ -9,21 +9,52 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
 
     if(stepsLeft == 0 && current == end) {
         g->nodes[current].useful = true;
-        cout << current << "is useful and final" << endl;
+        cout << current << " is useful and final." << endl;
         return true;
     }
 
     if(stepsLeft > 0) {
         for(int i : g->nodes[current].edges) {
-            if(nodeIsUseful(i, end, stepsLeft - 1, g, visited)) {
-                g->nodes[current].useful = true;
-                cout << current << "is useful" << endl;
+            if(!visited[i]) {
+                if(nodeIsUseful(i, end, stepsLeft - 1, g, visited)) {
+                    g->nodes[current].useful = true;
+                    cout << current << " is useful" << endl;
+                }
             }
         }
     }
 
     if (g->nodes[current].useful) {
         return true;
+    }
+}
+
+
+
+void getPathsFromGraph(int current, int end, int stepsLeft, Graph *g, bool visited[], deque<int> pathUpToNow, vector<vector<int>> *paths) {
+    if(stepsLeft < 0 || (stepsLeft == 0 && current != end)) {
+        // pathUpToNow.pop_back();
+        return;
+    }
+        
+    visited[current] = true;
+    pathUpToNow.push_back(current);
+
+    if(stepsLeft == 0 && current == end) {
+        vector<int> temp;
+        for(int i : pathUpToNow) 
+            temp.push_back(i);
+        
+        paths->push_back(temp);
+        return;
+    }
+
+    if(stepsLeft > 0) {
+        for(int i : g->nodes[current].edges) {
+            if(g->nodes[i].useful && !visited[i]) {
+                getPathsFromGraph(i, end, stepsLeft - 1, g, visited, pathUpToNow, paths);
+            }
+        }
     }
 }
 
@@ -68,6 +99,17 @@ bool generatePaths(string filename, int start, int end, int exactCost, vector<ve
         if(g.nodes[i].useful) {
             cout << i << " ";
         }
+    }
+    cout << endl;
+
+    if(paths != 0) {
+        bool visited[nrOfNodes];
+        for (int i = 0; i < nrOfNodes; i++)
+        {
+            visited[i] = false;
+        }
+        deque<int> pathUpToNow;
+        getPathsFromGraph(start, end, exactCost, &g, visited, pathUpToNow, paths);
     }
 
     // return result

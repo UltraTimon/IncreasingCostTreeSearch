@@ -3,6 +3,8 @@
 
 #include "basics.h"
 
+
+
 class GraphNode 
 {
     public:
@@ -26,8 +28,22 @@ class Graph
                 nodes.push_back(node);
             }
         }
+        // for Agent initialization
+        Graph() {}
+};
+
+
+class Agent {
+    public:
+        int start;
+        int end;
+        vector<vector<int>> paths;
+        Graph graph;
+        Agent(int start, int end);
+        void setPaths(vector<vector<int>> paths);
 };
 
 Graph importGraph(string filename);
+vector<Agent> importAgents(string filename);
 
 #endif

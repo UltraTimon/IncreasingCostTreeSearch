@@ -13,8 +13,9 @@ int main(int argc, char **argv)
     */
 
     vector<Agent> agentList = importAgents("resources/agents.txt");
-    for(auto agent : agentList) {
-        agent.graph = importGraph("resources/graph.txt");
+
+    for(int i = 0; i < agentList.size(); i++) {
+        agentList[i].graph = importGraph("resources/graph.txt");
     }
 
     vector<int> optimalCostList = calculateOptimalCost(agentList);

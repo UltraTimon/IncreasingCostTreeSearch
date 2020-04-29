@@ -11,7 +11,8 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
     // BELOW WILL BE ADJUSTED LATER ON, AFTER REWRITING getAtLeastOnePathPerAgentWithoutConflict()
     // ---------------------------------------------------------------------------------------------
 
-    // vector<vector<vector<int>>> atLeastOnePathPerAgentWithoutConflict = getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
+    getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
+    
     // if (atLeastOnePathPerAgentWithoutConflict.size() > 0)
     // {
     //     // announce the happy news

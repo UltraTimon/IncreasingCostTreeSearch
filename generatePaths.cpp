@@ -21,6 +21,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
         return true;
     }
 
+
     if (stepsLeft > 0)
     {
         for (int i : g->nodes[current].edges)
@@ -48,6 +49,8 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
     if (g->nodes[current].useful)
     {
         return true;
+    } else {
+        return false;
     }
 }
 
@@ -91,22 +94,19 @@ void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *
 }
 
 void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths) {
-    if (paths != 0)
+    bool visited[g->nodes.size()];
+    for (int i = 0; i < g->nodes.size(); i++)
     {
-        bool visited[g->nodes.size()];
-        for (int i = 0; i < g->nodes.size(); i++)
-        {
-            visited[i] = false;
-        }
-        deque<int> pathUpToNow;
-        getPathsFromGraph(start, end, exactCost, g, visited, pathUpToNow, paths);
+        visited[i] = false;
     }
+    deque<int> pathUpToNow;
+    getPathsFromGraphRecursivePart(start, end, exactCost, g, visited, pathUpToNow, paths);
 }
 
 
 // Generates paths from a given start to end node
 // Returns true if at least one path is found, false otherwise
-bool generatePaths(Graph *g, int start, int end, int exactCost, vector<vector<int>> *paths)
+bool generateUsefulGraph(Graph *g, int start, int end, int exactCost)
 {
     // find paths
     bool visited[g->nodes.size()];
@@ -116,6 +116,7 @@ bool generatePaths(Graph *g, int start, int end, int exactCost, vector<vector<in
     }
     nodeIsUseful(start, end, exactCost, g, visited);
 
+    // printing
     cout << "all useful nodes: ";
     for (int i = 0; i < g->nodes.size(); i++)
     {
@@ -139,10 +140,11 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
         while (true)
         {
-            bool atLeastOnePath = generatePaths(&agent->graph, agent->start, agent->end, optimalCost, nullptr);
+            bool atLeastOnePath = generateUsefulGraph(&agent->graph, agent->start, agent->end, optimalCost);
             if (atLeastOnePath)
             {
                 optimalCostList.push_back(optimalCost);
+                cout << "optimal cost: " << optimalCost << endl;
                 break;
             }
             else

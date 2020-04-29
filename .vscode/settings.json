@@ -71,6 +71,7 @@
         "typeinfo": "cpp",
         "forward_list": "cpp",
         "list": "cpp",
-        "graph.h": "c"
+        "graph.h": "c",
+        "initializer_list": "cpp"
     }
 }

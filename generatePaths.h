@@ -2,11 +2,10 @@
 #define GENPATHS_H
 
 #include "basics.h"
-#include "agent.h"
 #include "graph.h"
 
 // generatePaths.cpp
-bool generatePaths(Graph *g, int start, int end, int exactCost, vector<vector<int>> *paths);
+bool generateUsefulGraph(Graph *g, int start, int end, int exactCost);
 
 void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths);
 

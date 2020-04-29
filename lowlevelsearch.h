@@ -10,4 +10,4 @@ using namespace std;
 
 bool pathsHaveConflict(vector<int> pathA, vector<int> pathB);
 
-vector<vector<vector<int>>> getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList);
+void getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList);

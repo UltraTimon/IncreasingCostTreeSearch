@@ -15,8 +15,21 @@ int main(int argc, char **argv)
 
     vector<int> optimalCostList = calculateOptimalCost(agentList);
 
-    // vector<vector<int>> pathss;
-    // generatePaths("resources/graph.txt", 0, 6, 4, &pathss);
+    vector<vector<int>> pathss;
+    generatePaths("resources/graph.txt", 0, 6, 4, &pathss);
+    
+    // print paths
+    cout << "paths: " << endl;
+    for(auto list : pathss) {
+        for(int i : list) {
+            cout << i << " ";
+        }
+        cout << endl;
+    }
+
+
+
+
 
     Node root = generateRoot(optimalCostList);
 

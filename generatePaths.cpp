@@ -27,10 +27,10 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
     }
 }
 
-// Driver program
-void generatePaths(string filename, int start, int end, int exactCost, vector<vector<int>> *paths)
+// Generates paths from a given start to end node
+// Returns true if at least one path is found, false otherwise
+bool generatePaths(string filename, int start, int end, int exactCost, vector<vector<int>> *paths)
 {
-
     // Reading in the edges from a file
     ifstream myfile(filename);
     int nodeA, nodeB; 
@@ -69,6 +69,9 @@ void generatePaths(string filename, int start, int end, int exactCost, vector<ve
             cout << i << " ";
         }
     }
+
+    // return result
+    return g.nodes[start].useful;
 }
 
 // generate paths for each agent, add paths to agent object
@@ -77,25 +80,22 @@ void generatePaths(string filename, int start, int end, int exactCost, vector<ve
 vector<int> calculateOptimalCost(vector<Agent> agentList) {
     vector<int> optimalCostList;
 
-    // for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
-    // {
-    //     int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
-    //     while(true) {
-    //         vector<vector<int>> generatedPaths = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost);
-    //         if (generatedPaths.size() == 0)
-    //         {
-    //             optimalCost++;
-    //         }
-    //         else
-    //         {
-    //             optimalCostList.push_back(optimalCost);
-    //             break;
-    //         }
-    //     }
-    // }
-
-    // for testing
-    optimalCostList.push_back(3);
+    for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
+    {
+        int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
+        while(true) {
+            bool atLeastOnePath = generatePaths("resources/graph.txt", agentIterator->start, agentIterator->end, optimalCost, nullptr);
+            if (atLeastOnePath)
+            {
+                optimalCostList.push_back(optimalCost);
+                break;
+            }
+            else
+            {
+                optimalCost++;
+            }
+        }
+    }
 
     return optimalCostList;
 }

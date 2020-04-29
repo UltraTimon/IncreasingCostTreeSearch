@@ -34,6 +34,12 @@ bool pathsHaveConflict(vector<int> pathA, vector<int> pathB) {
 
 void getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList) {
     // generate a useful graph for each agent
+    for (int i = 0; i < agentList.size(); i++)
+    {
+        
+        generatePaths(g, agentList[i].start, agentList[i].end, optimalCostList[i], paths);
+        agentList[i].paths = paths;
+    }
     
 
     // conmbine those using the MDD magic from the paper

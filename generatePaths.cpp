@@ -51,7 +51,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
     }
 }
 
-void getPathsFromGraph(int current, int end, int stepsLeft, Graph *g, bool visited[], deque<int> pathUpToNow, vector<vector<int>> *paths)
+void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *g, bool visited[], deque<int> pathUpToNow, vector<vector<int>> *paths)
 {
     if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
     {
@@ -84,12 +84,24 @@ void getPathsFromGraph(int current, int end, int stepsLeft, Graph *g, bool visit
                 {
                     newVisited[j] = visited[j];
                 }
-                getPathsFromGraph(i, end, stepsLeft - 1, g, newVisited, pathUpToNow, paths);
+                getPathsFromGraphRecursivePart(i, end, stepsLeft - 1, g, newVisited, pathUpToNow, paths);
             }
         }
     }
 }
 
+void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths) {
+    if (paths != 0)
+    {
+        bool visited[g->nodes.size()];
+        for (int i = 0; i < g->nodes.size(); i++)
+        {
+            visited[i] = false;
+        }
+        deque<int> pathUpToNow;
+        getPathsFromGraph(start, end, exactCost, g, visited, pathUpToNow, paths);
+    }
+}
 
 
 // Generates paths from a given start to end node
@@ -113,35 +125,21 @@ bool generatePaths(Graph *g, int start, int end, int exactCost, vector<vector<in
         }
     }
     cout << endl;
-
-    if (paths != 0)
-    {
-        bool visited[g->nodes.size()];
-        for (int i = 0; i < g->nodes.size(); i++)
-        {
-            visited[i] = false;
-        }
-        deque<int> pathUpToNow;
-        getPathsFromGraph(start, end, exactCost, g, visited, pathUpToNow, paths);
-    }
-
-    // return result
-    return g->nodes[start].useful;
 }
 
 // generate paths for each agent, add paths to agent object
 // This will first only determine what the optimal cost is for every agent by calculating paths with an iteratively increasing cost until
 //      each agent has at least one path with that cost
-vector<int> calculateOptimalCost(vector<Agent> agentList, Graph *g)
+vector<int> calculateOptimalCost(vector<Agent> agentList)
 {
     vector<int> optimalCostList;
 
-    for (auto agentIterator = agentList.begin(); agentIterator != agentList.end(); ++agentIterator)
+    for (auto agent = agentList.begin(); agent != agentList.end(); ++agent)
     {
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
         while (true)
         {
-            bool atLeastOnePath = generatePaths(g, agentIterator->start, agentIterator->end, optimalCost, nullptr);
+            bool atLeastOnePath = generatePaths(&agent->graph, agent->start, agent->end, optimalCost, nullptr);
             if (atLeastOnePath)
             {
                 optimalCostList.push_back(optimalCost);

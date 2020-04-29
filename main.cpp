@@ -13,23 +13,11 @@ int main(int argc, char **argv)
     */
 
     vector<Agent> agentList = importAgents("resources/agents.txt");
-    Graph g = importGraph("resources/graph.txt");
-
-    vector<int> optimalCostList = calculateOptimalCost(agentList, &g);
-
-    // TESTING generatePaths() -------------
-    vector<vector<int>> pathss;
-    generatePaths(&g, 0, 6, 4, &pathss);
-    
-    // print paths
-    cout << "paths: " << endl;
-    for(auto list : pathss) {
-        for(int i : list) {
-            cout << i << " ";
-        }
-        cout << endl;
+    for(auto agent : agentList) {
+        agent.graph = importGraph("resources/graph.txt");
     }
-    // end of TESTING generatePaths() -------------
+
+    vector<int> optimalCostList = calculateOptimalCost(agentList);
 
     Node root = generateRoot(optimalCostList);
 

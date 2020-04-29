@@ -8,6 +8,8 @@
 // generatePaths.cpp
 bool generatePaths(Graph *g, int start, int end, int exactCost, vector<vector<int>> *paths);
 
-vector<int> calculateOptimalCost(vector<Agent> agentList, Graph *g);
+void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths);
+
+vector<int> calculateOptimalCost(vector<Agent> agentList);
 
 #endif

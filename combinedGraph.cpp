@@ -15,7 +15,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     visitedB[currentB] = true;
 
     CombinedGraphNode cgn = CombinedGraphNode();
-    int indexInMatrix = cg->nodes[stepsTaken].size();
     cgn.idList.push_back(currentA);
     cgn.idList.push_back(currentB);
 
@@ -54,9 +53,12 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 
     if(!thisIsTheFinalStep || (thisIsTheFinalStep && aIsDone && bIsDone)) {
         cout << "adding cgn with: " << currentA << " and " << currentB << ", #steps: " << stepsTaken << endl;
+        int indexInMatrix = cg->nodes[stepsTaken].size();
         cg->nodes[stepsTaken].push_back(cgn);
+        return indexInMatrix;
+    } else {
+        return -1;
     }
-    return indexInMatrix;
 }
 
 // assuming there's 2 agents
@@ -91,6 +93,18 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
         for(auto cgn : cg->nodes[i]) {
             for(auto id : cgn.idList) {
                 cout << id << " ";
+            }
+            cout << " - ";
+        }
+        cout << endl;
+    }
+
+    cout << "egde lists: " << endl;
+    for (int i = 0; i <= cost; i++)
+    {
+        for(auto cgn : cg->nodes[i]) {
+            for(auto edge : cgn.edges) {
+                cout << edge << " ";
             }
             cout << endl;
         }

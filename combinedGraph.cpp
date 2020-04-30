@@ -13,6 +13,8 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB) {
 // for general CombinedGraph, no restrictions on number of nodes
 bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g, vector<vector<bool>> visited, int cost, int maxNodes)
 {
+    cout << "Haaai" << endl;
+
     if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))) {
         cout << "I stopped early" << endl;
         return false;
@@ -37,22 +39,28 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
 
     if (stepsLeft > 0)
     {
+        cout << "#edges: " << g->nodes[graphListIndex][current].edges.size()  << endl;
         for (int edge : g->nodes[graphListIndex][current].edges)
         {
-            if (!visited.at(graphListIndex).at(current))
+            cout << "visited? -> " << visited.at(graphListIndex + 1).at(edge) << endl;
+            if (!visited.at(graphListIndex + 1).at(edge))
             {
                 // make deepcopy of visited array s.t. other paths can still be discovered
                 vector<vector<bool>> newVisited;
                 for (int k = 0; k < cost + 1; k++)
                 {
+                    vector<bool> temp;
                     for (int j = 0; j < maxNodes; j++)
                     {
-                        newVisited.at(k).at(j) = visited.at(k).at(j);
+                        temp.push_back(visited.at(k).at(j));
                     }
+                    newVisited.push_back(temp);
                 }
 
+                cout << "recursive call to edge" << edge << endl;
                 if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g, newVisited, cost, maxNodes))
                 {
+                    cout << "recursive call was useful!" << endl;
                     g->nodes[graphListIndex][current].useful = true;
                 }
             }
@@ -61,8 +69,10 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
 
     if (g->nodes[graphListIndex][current].useful)
     {
+        cout << "I am useful at the end!" << endl;
         return true;
     } else {
+        cout << "I am not useful at the end!" << endl;
         return false;
     }
 }
@@ -86,9 +96,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     cgn.idList.push_back(currentA);
     cgn.idList.push_back(currentB);
 
-    cout << "current: " << currentA << " and " << currentB << endl;
-
-
     for (int edgeA : g1->nodes[currentA].edges)
     {
         for (int edgeB : g2->nodes[currentB].edges)
@@ -106,7 +113,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
                 {
                     newVisitedB[j] = visitedB[j];
                 }
-                cout << "recursive call to " << edgeA << " and " << edgeB << endl; 
                 int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
                 
                 if(indexOfChild >= 0)
@@ -120,7 +126,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     bool bIsDone = currentB == finishB;
 
     if(!thisIsTheFinalStep || (thisIsTheFinalStep && aIsDone && bIsDone)) {
-        cout << "adding cgn with: " << currentA << " and " << currentB << ", #steps: " << stepsTaken << endl;
         int indexInMatrix = cg->nodes[stepsTaken].size();
         cg->nodes[stepsTaken].push_back(cgn);
         return indexInMatrix;

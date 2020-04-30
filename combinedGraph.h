@@ -17,13 +17,10 @@ class CombinedGraphNode
 
 class CombinedGraph
 {
-    private:
-        void combineGraph(int *current, int stepsLeft, vector<bool> *visited, deque<int> *pathUpToNow, vector<Graph*> graphList, 
-            vector<CombinedGraphNode> *combinedGraphNodes, int previousCombinedGraphNode);
-
     public:
+        int combine2Graphs(int stepsTaken, int currentA, int currentB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2, vector<CombinedGraphNode> *combinedGraphNodes);
         vector<CombinedGraphNode> nodes;
-        CombinedGraph(vector<Graph*> graphList, vector<Agent> agentList);
+        CombinedGraph(vector<Agent> agentList);
 };
 
 #endif

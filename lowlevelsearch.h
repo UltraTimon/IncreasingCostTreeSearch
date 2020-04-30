@@ -3,6 +3,7 @@
 
 #include "basics.h"
 #include "generatePaths.h"
+#include "combinedGraph.h"
 
 bool pathsHaveConflict(vector<int> pathA, vector<int> pathB);
 

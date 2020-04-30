@@ -2,13 +2,6 @@
 
 bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
 {
-    cout << "current: " << current << ", #stepsLeft: " << stepsLeft << endl;
-    cout << "visited: " << endl;
-    for (int i = 0; i < g->nodes.size(); i++)
-    {
-        cout << i << ": " << visited[i] << endl;
-    }
-
     if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
         return 0;
 
@@ -17,7 +10,6 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
     if (stepsLeft == 0 && current == end)
     {
         g->nodes[current].useful = true;
-        cout << current << " is useful and final." << endl;
         return true;
     }
 
@@ -28,7 +20,6 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
         {
             if (!visited[i])
             {
-                cout << "call to " << i << endl;
 
                 // make deepcopy of visited array s.t. other paths can still be discovered
                 bool *newVisited = new bool[g->nodes.size()];
@@ -40,7 +31,6 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
                 if (nodeIsUseful(i, end, stepsLeft - 1, g, newVisited))
                 {
                     g->nodes[current].useful = true;
-                    cout << current << " is useful" << endl;
                 }
             }
         }
@@ -108,24 +98,14 @@ void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vecto
 // Returns true if at least one path is found, false otherwise
 bool generateUsefulGraph(Graph *g, int start, int end, int exactCost)
 {
+
     // find paths
     bool visited[g->nodes.size()];
     for (int i = 0; i < g->nodes.size(); i++)
     {
         visited[i] = false;
     }
-    nodeIsUseful(start, end, exactCost, g, visited);
-
-    // printing
-    cout << "all useful nodes: ";
-    for (int i = 0; i < g->nodes.size(); i++)
-    {
-        if (g->nodes[i].useful)
-        {
-            cout << i << " ";
-        }
-    }
-    cout << endl;
+    return nodeIsUseful(start, end, exactCost, g, visited);
 }
 
 // generate paths for each agent, add paths to agent object
@@ -144,7 +124,6 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
             if (atLeastOnePath)
             {
                 optimalCostList.push_back(optimalCost);
-                cout << "optimal cost: " << optimalCost << endl;
                 break;
             }
             else

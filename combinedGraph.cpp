@@ -3,24 +3,17 @@
 int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,
                                   CombinedGraph *cg)
 {
-
-    // if (!g1->nodes[currentA].useful || !g2->nodes[currentB].useful)
-    //     return -1;
-
     if(stepsTaken >= cost)
         return -1;
-
-    cout << "hi" << endl;
 
     visitedA[currentA] = true;
     visitedB[currentB] = true;
 
     CombinedGraphNode cgn = CombinedGraphNode();
     int indexInMatrix = cg->nodes[stepsTaken].size();
-    cg->nodes[stepsTaken].push_back(cgn);
-
     cgn.idList.push_back(currentA);
     cgn.idList.push_back(currentB);
+
 
     for (int edgeA : g1->nodes[currentA].edges)
     {
@@ -47,6 +40,8 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
         }
     }
 
+    cout << "idlist; " << cgn.idList.front() << " " << cgn.idList.back() << endl;
+    cg->nodes[stepsTaken].push_back(cgn);
     return indexInMatrix;
 }
 

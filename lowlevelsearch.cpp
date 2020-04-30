@@ -45,8 +45,9 @@ void getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     
     // combine those using the MDD magic from the paper
 
+    
+    CombinedGraph cg = CombinedGraph(optimalCostList.front()); 
 
-    CombinedGraph cg = CombinedGraph(optimalCostList.front());
     cout << "hi from long func, cg list size: " << cg.nodes[0].size() << endl;
     cg.createCombinedgraph(&cg, agentList, optimalCostList.front());
 

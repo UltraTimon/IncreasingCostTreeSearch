@@ -1,9 +1,14 @@
 #include "combinedGraph.h"
 
-int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,
+int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,
                                   CombinedGraph *cg)
 {
-    if(stepsTaken >= cost)
+    // if we are out of steps, stop building the graph
+    if(stepsTaken > cost)
+        return -1;
+
+    // if the nodes are not useful, stop building the graph
+    if(!g1->nodes[currentA].useful || !g2->nodes[currentB].useful)
         return -1;
 
     visitedA[currentA] = true;
@@ -13,6 +18,8 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     int indexInMatrix = cg->nodes[stepsTaken].size();
     cgn.idList.push_back(currentA);
     cgn.idList.push_back(currentB);
+
+    cout << "current: " << currentA << " and " << currentB << endl;
 
 
     for (int edgeA : g1->nodes[currentA].edges)
@@ -32,7 +39,8 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
                 {
                     newVisitedB[j] = visitedB[j];
                 }
-                int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, newVisitedA, newVisitedB, g1, g2, cg);
+                cout << "recursive call to " << edgeA << " and " << edgeB << endl; 
+                int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
                 
                 if(indexOfChild >= 0)
                     cgn.edges.push_back(indexOfChild);
@@ -40,8 +48,14 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
         }
     }
 
-    cout << "idlist; " << cgn.idList.front() << " " << cgn.idList.back() << endl;
-    cg->nodes[stepsTaken].push_back(cgn);
+    bool thisIsTheFinalStep = stepsTaken == cost;
+    bool aIsDone = currentA == finishA;
+    bool bIsDone = currentB == finishB;
+
+    if(!thisIsTheFinalStep || (thisIsTheFinalStep && aIsDone && bIsDone)) {
+        cout << "adding cgn with: " << currentA << " and " << currentB << ", #steps: " << stepsTaken << endl;
+        cg->nodes[stepsTaken].push_back(cgn);
+    }
     return indexInMatrix;
 }
 
@@ -63,13 +77,16 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
         visitedB[i] = false;
     }
 
-    int currentA = agentList[0].start;
-    int currentB = agentList[1].start;
+    int startA = agentList[0].start;
+    int startB = agentList[1].start;
 
-    cg->combine2Graphs(0, cost, currentA, currentB, visitedA, visitedB, g1, g2, cg);
+    int finishA = agentList[0].end;
+    int finishB = agentList[1].end;
+
+    cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, visitedA, visitedB, g1, g2, cg);
 
     cout << "id lists: " << endl;
-    for (int i = 0; i < cost; i++)
+    for (int i = 0; i <= cost; i++)
     {
         for(auto cgn : cg->nodes[i]) {
             for(auto id : cgn.idList) {

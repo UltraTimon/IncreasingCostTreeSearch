@@ -13,8 +13,10 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB) {
 // for general CombinedGraph, no restrictions on number of nodes
 bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g, vector<vector<bool>> visited, int cost, int maxNodes)
 {
-    if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList)))
-        return 0;
+    if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))) {
+        cout << "I stopped early" << endl;
+        return false;
+    }
 
     // \/\/ calculations for a 1D array if I need to use that
 
@@ -28,6 +30,7 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
     if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
     {
         g->nodes[graphListIndex][current].useful = true;
+        cout << "I am useful!" << endl;
         return true;
     }
 

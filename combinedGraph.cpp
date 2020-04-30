@@ -11,12 +11,10 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB) {
 }
 
 // for general CombinedGraph, no restrictions on number of nodes
+// remove illegal edges
 bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g, vector<vector<bool>> visited, int cost, int maxNodes)
 {
-    cout << "Haaai" << endl;
-
     if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))) {
-        cout << "I stopped early" << endl;
         return false;
     }
 
@@ -32,17 +30,15 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
     if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
     {
         g->nodes[graphListIndex][current].useful = true;
-        cout << "I am useful!" << endl;
         return true;
     }
 
 
     if (stepsLeft > 0)
     {
-        cout << "#edges: " << g->nodes[graphListIndex][current].edges.size()  << endl;
-        for (int edge : g->nodes[graphListIndex][current].edges)
+        for (int edgeCounter = 0; edgeCounter < g->nodes[graphListIndex][current].edges.size(); edgeCounter++)
         {
-            cout << "visited? -> " << visited.at(graphListIndex + 1).at(edge) << endl;
+            int edge = g->nodes[graphListIndex][current].edges[edgeCounter];
             if (!visited.at(graphListIndex + 1).at(edge))
             {
                 // make deepcopy of visited array s.t. other paths can still be discovered
@@ -57,27 +53,26 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
                     newVisited.push_back(temp);
                 }
 
-                cout << "recursive call to edge" << edge << endl;
                 if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g, newVisited, cost, maxNodes))
                 {
-                    cout << "recursive call was useful!" << endl;
                     g->nodes[graphListIndex][current].useful = true;
-                }
+                } 
+                // else {
+                //     g->nodes[graphListIndex][current].edges.erase(next(g->nodes[graphListIndex][current].edges.begin(), edgeCounter));
+                // }
             }
         }
     }
 
     if (g->nodes[graphListIndex][current].useful)
     {
-        cout << "I am useful at the end!" << endl;
         return true;
     } else {
-        cout << "I am not useful at the end!" << endl;
         return false;
     }
 }
 
-
+// combines graph, deflects conflicing node pairs
 int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,
                                   CombinedGraph *cg)
 {
@@ -87,6 +82,10 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 
     // if the nodes are not useful, stop building the graph
     if(!g1->nodes[currentA].useful || !g2->nodes[currentB].useful)
+        return -1;
+
+    // if the indices are the same, we have a conflict and we can't use this path
+    if(currentA == currentB)
         return -1;
 
     visitedA[currentA] = true;
@@ -102,21 +101,27 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
         {
             if (!visitedA[edgeA] && !visitedB[edgeB])
             {
-                // make deepcopy of visited arrays to allow for weird loopy paths
-                bool *newVisitedA = new bool[g1->nodes.size()];
-                for (int j = 0; j < g1->nodes.size(); j++)
-                {
-                    newVisitedA[j] = visitedA[j];
+                // 2 agents cannot use the same edge from opposite sides at the same time
+                if(!(edgeA == currentB || edgeB == currentA)) {
+
+                    // make deepcopy of visited arrays to allow for weird loopy paths
+                    bool *newVisitedA = new bool[g1->nodes.size()];
+                    for (int j = 0; j < g1->nodes.size(); j++)
+                    {
+                        newVisitedA[j] = visitedA[j];
+                    }
+                    bool *newVisitedB = new bool[g2->nodes.size()];
+                    for (int j = 0; j < g2->nodes.size(); j++)
+                    {
+                        newVisitedB[j] = visitedB[j];
+                    }
+                    int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
+                    
+                    if(indexOfChild >= 0) {
+                        cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChild].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChild].idList.back() << ")" << endl;
+                        cgn.edges.push_back(indexOfChild);
+                    }
                 }
-                bool *newVisitedB = new bool[g2->nodes.size()];
-                for (int j = 0; j < g2->nodes.size(); j++)
-                {
-                    newVisitedB[j] = visitedB[j];
-                }
-                int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
-                
-                if(indexOfChild >= 0)
-                    cgn.edges.push_back(indexOfChild);
             }
         }
     }
@@ -172,8 +177,6 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
     }
     int maxNodes = tempMax;
     
-
-
     vector<vector<bool>> newVisited;
     for (int k = 0; k < cost + 1; k++)
     {
@@ -206,6 +209,7 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
     {
         for(auto cgn : cg->nodes[i]) {
             if(cgn.useful) {
+                cout << "(" << cgn.idList.front() << " " << cgn.idList.back() << "): ";
                 for(auto edge : cgn.edges) {
                     cout << edge << " ";
                 }

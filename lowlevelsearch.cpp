@@ -32,6 +32,9 @@ bool pathsHaveConflict(vector<int> pathA, vector<int> pathB) {
     return false;
 }
 
+// ASSUMPTIONS:
+// - 2 agents
+// - equal cost per agent
 void getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList) {
     
     // generate a useful graph for each agent and add to graphList
@@ -41,9 +44,11 @@ void getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     }
     
     // combine those using the MDD magic from the paper
-    cout << "hi from long func" << endl;
 
-    CombinedGraph cg = CombinedGraph(agentList);
+
+    CombinedGraph cg = CombinedGraph(optimalCostList.front());
+    cout << "hi from long func, cg list size: " << cg.nodes[0].size() << endl;
+    cg.createCombinedgraph(&cg, agentList, optimalCostList.front());
 
     // check for conflicts by running modified nodeIsUseful method that marks nodes as useful based on whether or not they do or do not conflict
     // we need a special graph structure for this, CombinedGraph or something like that

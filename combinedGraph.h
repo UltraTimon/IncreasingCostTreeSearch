@@ -17,10 +17,19 @@ class CombinedGraphNode
 
 class CombinedGraph
 {
+    public: 
+        vector<CombinedGraphNode> *nodes;
+    
+    private:
+        int combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2, CombinedGraph *cg);
+    
     public:
-        int combine2Graphs(int stepsTaken, int currentA, int currentB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2, vector<CombinedGraphNode> *combinedGraphNodes);
-        vector<CombinedGraphNode> nodes;
-        CombinedGraph(vector<Agent> agentList);
+        CombinedGraph(int numberOfSteps) {
+            nodes = new vector<CombinedGraphNode>[numberOfSteps];
+        };
+        
+        void createCombinedgraph(CombinedGraph *cg, vector<Agent> agentList, int cost);
+
 };
 
 #endif

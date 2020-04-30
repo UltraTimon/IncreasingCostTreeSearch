@@ -1,5 +1,70 @@
 #include "combinedGraph.h"
 
+// assuming size of vectors is equal
+bool vectorEquals(vector<int> vecA, vector<int> vecB) {
+    for (int i = 0; i < vecA.size(); i++)
+    {
+        if(vecA[i] != vecB[i])
+            return false;
+    }
+    return true;
+}
+
+// for general CombinedGraph, no restrictions on number of nodes
+bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g, vector<vector<bool>> visited, int cost, int maxNodes)
+{
+    if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList)))
+        return 0;
+
+    // \/\/ calculations for a 1D array if I need to use that
+
+    // graphListIndex ranges from 0 to cost, since g->nodes is an aray of vectors, and the array is cost + 1 size
+    // current is current index on the vector of the floor we're at
+    // to get to the graphListIndex-th floor, we do graphListIndex * maxNodes, since the floors lie on the ground after eachother 
+    // int visitedIndex = graphListIndex * maxNodes + current;
+
+    visited.at(graphListIndex).at(current) = true;
+
+    if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
+    {
+        g->nodes[graphListIndex][current].useful = true;
+        return true;
+    }
+
+
+    if (stepsLeft > 0)
+    {
+        for (int edge : g->nodes[graphListIndex][current].edges)
+        {
+            if (!visited.at(graphListIndex).at(current))
+            {
+                // make deepcopy of visited array s.t. other paths can still be discovered
+                vector<vector<bool>> newVisited;
+                for (int k = 0; k < cost + 1; k++)
+                {
+                    for (int j = 0; j < maxNodes; j++)
+                    {
+                        newVisited.at(k).at(j) = visited.at(k).at(j);
+                    }
+                }
+
+                if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g, newVisited, cost, maxNodes))
+                {
+                    g->nodes[graphListIndex][current].useful = true;
+                }
+            }
+        }
+    }
+
+    if (g->nodes[graphListIndex][current].useful)
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,
                                   CombinedGraph *cg)
 {
@@ -61,7 +126,7 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     }
 }
 
-// assuming there's 2 agents
+// assuming there's 2 agents, so 2 graphs
 void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentList, int cost)
 {
     Graph *g1 = &agentList[0].graph;
@@ -86,15 +151,44 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
     int finishB = agentList[1].end;
 
     cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, visitedA, visitedB, g1, g2, cg);
+    vector<int> endList;
+    for(auto agent : agentList) {
+        endList.push_back(agent.end);
+    }
+    int tempMax = 0;
+    for (int i = 0; i < cost + 1; i++)
+    {
+        int size = cg->nodes[i].size();
+        if(size > tempMax)
+            tempMax = size;
+    }
+    int maxNodes = tempMax;
+    
+
+
+    vector<vector<bool>> newVisited;
+    for (int k = 0; k < cost + 1; k++)
+    {
+        vector<bool> temp;
+        for (int j = 0; j < maxNodes; j++)
+        {
+            temp.push_back(false);
+        }
+        newVisited.push_back(temp);
+    }
+
+    combinedNodeIsUseful(0, 0, endList, cost, cg, newVisited, cost, maxNodes);
 
     cout << "id lists: " << endl;
     for (int i = 0; i <= cost; i++)
     {
         for(auto cgn : cg->nodes[i]) {
-            for(auto id : cgn.idList) {
-                cout << id << " ";
+            if(cgn.useful) {
+                for(auto id : cgn.idList) {
+                    cout << id << " ";
+                }
+                cout << " - ";
             }
-            cout << " - ";
         }
         cout << endl;
     }
@@ -103,10 +197,12 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
     for (int i = 0; i <= cost; i++)
     {
         for(auto cgn : cg->nodes[i]) {
-            for(auto edge : cgn.edges) {
-                cout << edge << " ";
+            if(cgn.useful) {
+                for(auto edge : cgn.edges) {
+                    cout << edge << " ";
+                }
+                cout << endl;
             }
-            cout << endl;
         }
     }
     

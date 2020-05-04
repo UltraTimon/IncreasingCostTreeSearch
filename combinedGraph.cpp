@@ -165,6 +165,7 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
 
     cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, visitedA, visitedB, g1, g2, cg);
     vector<int> endList;
+    
     for(auto agent : agentList) {
         endList.push_back(agent.end);
     }

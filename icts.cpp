@@ -11,34 +11,27 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
     // BELOW WILL BE ADJUSTED LATER ON, AFTER REWRITING getAtLeastOnePathPerAgentWithoutConflict()
     // ---------------------------------------------------------------------------------------------
 
-    getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList);
-    
-    // if (atLeastOnePathPerAgentWithoutConflict.size() > 0)
-    // {
-    //     // announce the happy news
-    //     cout << "Ladies and Gentleman, we've got a solution!!" << endl;
-    //     for (auto pair : atLeastOnePathPerAgentWithoutConflict)
-    //     {
-    //         for (auto path : pair)
-    //         {
-    //             for (auto i : path)
-    //             {
-    //                 cout << i << " ";
-    //             }
-    //             cout << endl;
-    //         }
-    //         cout << endl;
-    //     }
-    // } else {
-    //     // give error message
-    //     cout << "No paths found" << endl;
+    int maxCost = 0;
+    for(int i : optimalCostList)
+        if(i > maxCost)
+            maxCost = i;
 
-    //     // generate the next level of the tree, add those nodes to the queue and go to the next node
-    //     generateNextLevel(&currentNode);
-    //     for(auto child : currentNode.children) {
-    //         queue.push_back(child);
-    //     }
+    CombinedGraph cg = CombinedGraph(maxCost); 
+    if(getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg)) 
+    {
+        // announce the happy news
+        cout << "Ladies and Gentleman, we've got a solution!!" << endl;
+    }
+    else {
+        // give error message
+        cout << "No paths found" << endl;
 
-    //     ICTS(agentList, queue);
-    // }
+        // generate the next level of the tree, add those nodes to the queue and go to the next node
+        generateNextLevel(&currentNode);
+        for(auto child : currentNode.children) {
+            queue.push_back(child);
+        }
+
+        ICTS(agentList, queue);
+    }
 }

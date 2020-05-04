@@ -7,6 +7,6 @@
 
 bool pathsHaveConflict(vector<int> pathA, vector<int> pathB);
 
-void getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList);
+bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg);
 
 #endif

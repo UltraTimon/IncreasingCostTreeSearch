@@ -33,6 +33,11 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
                 {
                     g->nodes[current].useful = true;
                 }
+                // also a recursive call to the current Node since not moving is also an option
+                if (nodeIsUseful(current, end, stepsLeft - 1, g, newVisited))
+                {
+                    g->nodes[current].useful = true;
+                }
             }
         }
     }
@@ -45,6 +50,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
     }
 }
 
+// Obsolete
 void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *g, bool visited[], deque<int> pathUpToNow, vector<vector<int>> *paths)
 {
     if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
@@ -84,6 +90,7 @@ void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *
     }
 }
 
+// Obsolete
 void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths) {
     if(verbose)
         cout << "Getting paths from graph -- start: " << start << ", end: " << end << ", exactCost: " << exactCost << endl;

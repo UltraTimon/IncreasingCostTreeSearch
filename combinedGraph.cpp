@@ -58,10 +58,6 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
                 {
                     g->nodes[graphListIndex][current].useful = true;
                 }
-                else
-                {
-                    // g->nodes[graphListIndex][current].edges.erase(next(g->nodes[graphListIndex][current].edges.begin(), edgeCounter));
-                }
             }
         }
     }
@@ -152,14 +148,33 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
                         newVisitedB[j] = visitedB[j];
                     }
                     
+                    int indexOfChildX = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
 
-                    int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
-
-                    if (indexOfChild >= 0)
+                    if (indexOfChildX >= 0)
                     {
                         if(verbose)
-                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChild].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChild].idList.back() << ")" << endl;
-                        cgn.edges.push_back(indexOfChild);
+                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChildX].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChildX].idList.back() << ")" << endl;
+                        cgn.edges.push_back(indexOfChildX);
+                    }
+
+                    // Also a node where each of the agents does not move but stays on it's place -- A does not move here
+                    int indexOfChildY = combine2Graphs(stepsTaken + 1, cost, currentA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
+
+                    if (indexOfChildY >= 0)
+                    {
+                        if(verbose)
+                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChildY].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChildY].idList.back() << ")" << endl;
+                        cgn.edges.push_back(indexOfChildY);
+                    } 
+
+                    // Also a node where each of the agents does not move but stays on it's place -- B does not move here
+                    int indexOfChildZ = combine2Graphs(stepsTaken + 1, cost, edgeA, currentB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
+
+                    if (indexOfChildZ >= 0)
+                    {
+                        if(verbose)
+                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChildZ].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChildZ].idList.back() << ")" << endl;
+                        cgn.edges.push_back(indexOfChildZ);
                     } 
                 }
             }

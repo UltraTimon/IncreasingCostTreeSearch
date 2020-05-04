@@ -27,7 +27,6 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
     // to get to the graphListIndex-th floor, we do graphListIndex * maxNodes, since the floors lie on the ground after eachother
     // int visitedIndex = graphListIndex * maxNodes + current;
 
-    cout << "visited size: " << visited.front().size() << endl;
     visited.at(graphListIndex).at(current) = true;
 
     if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
@@ -61,10 +60,6 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
                 }
                 else
                 {
-                    if (verbose)
-                    {
-                        cout << "error: Child is not useful -- now what?" << endl;
-                    }
                     // g->nodes[graphListIndex][current].edges.erase(next(g->nodes[graphListIndex][current].edges.begin(), edgeCounter));
                 }
             }
@@ -115,20 +110,14 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     bool bIsDone = currentB == finishB;
 
     vector<int> edgesA, edgesB;
-
-    if(aIsDone && bIsDone) {
-        cout << "DONE" << endl;
-    }
     if (aIsDone && !bIsDone)
     {
-        cout << "A chilling at endzone" << endl;
         edgesA.push_back(currentA);
         visitedA[currentA] = false;
         edgesB = g2->nodes[currentB].edges;
     }
     else if (!aIsDone && bIsDone)
     {
-        cout << "B chilling at endzone" << endl;
         edgesA = g1->nodes[currentA].edges;
         edgesB.push_back(currentB);
         visitedB[currentB] = false;
@@ -146,10 +135,8 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     {
         for (int edgeB : edgesB)
         {
-            cout << "A: " << edgeA << ", B: " << edgeB << endl;
             if (!visitedA[edgeA] && !visitedB[edgeB])
             {
-                cout << "after visited: A: " << edgeA << ", B: " << edgeB << endl;
                 // 2 agents cannot use the same edge from opposite sides at the same time
                 if (!(edgeA == currentB && edgeB == currentA))
                 {
@@ -170,7 +157,8 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 
                     if (indexOfChild >= 0)
                     {
-                        cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChild].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChild].idList.back() << ")" << endl;
+                        if(verbose)
+                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChild].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChild].idList.back() << ")" << endl;
                         cgn.edges.push_back(indexOfChild);
                     } 
                 }
@@ -196,8 +184,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 // TODO: use individual cost instead of global same cost
 void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
 {
-
-    cout << "--------------------------------------------------------" << endl;
     Graph *g1 = &agentList[0].graph;
     Graph *g2 = &agentList[1].graph;
 
@@ -251,36 +237,39 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
 
     combinedNodeIsUseful(0, 0, endList, cost, cg, newVisited, cost, maxNodes);
 
-    cout << "id lists: " << endl;
-    for (int i = 0; i <= cost; i++)
-    {
-        for (auto cgn : cg->nodes[i])
+    if(cg->nodes[0].front().useful && verbose) {
+        cout << "id lists: " << endl;
+        for (int i = 0; i <= cost; i++)
         {
-            if (cgn.useful)
+            for (auto cgn : cg->nodes[i])
             {
-                for (auto id : cgn.idList)
+                if (cgn.useful)
                 {
-                    cout << id << " ";
+                    for (auto id : cgn.idList)
+                    {
+                        cout << id << " ";
+                    }
+                    cout << " - ";
                 }
-                cout << " - ";
             }
-            cout << endl;
-        }
-    }
-
-    cout << "egde lists: " << endl;
-    for (int i = 0; i <= cost; i++)
-    {
-        for (auto cgn : cg->nodes[i])
-        {
-            if (cgn.useful)
-            {
-                cout << "(" << cgn.idList.front() << " " << cgn.idList.back() << "): ";
-                for (auto edge : cgn.edges)
-                {
-                    cout << edge << " ";
-                }
+            if(cg->nodes[i].size() > 0)
                 cout << endl;
+        }
+
+        cout << "egde lists: " << endl;
+        for (int i = 0; i <= cost; i++)
+        {
+            for (auto cgn : cg->nodes[i])
+            {
+                if (cgn.useful)
+                {
+                    cout << "(" << cgn.idList.front() << " " << cgn.idList.back() << "): ";
+                    for (auto edge : cgn.edges)
+                    {
+                        cout << edge << " ";
+                    }
+                    cout << endl;
+                }
             }
         }
     }

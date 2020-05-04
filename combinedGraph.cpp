@@ -35,6 +35,8 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
         return true;
     }
 
+    vector<int> edgesThatNeedToBeRemoved;
+
     if (stepsLeft > 0)
     {
         for (int edgeCounter = 0; edgeCounter < g->nodes[graphListIndex][current].edges.size(); edgeCounter++)
@@ -57,10 +59,43 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
                 if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g, newVisited, cost, maxNodes))
                 {
                     g->nodes[graphListIndex][current].useful = true;
+                } else {
+                    edgesThatNeedToBeRemoved.push_back(edgeCounter);
+                    // vector<int> currentIdList = g->nodes[graphListIndex][current].idList;
+                    // auto edgeIter = next(g->nodes[graphListIndex][current].edges.begin(), edgeCounter);
+                    // vector<int> badChildIdList = g->nodes[graphListIndex + 1][*edgeIter].idList;
+
+                    // if(verbose)
+                    //     cout << "Removing edge from (" << currentIdList.front() << ", " << currentIdList.back() << ") to (" << badChildIdList.front() << ", " << badChildIdList.back() << ")" << endl;
+                    // g->nodes[graphListIndex][current].edges.erase(next(g->nodes[graphListIndex][current].edges.begin(), edgeCounter));
                 }
             }
         }
     }
+
+    // remove bad edges
+    vector<int> edgesToCheck = g->nodes[graphListIndex][current].edges;
+    vector<int> checkedEdges;
+    int edgeIndex = 0;
+    for(int x : edgesToCheck) {
+        bool good = true;
+        for(int i : edgesThatNeedToBeRemoved) { 
+            if(i == edgeIndex)
+                good = false;
+        }
+        if(good) {
+            if(verbose) {
+                vector<int> currentIdList = g->nodes[graphListIndex][current].idList;
+                vector<int> goodChildIdList = g->nodes[graphListIndex + 1][edgeIndex].idList;
+                cout << "Adding useful edge from (" << currentIdList.front() << ", " << currentIdList.back() << ") to (" << goodChildIdList.front() << ", " << goodChildIdList.back() << ")" << endl;
+                
+            }
+            checkedEdges.push_back(x);
+        }
+        edgeIndex++;
+    }
+    g->nodes[graphListIndex][current].edges = checkedEdges;
+
 
     if (g->nodes[graphListIndex][current].useful)
     {

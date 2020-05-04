@@ -61,13 +61,6 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
                     g->nodes[graphListIndex][current].useful = true;
                 } else {
                     edgesThatNeedToBeRemoved.push_back(edgeCounter);
-                    // vector<int> currentIdList = g->nodes[graphListIndex][current].idList;
-                    // auto edgeIter = next(g->nodes[graphListIndex][current].edges.begin(), edgeCounter);
-                    // vector<int> badChildIdList = g->nodes[graphListIndex + 1][*edgeIter].idList;
-
-                    // if(verbose)
-                    //     cout << "Removing edge from (" << currentIdList.front() << ", " << currentIdList.back() << ") to (" << badChildIdList.front() << ", " << badChildIdList.back() << ")" << endl;
-                    // g->nodes[graphListIndex][current].edges.erase(next(g->nodes[graphListIndex][current].edges.begin(), edgeCounter));
                 }
             }
         }
@@ -76,23 +69,15 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
     // remove bad edges
     vector<int> edgesToCheck = g->nodes[graphListIndex][current].edges;
     vector<int> checkedEdges;
-    int edgeIndex = 0;
-    for(int x : edgesToCheck) {
+    for(int x = 0; x < edgesToCheck.size(); x++) {
         bool good = true;
         for(int i : edgesThatNeedToBeRemoved) { 
-            if(i == edgeIndex)
+            if(i == x)
                 good = false;
         }
         if(good) {
-            if(verbose) {
-                vector<int> currentIdList = g->nodes[graphListIndex][current].idList;
-                vector<int> goodChildIdList = g->nodes[graphListIndex + 1][edgeIndex].idList;
-                cout << "Adding useful edge from (" << currentIdList.front() << ", " << currentIdList.back() << ") to (" << goodChildIdList.front() << ", " << goodChildIdList.back() << ")" << endl;
-                
-            }
             checkedEdges.push_back(x);
         }
-        edgeIndex++;
     }
     g->nodes[graphListIndex][current].edges = checkedEdges;
 

@@ -34,7 +34,6 @@ bool pathsHaveConflict(vector<int> pathA, vector<int> pathB) {
 
 // ASSUMPTIONS:
 // - 2 agents
-// - equal cost per agent
 bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg) {
     
     // generate a useful graph for each agent and add to graphList
@@ -47,7 +46,7 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     // modified nodeIsUseful method that marks nodes as useful based on whether or not they do or do not conflict
     // -> we need a special graph structure for this, CombinedGraph or something like that
 
-    cg->createCombinedgraph(cg, agentList, optimalCostList.front());
+    cg->createCombinedgraph(agentList, optimalCostList, cg);
 
     cout << "hi from long func, cg list size: " << cg->nodes[0].size() << endl;
 

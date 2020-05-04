@@ -95,9 +95,27 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     cgn.idList.push_back(currentA);
     cgn.idList.push_back(currentB);
 
-    for (int edgeA : g1->nodes[currentA].edges)
+    // if one of them is already at the final node, allow it to stay there until the other one takes its last steps
+    bool aIsDone = currentA == finishA;
+    bool bIsDone = currentB == finishB;
+
+    vector<int> edgesA, edgesB;
+
+    if(aIsDone && !bIsDone) {
+        edgesA.push_back(currentA);
+        edgesB = g2->nodes[currentB].edges;
+    } else if(!aIsDone && bIsDone) {
+        edgesA = g1->nodes[currentA].edges;
+        edgesB.push_back(currentB);
+    } else {
+        edgesA = g1->nodes[currentA].edges;
+        edgesB = g2->nodes[currentB].edges;
+    }
+
+    // make recursive calls
+    for (int edgeA : edgesA)
     {
-        for (int edgeB : g2->nodes[currentB].edges)
+        for (int edgeB : edgesB)
         {
             if (!visitedA[edgeA] && !visitedB[edgeB])
             {
@@ -127,8 +145,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     }
 
     bool thisIsTheFinalStep = stepsTaken == cost;
-    bool aIsDone = currentA == finishA;
-    bool bIsDone = currentB == finishB;
 
     if(!thisIsTheFinalStep || (thisIsTheFinalStep && aIsDone && bIsDone)) {
         int indexInMatrix = cg->nodes[stepsTaken].size();
@@ -140,7 +156,8 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 }
 
 // assuming there's 2 agents, so 2 graphs
-void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentList, int cost)
+// TODO: use individual cost instead of global same cost
+void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
 {
     Graph *g1 = &agentList[0].graph;
     Graph *g2 = &agentList[1].graph;
@@ -162,6 +179,8 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
 
     int finishA = agentList[0].end;
     int finishB = agentList[1].end;
+
+    int cost = max(optimalCostList.front(), optimalCostList.back());
 
     cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, visitedA, visitedB, g1, g2, cg);
     vector<int> endList;
@@ -201,8 +220,8 @@ void CombinedGraph::createCombinedgraph(CombinedGraph *cg, vector<Agent> agentLi
                 }
                 cout << " - ";
             }
+            cout << endl;
         }
-        cout << endl;
     }
 
     cout << "egde lists: " << endl;

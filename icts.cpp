@@ -8,16 +8,15 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
     cout << "Costs: ";
     printTree(&currentNode, 1);
 
-    // BELOW WILL BE ADJUSTED LATER ON, AFTER REWRITING getAtLeastOnePathPerAgentWithoutConflict()
-    // ---------------------------------------------------------------------------------------------
-
     int maxCost = 0;
     for(int i : optimalCostList)
         if(i > maxCost)
             maxCost = i;
 
+    cout << "ICTS maxCost: " << maxCost << endl;
+
     CombinedGraph cg = CombinedGraph(maxCost); 
-    if(getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg)) 
+    if(getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg, maxCost)) 
     {
         // announce the happy news
         cout << "Ladies and Gentleman, we've got a solution!!" << endl;

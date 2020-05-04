@@ -1,4 +1,5 @@
 #include "generatePaths.h"
+#include "basics.h"
 
 bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
 {
@@ -84,6 +85,9 @@ void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *
 }
 
 void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths) {
+    if(verbose)
+        cout << "Getting paths from graph -- start: " << start << ", end: " << end << ", exactCost: " << exactCost << endl;
+
     bool visited[g->nodes.size()];
     for (int i = 0; i < g->nodes.size(); i++)
     {

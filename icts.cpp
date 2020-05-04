@@ -13,10 +13,8 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
         if(i > maxCost)
             maxCost = i;
 
-    cout << "ICTS maxCost: " << maxCost << endl;
-
     CombinedGraph cg = CombinedGraph(maxCost); 
-    if(getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg, maxCost)) 
+    if(getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg)) 
     {
         // announce the happy news
         cout << "Ladies and Gentleman, we've got a solution!!" << endl;

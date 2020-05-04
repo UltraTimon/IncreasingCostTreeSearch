@@ -10,5 +10,6 @@ using namespace std;
 #include <vector>
 #include <iostream>
 
+extern bool verbose;
 
 #endif

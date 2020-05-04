@@ -1,10 +1,15 @@
+#include "basics.h"
 #include "icts.h"
 #include "generateTree.h"
 
 using namespace std;
 
+bool verbose;
+
 int main(int argc, char **argv)
 {
+    verbose = true;
+
     /*
         Main questions for this algorithm:
 

@@ -40,6 +40,15 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     for (int i = 0; i < agentList.size(); i++)
     {
         generateUsefulGraph(&agentList[i].graph, agentList[i].start, agentList[i].end, optimalCostList[i]);
+
+        if(verbose) {
+            cout << "all useful nodes: ";
+            for(auto node : agentList[i].graph.nodes)
+                if(node.useful)
+                    cout << node.id << " ";
+        
+            cout << endl;
+        }
     }
     
     // combine those using the MDD magic from the paper and check for conflicts by running 

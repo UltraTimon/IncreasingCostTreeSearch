@@ -147,7 +147,6 @@ void CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int 
     CombinedGraphNode cgn = CombinedGraphNode();
     int cgnIndex;
 
-
     // If cg was done in previous call but g not yet, we will repeat the CombinedGraphNode (cgn).
     // to do this we need to copy the ids from the previous cgn to the idlist of the current cgn
     //      and then add the id of the current node in the single graph to it
@@ -158,7 +157,6 @@ void CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int 
             cgn.idList.push_back(i);
         }
         cgn.idList.push_back(currentG);
-
     }
     else
     {
@@ -236,14 +234,14 @@ void CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int 
                     }
 
                     vector<int> newRepeatedIdList;
-                    for(int i : cg->nodes[graphListIndex][currentCG].idList) {
+                    for (int i : cg->nodes[graphListIndex][currentCG].idList)
+                    {
                         newRepeatedIdList.push_back(i);
                     }
 
                     // the normal call in which both next edges are new and the graphList is advanced
                     addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, repeatCG, newRepeatedIdList);
 
-                    
                     // Also a call where one of the agents does not move but stays on it's place -- CG does not move here
                     addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex, currentG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, repeatCG, newRepeatedIdList);
 
@@ -378,9 +376,7 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     }
 }
 
-// assuming there's 2 agents, so 2 graphs
-// TODO: add support for >2 agents
-void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
+void createInitialCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
 {
     Graph *g1 = &agentList[0].graph;
     Graph *g2 = &agentList[1].graph;
@@ -403,7 +399,7 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
     int finishA = agentList[0].end;
     int finishB = agentList[1].end;
 
-    int cost = max(optimalCostList.front(), optimalCostList.back());
+    int cost = max(optimalCostList[0], optimalCostList[1]);
 
     cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, visitedA, visitedB, g1, g2, cg);
 
@@ -434,8 +430,10 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
     }
 
     combinedNodeIsUseful(0, 0, endList, cost, cg, newVisited, cost, maxNodes);
+}
 
-    // print results
+void printCombinedGraph(CombinedGraph *cg, int cost)
+{
     if (cg->nodes[0].front().useful && verbose)
     {
         cout << "id lists: " << endl;
@@ -464,14 +462,14 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
                 if (cgn.useful)
                 {
                     cout << "(";
-                    for(int x : cgn.idList)
+                    for (int x : cgn.idList)
                         cout << x << " ";
                     cout << "): ";
 
                     for (auto edge : cgn.edges)
                     {
                         cout << "(";
-                        for(int id : cg->nodes[i + 1][edge].idList) {
+                        for (int id : cg->nodes[i + 1][edge].idList)
                             cout << id << " ";
                         cout << ") - ";
                     }
@@ -480,4 +478,65 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
             }
         }
     }
+}
+
+void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
+{
+    if (agentList.size() <= 1)
+    {
+        cout << "Come on, give me a challenge! I won't do it for less than 2 agents." << endl;
+    }
+    if (agentList.size() == 2)
+    {
+        createInitialCombinedGraph(agentList, optimalCostList, cg);
+    }
+    if (agentList.size() > 2)
+    {
+        for (int i = 2; i < agentList.size(); i++)
+        {
+            int cost;
+            for (int j : optimalCostList)
+                if (j > cost)
+                    cost = j;
+
+            vector<int> finishCG;
+            for (int j = 0; j < i; j++)
+            {
+                finishCG.push_back(agentList[j].end);
+            }
+
+            int maxNodes = 0;
+            for (int j = 0; j < cost + 1; j++)
+            {
+                int size = cg->nodes[j].size();
+                if (size > maxNodes)
+                    maxNodes = size;
+            }
+
+            vector<vector<bool>> newVisitedCG;
+            for (int k = 0; k < cost + 1; k++)
+            {
+                vector<bool> temp;
+                for (int j = 0; j < maxNodes; j++)
+                {
+                    temp.push_back(false);
+                }
+                newVisitedCG.push_back(temp);
+            }
+
+            bool newVisitedG[agentList[i].graph.nodes.size()];
+
+            for (int j = 0; j < agentList[j].graph.nodes.size(); j++)
+            {
+                newVisitedG[j] = false;
+            }
+
+            vector<int> emptyList;
+            cg->addSingleGraphToCombinedGraph(0, cost, 0, 0, agentList[i].start, finishCG, agentList[i].end, newVisitedCG, newVisitedG, maxNodes, cg, &agentList[i].graph, false, emptyList);
+
+            printCombinedGraph(cg, cost);
+        }
+    }
+
+    // print results
 }

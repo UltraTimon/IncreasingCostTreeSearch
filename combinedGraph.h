@@ -19,8 +19,7 @@ class CombinedGraph
 {
     public: 
         vector<CombinedGraphNode> *nodes;
-    
-    private:
+        
         int combine2Graphs(int stepsTaken, int costA, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2, CombinedGraph *cg);
 
 

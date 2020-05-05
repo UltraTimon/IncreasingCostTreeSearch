@@ -22,6 +22,10 @@ class CombinedGraph
     
     private:
         int combine2Graphs(int stepsTaken, int costA, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2, CombinedGraph *cg);
+
+
+
+        int addSingleGraphToCombinedGraph(int stepsTaken, int cost, int currentCG, int currentG, vector<int> finishCG, int finishG, vector<vector<bool>> visitedCG, bool *visitedG, int maxNodes, CombinedGraph *cg, Graph *g, bool repeatCG, vector<int> repeatedIdList);
     
     public:
         CombinedGraph(int numberOfSteps) {

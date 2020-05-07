@@ -98,13 +98,9 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
 
 bool vectorContains(vector<int> vec, int x)
 {
-    if(verbose)
-        cout << "Hi from vectorContains " << x << endl;
 
     for (int i = 0; i < vec.size(); i++)
         if (vec.at(i) == x) {
-            if(verbose)
-                cout << "conflict at " << x << endl;
             return true;
         }
     return false;
@@ -122,32 +118,34 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
     return false;
 }
 
+int error_value = -1;
+
 // combines graph, deflects conflicing node pairs
 int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int graphListIndex, int currentCG, int currentG, vector<int> finishCG, int finishG, vector<vector<bool>> visitedCG, bool *visitedG, int maxNodes, CombinedGraph *cg, Graph *g, bool newCGN, bool repeatFinalCGN, vector<int> repeatedIdList)
 {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)
     {
-        return -1;
+        return error_value;
     }
 
     // if the nodes are not useful, stop building the graph
     if (!g->nodes[currentG].useful || !cg->nodes[graphListIndex][currentCG].useful)
     {
-        return -1;
+        return error_value;
     }
 
     // if they use the same node at this point in time we have a conflict and we can't use this path
     // second condition is for when the CG is at it's endpoint and the single graph wants to use one of the endpoint nodes
     if (vectorContains(cg->nodes[graphListIndex][currentCG].idList, currentG))
     {
-        return -1;
+        return error_value;
     }
 
     // If the CG is at it's endpoint or the idList is being re-used and the single graph wants to use one of the endpoint nodes,
     //      they still are not allowed to overlap
     if((newCGN || repeatFinalCGN) && vectorContains(repeatedIdList, currentG)) {
-        return -1;
+        return error_value;
     }
 
     visitedG[currentG] = true;
@@ -221,7 +219,6 @@ int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int g
     {
         for (int edgeCG : edgesCG)
         {
-            printf("edgeG: %d, edgeCG: %d, graphListIndex: %d, currentCG: %d\n", edgeG, edgeCG, graphListIndex, currentCG);
             if (!visitedG[edgeG] && !visitedCG.at(graphListIndex + 1).at(edgeCG))
             {
                 // 2 agents cannot use the same edge from opposite sides at the same time
@@ -250,35 +247,23 @@ int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int g
                         newRepeatedIdList.push_back(i);
                     }
 
-                    if(verbose)
-                        cout << "first rec call" << endl;
                     // the normal call in which both next edges are new and the graphList is advanced
                     int resX = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, false, repeatFinalCGN, newRepeatedIdList);
-                    if(resX >= 0 && resX >= cg->nodes[graphListIndex][currentCG].edges.size()) {
-                        printf("X adding edge %d\n", resX);
-                        printf("X edges size: %d\n", cg->nodes[graphListIndex][currentCG].edges.size());
+                    if(resX >= 0 && cg->nodes[graphListIndex][currentCG].edges.size()) {
                         cg->nodes[graphListIndex][currentCG].edges.push_back(resX);
                     }
 
-                    if(verbose)
-                        cout << "second rec call" << endl;
                     // Also a call where one of the agents does not move but stays on it's place -- CG does not move here
                     int resY = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex, currentCG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, true, repeatFinalCGN, newRepeatedIdList);
                     if(resY >= 0 && resY >= cg->nodes[graphListIndex][currentCG].edges.size()) {
-                        printf("Y adding edge %d\n", resY);
                         cg->nodes[graphListIndex][currentCG].edges.push_back(resY);
                     }
 
-
-                    if(verbose)
-                        cout << "third rec call" << endl;
                     // Also a node where each of the agents does not move but stays on it's place -- G does not move here
                     int resZ = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, currentG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, true, repeatFinalCGN, newRepeatedIdList);
                     if(resZ >= 0 && resZ >= cg->nodes[graphListIndex][currentCG].edges.size()) {
-                        printf("Z adding edge %d\n", resZ);
                         cg->nodes[graphListIndex][currentCG].edges.push_back(resZ);
                     }
-                
                 }
             }
         }

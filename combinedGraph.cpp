@@ -121,7 +121,7 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
 int error_value = -1;
 
 // combines graph, deflects conflicing node pairs
-int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int graphListIndex, int currentCG, int currentG, vector<int> finishCG, int finishG, vector<vector<bool>> visitedCG, bool *visitedG, int maxNodes, CombinedGraph *cg, Graph *g, bool newCGN, bool repeatFinalCGN, vector<int> repeatedIdList)
+int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int graphListIndex, int currentCG, int currentG, vector<int> finishCG, int finishG, vector<vector<bool>> visitedCG, bool *visitedG, int maxNodes, CombinedGraph *cg, Graph *g, bool newCGN, vector<int> repeatedIdListOldCG, bool repeatFinalCGN, vector<int> repeatedIdList)
 {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)
@@ -148,12 +148,14 @@ int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int g
         return error_value;
     }
 
-    visitedG[currentG] = true;
-    visitedCG.at(graphListIndex).at(currentCG) = true;
+    vector<int> newRepeatedIdListOldCG;
+    for(int i : cg->nodes[graphListIndex][currentCG].idList)
+        newRepeatedIdListOldCG.push_back(i);
 
-    // Add current node in single graph to corresponding place in combinedgraph nodes matrix
 
-    // These three will only be used if newCGN is true
+    // Add current node in single graph to corresponding place in combinedgraph nodes matrix. See next lines
+
+    // These one will only be used if newCGN is true
     CombinedGraphNode cgn = CombinedGraphNode();
 
     // If we are doing a call where the CGN does not move but the single graph does, we will 
@@ -161,16 +163,48 @@ int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int g
     // then we also need to return the index at which it is stored
     if (newCGN)
     {
-        for (int i : repeatedIdList)
+        for (int i : repeatedIdListOldCG)
         {
             cgn.idList.push_back(i);
         }
+
+
         cgn.idList.push_back(currentG);
+        // flag to show this value cannot be used anymore because a new entry in the current CGN list must be made
+
+        if(verbose) {
+            if(currentG == 4) {
+                printf("4 added, idlist: \n");
+                for(int i : cgn.idList) {
+                    printf("%d\n", i);
+                }
+                printf("repeatedIdlist: \n");
+                for(int i : repeatedIdListOldCG) {
+                    printf("%d\n", i);
+                }
+            }
+        }
+        
+        // add edges of the cloned cgn to the new cgn
+        for(int i : cg->nodes[graphListIndex][currentCG].edges) {
+            cgn.edges.push_back(i);
+        }
+        // set currentCG to new value to indicate we just added a new CGN and we should look to that one instead of the old one
+        currentCG = cg->nodes[graphListIndex].size();
+        // push back new cgn object to correct index of nodeslist
+        cg->nodes[graphListIndex].push_back(cgn);
+
+
     }
     else
     {
         cg->nodes[graphListIndex][currentCG].idList.push_back(currentG);
     }
+
+    // set current nodes to visited
+    visitedG[currentG] = true;
+    visitedCG.at(graphListIndex).at(currentCG) = true;
+
 
     // if one of them is already at the final node, allow it to stay there until the other one takes its last steps
     bool gIsDone = currentG == finishG;
@@ -247,20 +281,22 @@ int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int g
                         newRepeatedIdList.push_back(i);
                     }
 
+                    
+
                     // the normal call in which both next edges are new and the graphList is advanced
-                    int resX = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, false, repeatFinalCGN, newRepeatedIdList);
+                    int resX = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, false, newRepeatedIdListOldCG, repeatFinalCGN, newRepeatedIdList);
                     if(resX >= 0 && cg->nodes[graphListIndex][currentCG].edges.size()) {
                         cg->nodes[graphListIndex][currentCG].edges.push_back(resX);
                     }
 
                     // Also a call where one of the agents does not move but stays on it's place -- CG does not move here
-                    int resY = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex, currentCG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, true, repeatFinalCGN, newRepeatedIdList);
+                    int resY = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex, currentCG, edgeG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, true, newRepeatedIdListOldCG, repeatFinalCGN, newRepeatedIdList);
                     if(resY >= 0 && resY >= cg->nodes[graphListIndex][currentCG].edges.size()) {
                         cg->nodes[graphListIndex][currentCG].edges.push_back(resY);
                     }
 
                     // Also a node where each of the agents does not move but stays on it's place -- G does not move here
-                    int resZ = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, currentG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, true, repeatFinalCGN, newRepeatedIdList);
+                    int resZ = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, currentG, finishCG, finishG, newVisitedCG, newVisitedG, maxNodes, cg, g, true, newRepeatedIdListOldCG, repeatFinalCGN, newRepeatedIdList);
                     if(resZ >= 0 && resZ >= cg->nodes[graphListIndex][currentCG].edges.size()) {
                         cg->nodes[graphListIndex][currentCG].edges.push_back(resZ);
                     }
@@ -506,16 +542,24 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
     if (agentList.size() == 2)
     {
         createInitialCombinedGraph(agentList, optimalCostList, cg);
+        int cost = 0;
+            for (int j : optimalCostList)
+                if (j > cost)
+                    cost = j;
+        printCombinedGraph(cg, cost);
     }
     if (agentList.size() > 2)
     {
         createInitialCombinedGraph(agentList, optimalCostList, cg);
+        int cost = 0;
+        for (int j : optimalCostList)
+            if (j > cost)
+                cost = j;
+
+        printCombinedGraph(cg, cost);
+
         for (int i = 2; i < agentList.size(); i++)
         {
-            int cost = 0;
-            for (int j : optimalCostList)
-                if (j > cost)
-                    cost = j;
 
             vector<int> finishCG;
             for (int j = 0; j < i; j++)
@@ -526,7 +570,7 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
             int maxNodes = 0;
             for (int j = 0; j < cost + 1; j++)
             {
-                int size = cg->nodes[j].size();
+                int size = cg->nodes[j].size() * 3;
                 if (size > maxNodes)
                     maxNodes = size;
             }
@@ -550,7 +594,7 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
             }
 
             vector<int> emptyList;
-            cg->addSingleGraphToCombinedGraph(0, cost, 0, 0, agentList[i].start, finishCG, agentList[i].end, newVisitedCG, newVisitedG, maxNodes, cg, &agentList[i].graph, false, false, emptyList);
+            cg->addSingleGraphToCombinedGraph(0, cost, 0, 0, agentList[i].start, finishCG, agentList[i].end, newVisitedCG, newVisitedG, maxNodes, cg, &agentList[i].graph, false, emptyList, false, emptyList);
 
             printCombinedGraph(cg, cost);
         }

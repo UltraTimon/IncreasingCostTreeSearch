@@ -24,7 +24,7 @@ class CombinedGraph
 
 
 
-        int addSingleGraphToCombinedGraph(int stepsTaken, int cost, int graphListIndex, int currentCG, int currentG, vector<int> finishCG, int finishG, vector<vector<bool>> visitedCG, bool *visitedG, int maxNodes, CombinedGraph *cg, Graph *g, bool newCGN, bool repeatFinalCGN, vector<int> repeatedIdList);
+        int addSingleGraphToCombinedGraph(int stepsTaken, int cost, int graphListIndex, int currentCG, int currentG, vector<int> finishCG, int finishG, vector<vector<bool>> visitedCG, bool *visitedG, int maxNodes, CombinedGraph *cg, Graph *g, bool newCGN, vector<int> repeatedIdListOldCG, bool repeatFinalCGN, vector<int> repeatedIdList);
     
     public:
         CombinedGraph(int numberOfSteps) {

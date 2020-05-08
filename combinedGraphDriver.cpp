@@ -119,23 +119,16 @@ void printCombinedGraphAll(CombinedGraph *cg, int cost)
         if (cg->nodes[i].size() > 0)
             cout << endl;
     }
-
+    
     cout << "egde lists: " << endl;
     for (int i = 0; i <= cost; i++)
     {
-        for (auto cgn : cg->nodes[i])
+        for(auto cgn : cg->nodes[i])
         {
-            cout << "(";
-            for (int x : cgn.idList)
-                cout << x << " ";
-            cout << "): ";
-
-            for (auto edge : cgn.edges)
+            cout << cgn.edges.size() << " : ";
+            for(int c = 0; c < cgn.edges.size(); c++) 
             {
-                cout << "(";
-                for (int id : cg->nodes[i + 1][edge].idList)
-                    cout << id << " ";
-                cout << ") - ";
+                cout << cgn.edges[c] << " ";
             }
             cout << endl;
         }
@@ -209,10 +202,12 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
 
             vector<int> emptyList;
 
+
             CombinedGraph newCG = CombinedGraph(cost);
             cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, agentList[i].start, &agentList[i].graph, &newCG);
             
-            combinedNodeIsUseful(0, 0, finishCombinedG, cost, &newCG, newVisitedCG, cost, maxNodes);
+            // combinedNodeIsUseful(0, 0, finishCombinedG, cost, &newCG, newVisitedCG, cost, maxNodes);
+            cout << "newCG first node #edges: " << newCG.nodes[0][0].edges.size() << endl;
             printCombinedGraphAll(&newCG, cost);
         }
     }

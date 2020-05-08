@@ -121,6 +121,16 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
     return false;
 }
 
+
+
+
+
+
+
+
+
+
+
 /*
 Checks to be done;
 - on the same node
@@ -145,18 +155,12 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
     {
         newCGN.idList.push_back(i);
     }
-    for (int i : oldCG->nodes[graphListIndex][combinedGraphIndex].edges)
-    {
-        newCGN.edges.push_back(i);
-    }
 
     // add id of singleGraphNode to new CGN
     newCGN.idList.push_back(g->nodes[singleGraphIndex].id);
 
 
     // push newCGN object into newCG graphListIndex + 1's list
-    int newCGNIndex = newCG->nodes[graphListIndex + 1].size();
-    newCG->nodes[graphListIndex].push_back(newCGN);
 
     // for SingleGraphEdge :  SingleGraphNode.edges
     for (int singleGraphEdge : g->nodes[singleGraphIndex].edges)
@@ -170,22 +174,46 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
             int indexOfNewChild = copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(stepsLeft - 1, graphListIndex + 1, combinedGraphIndex, oldCG, singleGraphEdge, g, newCG);
 
             if(indexOfNewChild >= 0) {
-                newCG->nodes[graphListIndex][newCGNIndex].edges.push_back(indexOfNewChild);
+                newCGN.edges.push_back(indexOfNewChild);
             }
         }
     }
 
+    int newCGNIndex = newCG->nodes[graphListIndex].size();
+    newCG->nodes[graphListIndex].push_back(newCGN);
+
     printf("Created a new node with id: ");
-    for(int id : newCGN.idList)
+    for(int id : newCG->nodes[graphListIndex][newCGNIndex].idList)
         cout << id << " ";
     printf(" and edges: ");
-    for(int edge : newCGN.edges)
+    for(int edge : newCG->nodes[graphListIndex][newCGNIndex].edges)
         cout << edge << " ";
     cout << endl;
 
     printf("returning index: %d\n", newCGNIndex);
     return newCGNIndex;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // combines graph, deflects conflicing node pairs
 int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,

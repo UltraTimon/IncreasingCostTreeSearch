@@ -240,12 +240,10 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
 
     // repeat this CGN if needed
     if(oldCG->nodes[graphListIndex + 1].size() == 0) {
-        cout << "repeat CGN from now on" << endl;
         return repeatCombinedNode(stepsLeft, graphListIndex, singleGraphIndex, g, newCG, newCGN.idList);
     }
     // repeat singleGraphNode if needed
     if(g->nodes[singleGraphIndex].id == singleGraphFinishID) {
-        cout << "repeat SGN from now on" << endl;
         return repeatSingleGraphNode(stepsLeft, graphListIndex, combinedGraphIndex, oldCG, singleGraphIndex, newCG, g->nodes.size());
     }
 
@@ -271,18 +269,6 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
     // push newCGN object into newCG graphListIndex's list
     int newCGNIndex = newCG->nodes[graphListIndex].size();
     newCG->nodes[graphListIndex].push_back(newCGN);
-
-    printf("Created a new node with id: ");
-    for (int id : newCG->nodes[graphListIndex][newCGNIndex].idList)
-        cout << id << " ";
-    printf(" and edges: ");
-    for (int edge : newCG->nodes[graphListIndex][newCGNIndex].edges)
-        cout << edge << " ";
-    cout << endl;
-
-    printf("returning index: %d\n", newCGNIndex);
-
-
 
     return newCGNIndex;
 }
@@ -353,8 +339,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     {
         edgesA = g1->nodes[currentA].edges;
         edgesB = g2->nodes[currentB].edges;
-        // visitedA[currentA] = false;
-        // visitedB[currentB] = false;
     }
 
     // make recursive calls
@@ -383,29 +367,7 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 
                     if (indexOfChildX >= 0)
                     {
-                        if (verbose)
-                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChildX].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChildX].idList.back() << ")" << endl;
                         cgn.edges.push_back(indexOfChildX);
-                    }
-
-                    // Also a node where each of the agents does not move but stays on it's place -- A does not move here
-                    int indexOfChildY = combine2Graphs(stepsTaken + 1, cost, currentA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
-
-                    if (indexOfChildY >= 0)
-                    {
-                        if (verbose)
-                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChildY].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChildY].idList.back() << ")" << endl;
-                        cgn.edges.push_back(indexOfChildY);
-                    }
-
-                    // Also a node where each of the agents does not move but stays on it's place -- B does not move here
-                    int indexOfChildZ = combine2Graphs(stepsTaken + 1, cost, edgeA, currentB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
-
-                    if (indexOfChildZ >= 0)
-                    {
-                        if (verbose)
-                            cout << "adding edge from (" << currentA << ", " << currentB << ") to (" << cg->nodes[stepsTaken + 1][indexOfChildZ].idList.front() << ", " << cg->nodes[stepsTaken + 1][indexOfChildZ].idList.back() << ")" << endl;
-                        cgn.edges.push_back(indexOfChildZ);
                     }
                 }
             }

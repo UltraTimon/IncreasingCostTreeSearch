@@ -116,7 +116,6 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
 
     CombinedGraph cg = CombinedGraph(cost);
     createInitialCombinedGraph(agentList, optimalCostList, &cg);
-    printCombinedGraph(&cg, cost, false);
 
     if(agentList.size() == 2) {
         return cg;
@@ -126,13 +125,10 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
     for (int i = 2; i < agentList.size(); i++)
     {
         vector<int> finishCombinedG;
-        printf("finish list; ");
         for (int j = 0; j < agentList.size(); j++)
         {
             finishCombinedG.push_back(agentList[j].end);
-            cout << agentList[j].end << " ";
         }
-        cout << endl;
         
 
         int maxNodes = 0;
@@ -167,11 +163,10 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         CombinedGraph newCG = CombinedGraph(cost);
         cg.copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, &cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
         cg = newCG;
-
-        printCombinedGraph(&cg, cost, true);
         
         combinedNodeIsUseful(0, 0, finishCombinedG, cost, &cg);
-        printCombinedGraph(&cg, cost, false);
+        if(cg.nodes[0].front().useful)
+            printCombinedGraph(&cg, cost, false);
     }
 
     return cg;

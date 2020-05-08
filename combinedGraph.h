@@ -35,7 +35,7 @@ class CombinedGraph
             nodes = new vector<CombinedGraphNode>[numberOfSteps + 1];
         };
         
-        void createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg);
+        CombinedGraph createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList);
 
 };
 

@@ -106,84 +106,73 @@ void printCombinedGraph(CombinedGraph *cg, int cost, bool alsoIncludeNonUsefulNo
     cout << "-- Done printing graph" << endl;
 }
 
-void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
+// ASSUMPTION: #agents >= 2
+CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList)
 {
-    if (agentList.size() <= 1)
-    {
-        cout << "Come on, give me a challenge! I won't do it for less than 2 agents." << endl;
+    int cost = 0;
+    for (int j : optimalCostList)
+        if (j > cost)
+            cost = j;
+
+    CombinedGraph cg = CombinedGraph(cost);
+    createInitialCombinedGraph(agentList, optimalCostList, &cg);
+    printCombinedGraph(&cg, cost, false);
+
+    if(agentList.size() == 2) {
+        return cg;
     }
-    if (agentList.size() == 2)
+
+    // run the mill for each extra agent
+    for (int i = 2; i < agentList.size(); i++)
     {
-        createInitialCombinedGraph(agentList, optimalCostList, cg);
-        int cost = 0;
-        for (int j : optimalCostList)
-            if (j > cost)
-                cost = j;
-
-        printCombinedGraph(cg, cost, false);
-    }
-    if (agentList.size() > 2)
-    {
-        createInitialCombinedGraph(agentList, optimalCostList, cg);
-
-        int cost = 0;
-        for (int j : optimalCostList)
-            if (j > cost)
-                cost = j;
-
-        printCombinedGraph(cg, cost, false);
-
-        // run method for each extra agent
-        for (int i = 2; i < agentList.size(); i++)
+        vector<int> finishCombinedG;
+        printf("finish list; ");
+        for (int j = 0; j < agentList.size(); j++)
         {
-            vector<int> finishCombinedG;
-            printf("finish list; ");
-            for (int j = 0; j < agentList.size(); j++)
-            {
-                finishCombinedG.push_back(agentList[j].end);
-                cout << agentList[j].end << " ";
-            }
-            cout << endl;
-            
-
-            int maxNodes = 0;
-            for (int j = 0; j < cost + 1; j++)
-            {
-                int size = cg->nodes[j].size() * 3;
-                if (size > maxNodes)
-                    maxNodes = size;
-            }
-
-            vector<vector<bool>> newVisitedCG;
-            for (int k = 0; k < cost + 1; k++)
-            {
-                vector<bool> temp;
-                for (int j = 0; j < maxNodes; j++)
-                {
-                    temp.push_back(false);
-                }
-                newVisitedCG.push_back(temp);
-            }
-
-            bool newVisitedG[agentList[i].graph.nodes.size()];
-
-            for (int j = 0; j < agentList[j].graph.nodes.size(); j++)
-            {
-                newVisitedG[j] = false;
-            }
-
-            vector<int> emptyList;
-
-
-            CombinedGraph newCG = CombinedGraph(cost);
-            cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
-
-            printCombinedGraph(&newCG, cost, true);
-            
-            combinedNodeIsUseful(0, 0, finishCombinedG, cost, &newCG);
-            printCombinedGraph(&newCG, cost, false);
+            finishCombinedG.push_back(agentList[j].end);
+            cout << agentList[j].end << " ";
         }
+        cout << endl;
+        
+
+        int maxNodes = 0;
+        for (int j = 0; j < cost + 1; j++)
+        {
+            int size = cg.nodes[j].size() * 3;
+            if (size > maxNodes)
+                maxNodes = size;
+        }
+
+        vector<vector<bool>> newVisitedCG;
+        for (int k = 0; k < cost + 1; k++)
+        {
+            vector<bool> temp;
+            for (int j = 0; j < maxNodes; j++)
+            {
+                temp.push_back(false);
+            }
+            newVisitedCG.push_back(temp);
+        }
+
+        bool newVisitedG[agentList[i].graph.nodes.size()];
+
+        for (int j = 0; j < agentList[j].graph.nodes.size(); j++)
+        {
+            newVisitedG[j] = false;
+        }
+
+        vector<int> emptyList;
+
+
+        CombinedGraph newCG = CombinedGraph(cost);
+        cg.copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, &cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
+        cg = newCG;
+
+        printCombinedGraph(&cg, cost, true);
+        
+        combinedNodeIsUseful(0, 0, finishCombinedG, cost, &cg);
+        printCombinedGraph(&cg, cost, false);
     }
 
-    // print results
+    return cg;
 }

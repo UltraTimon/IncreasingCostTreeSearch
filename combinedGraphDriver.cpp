@@ -109,24 +109,18 @@ void printCombinedGraph(CombinedGraph *cg, int cost, bool alsoIncludeNonUsefulNo
     cout << "-- Done printing graph" << endl;
 }
 
-CombinedGraph handleExtraAgent(int cost, int start, int end, Graph *g, CombinedGraph *cg) {
-    CombinedGraph newCG = CombinedGraph(cost);
-    
-    cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, start, g, &newCG, end);
-
-    return newCG;
-}
 
 // ASSUMPTION: #agents >= 2
 CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList)
 {
+
     int cost = 0;
     for (int j : optimalCostList)
         if (j > cost)
             cost = j;
 
-
     CombinedGraph cg = CombinedGraph(cost);
+
     createInitialCombinedGraph(agentList, optimalCostList, &cg);
 
     if(agentList.size() == 2) {
@@ -134,24 +128,23 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
     }
 
 
+
     // run the mill for each extra agent
     for (int i = 2; i < agentList.size(); i++)
     {
         vector<int> finishCombinedG;
+
+        CombinedGraph newCG = CombinedGraph(cost);
+        cg.copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, &cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
+
         for (int j = 0; j < agentList.size(); j++)
         {
             finishCombinedG.push_back(agentList[j].end);
         }
-        vector<int> emptyList;
-
-
-        cg = handleExtraAgent(cost, agentList[i].start, agentList[i].end, &agentList[i].graph, &cg);
-
         
-
-        combinedNodeIsUseful(0, 0, finishCombinedG, cost, &cg);
-        if(!cg.nodes[0].empty() && cg.nodes[0].front().useful)
-            printCombinedGraph(&cg, cost, false);
+        combinedNodeIsUseful(0, 0, finishCombinedG, cost, &newCG);
+        
+        printCombinedGraph(&newCG, cost, false);
     }
 
     return cg;

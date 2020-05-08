@@ -14,7 +14,7 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB)
 
 // for general CombinedGraph, no restrictions on number of nodes
 // remove illegal edges
-bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g, vector<vector<bool>> visited, int cost, int maxNodes)
+bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g, vector<vector<bool>> visited, int cost, int maxNodes)
 {
     if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList)))
     {
@@ -99,9 +99,8 @@ bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList
 
 bool vectorContains(vector<int> vec, int x)
 {
-    printf("size of vec: %d\n", vec.size());
-    for (int i = 0; i < vec.size(); i++) {
-        printf("comparing %d to %d\n", vec.at(i), x);
+    for (int i = 0; i < vec.size(); i++)
+    {
         if (vec.at(i) == x)
         {
             return true;
@@ -122,117 +121,70 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
     return false;
 }
 
-int error_value = -1;
+/*
+Checks to be done;
+- on the same node
+- trying to use the same edge
+- nodes useful or not
+- visited
 
-void copyPreviousCGNHelper(CombinedGraphNode *cgn, vector<int> previousIdList, vector<int> previousEdges)
-{
-    for (int i : previousIdList)
-        cgn->idList.push_back(i);
-
-    for (int i : previousEdges)
-        cgn->edges.push_back(i);
-}
+*/
 
 // combines graph, deflects conflicing node pairs
-int CombinedGraph::addSingleGraphToCombinedGraph(int stepsTaken, int cost, int graphListIndex, int currentCombinedGIndex, int currentSingleGIndex, vector<int> finishCombinedGIdList, int finishSingleGIndex, vector<vector<bool>> visitedCombinedG, bool *visitedSingleG, int maxNodes, CombinedGraph *cg, Graph *g, bool copyPreviousCGN, vector<int> previousIdList, vector<int> previousEdges)
+int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, Graph *g, CombinedGraph *newCG)
 {
-    CombinedGraphNode currentCGN = cg->nodes[graphListIndex][currentCombinedGIndex];
-    if (stepsTaken > cost || vectorContains(currentCGN.idList, currentSingleGIndex))
+    // return if no steps are allowed to be taken
+    if (stepsLeft < 0)
+        return -1;
+
+    // create new CGN object to store new data in
+    CombinedGraphNode newCGN = CombinedGraphNode(g->nodes.size());
+
+    // copy attributes from CGN that is pointed to by the combinedGraphEdge to new CGN object
+    for (int i : oldCG->nodes[graphListIndex][combinedGraphIndex].idList)
     {
-        printf("bad input\n");
-        return true;
+        newCGN.idList.push_back(i);
+    }
+    for (int i : oldCG->nodes[graphListIndex][combinedGraphIndex].edges)
+    {
+        newCGN.edges.push_back(i);
     }
 
+    // add id of singleGraphNode to new CGN
+    newCGN.idList.push_back(g->nodes[singleGraphIndex].id);
 
 
-    bool singleGIsDone = currentSingleGIndex == finishSingleGIndex;
-    bool combinedGIsDone = vectorEquals(finishCombinedGIdList, currentCGN.idList);
+    // push newCGN object into newCG graphListIndex + 1's list
+    int newCGNIndex = newCG->nodes[graphListIndex + 1].size();
+    newCG->nodes[graphListIndex].push_back(newCGN);
 
-    if(stepsTaken == cost) {
-        // we're done, let's decide how we end it
-        if(singleGIsDone && combinedGIsDone) {
-            currentCGN.idList.push_back(currentSingleGIndex);
-            return currentCombinedGIndex;
-        } else {
-            return -1;
-        }
-    }
-
-    vector<int> newPreviousIdList;
-    vector<int> newPreviousEdges;
-    if (copyPreviousCGN)
+    // for SingleGraphEdge :  SingleGraphNode.edges
+    for (int singleGraphEdge : g->nodes[singleGraphIndex].edges)
     {
-        newPreviousIdList = previousIdList;
-        newPreviousEdges = previousEdges;
-    } 
-    else
-    {
-        for (int i : currentCGN.idList)
-            newPreviousIdList.push_back(i);
-        for (int i : currentCGN.edges)
-            newPreviousEdges.push_back(i);
-    }
 
-
-    CombinedGraphNode copyOfPreviousCGN = CombinedGraphNode();
-    int indexOfCopy;
-    if (copyPreviousCGN)
-    {
-        copyPreviousCGNHelper(&copyOfPreviousCGN, previousIdList, previousEdges);
-
-        // set values s.t. the copy becomes current
-        indexOfCopy = cg->nodes[graphListIndex].size();
-        cg->nodes[graphListIndex].push_back(copyOfPreviousCGN);
-        currentCGN = cg->nodes[graphListIndex][indexOfCopy];
-    }
-
-    // set current nodes to visited
-    visitedSingleG[currentSingleGIndex] = true;
-    visitedCombinedG.at(graphListIndex).at(currentCombinedGIndex) = true;
-
-    // add current singleGNode to idList
-    currentCGN.idList.push_back(currentSingleGIndex);
-
-
-    // make recursive calls
-    for (int edgeG : currentCGN.edges)
-    {
-        for (int edgeCG : g->nodes[currentSingleGIndex].edges)
+        // for CombinedGraphEdge :  CombinedGraphNode.edges
+        for (int combinedGraphEdge : oldCG->nodes[graphListIndex][combinedGraphIndex].edges)
         {
-            if (!visitedSingleG[edgeG] && !visitedCombinedG.at(graphListIndex + 1).at(edgeCG))
-            {
-                // 2 agents cannot use the same edge from opposite sides at the same time
-                if (!usingTheSameEdge(newPreviousIdList, cg->nodes[graphListIndex + 1][edgeCG].idList, currentSingleGIndex, edgeG))
-                {
-                    // make deepcopy of visited arrays to allow for weird loopy paths
-                    bool *newVisitedG = new bool[g->nodes.size()];
-                    for (int j = 0; j < g->nodes.size(); j++)
-                    {
-                        newVisitedG[j] = newVisitedG[j];
-                    }
-                    vector<vector<bool>> newVisitedCG;
-                    for (int k = 0; k < cost + 1; k++)
-                    {
-                        vector<bool> temp;
-                        for (int j = 0; j < maxNodes; j++)
-                        {
-                            temp.push_back(visitedCombinedG.at(k).at(j));
-                        }
-                        newVisitedCG.push_back(temp);
-                    }
 
-                    // the normal call in which both next edges are new and the graphList is advanced
-                    int resX = addSingleGraphToCombinedGraph(stepsTaken + 1, cost, graphListIndex + 1, edgeCG, edgeG, finishCombinedGIdList, finishSingleGIndex, newVisitedCG, newVisitedG, maxNodes, cg, g, false, newPreviousIdList, newPreviousEdges);
-                    if (resX >= 0 && resX >= currentCGN.edges.size())
-                    {
-                        cg->nodes[graphListIndex][currentCombinedGIndex].edges.push_back(resX);
-                    }
-                }
+            // make a recursive call to it in which you specify the index it's placed in
+            int indexOfNewChild = copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(stepsLeft - 1, graphListIndex + 1, combinedGraphIndex, oldCG, singleGraphEdge, g, newCG);
+
+            if(indexOfNewChild >= 0) {
+                newCG->nodes[graphListIndex][newCGNIndex].edges.push_back(indexOfNewChild);
             }
         }
     }
 
-    return -1;
+    printf("Created a new node with id: ");
+    for(int id : newCGN.idList)
+        cout << id << " ";
+    printf(" and edges: ");
+    for(int edge : newCGN.edges)
+        cout << edge << " ";
+    cout << endl;
+
+    printf("returning index: %d\n", newCGNIndex);
+    return newCGNIndex;
 }
 
 // combines graph, deflects conflicing node pairs
@@ -260,7 +212,7 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     visitedA[currentA] = true;
     visitedB[currentB] = true;
 
-    CombinedGraphNode cgn = CombinedGraphNode();
+    CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());
     cgn.idList.push_back(currentA);
     cgn.idList.push_back(currentB);
 
@@ -356,174 +308,4 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     {
         return -1;
     }
-}
-
-void createInitialCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
-{
-    Graph *g1 = &agentList[0].graph;
-    Graph *g2 = &agentList[1].graph;
-
-    bool visitedA[g1->nodes.size()];
-    bool visitedB[g2->nodes.size()];
-
-    for (int i = 0; i < g1->nodes.size(); i++)
-    {
-        visitedA[i] = false;
-    }
-    for (int i = 0; i < g2->nodes.size(); i++)
-    {
-        visitedB[i] = false;
-    }
-
-    int startA = agentList[0].start;
-    int startB = agentList[1].start;
-
-    int finishA = agentList[0].end;
-    int finishB = agentList[1].end;
-
-    int cost = max(optimalCostList[0], optimalCostList[1]);
-
-    cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, visitedA, visitedB, g1, g2, cg);
-
-    vector<int> endList;
-    endList.push_back(agentList[0].end);
-    endList.push_back(agentList[1].end);
-
-    int tempMax = 0;
-    for (int i = 0; i < cost + 1; i++)
-    {
-        int size = cg->nodes[i].size();
-        if (size > tempMax)
-            tempMax = size;
-    }
-    int maxNodes = tempMax;
-
-    vector<vector<bool>> newVisited;
-    for (int k = 0; k < cost + 1; k++)
-    {
-        vector<bool> temp;
-        for (int j = 0; j < maxNodes; j++)
-        {
-            temp.push_back(false);
-        }
-        newVisited.push_back(temp);
-    }
-
-    combinedNodeIsUseful(0, 0, endList, cost, cg, newVisited, cost, maxNodes);
-}
-
-void printCombinedGraph(CombinedGraph *cg, int cost)
-{
-    if (cg->nodes[0].front().useful && verbose)
-    {
-        cout << "id lists: " << endl;
-        for (int i = 0; i <= cost; i++)
-        {
-            for (auto cgn : cg->nodes[i])
-            {
-                if (cgn.useful)
-                {
-                    for (auto id : cgn.idList)
-                    {
-                        cout << id << " ";
-                    }
-                    cout << " - ";
-                }
-            }
-            if (cg->nodes[i].size() > 0)
-                cout << endl;
-        }
-
-        cout << "egde lists: " << endl;
-        for (int i = 0; i <= cost; i++)
-        {
-            for (auto cgn : cg->nodes[i])
-            {
-                if (cgn.useful)
-                {
-                    cout << "(";
-                    for (int x : cgn.idList)
-                        cout << x << " ";
-                    cout << "): ";
-
-                    for (auto edge : cgn.edges)
-                    {
-                        cout << "(";
-                        for (int id : cg->nodes[i + 1][edge].idList)
-                            cout << id << " ";
-                        cout << ") - ";
-                    }
-                    cout << endl;
-                }
-            }
-        }
-    }
-    cout << "-- Done printing graph" << endl;
-}
-
-void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg)
-{
-    if (agentList.size() <= 1)
-    {
-        cout << "Come on, give me a challenge! I won't do it for less than 2 agents." << endl;
-    }
-    if (agentList.size() == 2)
-    {
-        createInitialCombinedGraph(agentList, optimalCostList, cg);
-        int cost = 0;
-        for (int j : optimalCostList)
-            if (j > cost)
-                cost = j;
-    }
-    if (agentList.size() > 2)
-    {
-        createInitialCombinedGraph(agentList, optimalCostList, cg);
-        int cost = 0;
-        for (int j : optimalCostList)
-            if (j > cost)
-                cost = j;
-
-        for (int i = 2; i < agentList.size(); i++)
-        {
-            vector<int> finishCG;
-            for (int j = 0; j < i; j++)
-            {
-                finishCG.push_back(agentList[j].end);
-            }
-
-            int maxNodes = 0;
-            for (int j = 0; j < cost + 1; j++)
-            {
-                int size = cg->nodes[j].size() * 3;
-                if (size > maxNodes)
-                    maxNodes = size;
-            }
-
-            vector<vector<bool>> newVisitedCG;
-            for (int k = 0; k < cost + 1; k++)
-            {
-                vector<bool> temp;
-                for (int j = 0; j < maxNodes; j++)
-                {
-                    temp.push_back(false);
-                }
-                newVisitedCG.push_back(temp);
-            }
-
-            bool newVisitedG[agentList[i].graph.nodes.size()];
-
-            for (int j = 0; j < agentList[j].graph.nodes.size(); j++)
-            {
-                newVisitedG[j] = false;
-            }
-
-            vector<int> emptyList;
-           
-            printf("agent start values: start: %d, end: %d\n", agentList[i].start, agentList[i].end);
-            printf("initial id list: %d, %d\n", cg->nodes[0][0].idList.front(), cg->nodes[0][0].idList.back());
-            cg->addSingleGraphToCombinedGraph(0, cost, 0, 0, agentList[i].start, finishCG, agentList[i].end, newVisitedCG, newVisitedG, maxNodes, cg, &agentList[i].graph, false, emptyList, emptyList);
-        }
-    }
-
-    // print results
 }

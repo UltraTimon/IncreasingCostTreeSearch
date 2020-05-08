@@ -176,7 +176,7 @@ void CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> opt
 
 
             CombinedGraph newCG = CombinedGraph(cost);
-            cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, agentList[i].start, &agentList[i].graph, &newCG);
+            cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
 
             printCombinedGraph(&newCG, cost, true);
             

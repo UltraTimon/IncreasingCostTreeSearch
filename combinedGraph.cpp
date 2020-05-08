@@ -105,6 +105,45 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
 
 
 
+int repeatSingleGraphNode(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, CombinedGraph *newCG, int amountOfNodes)
+{
+    // return if no steps are allowed to be taken
+    if (stepsLeft < 0)
+        return -1;
+
+    // create new CGN object to store new data in
+    CombinedGraphNode newCGN = CombinedGraphNode(amountOfNodes);
+
+    // copy over the idList
+    for (int i : oldCG->nodes[graphListIndex][combinedGraphIndex].idList)
+    {
+        newCGN.idList.push_back(i);
+    }
+
+    // add id of singleGraphNode to new CGN
+    newCGN.idList.push_back(singleGraphIndex);
+
+    // for combinedGraphEdge :  CombinedGraphNode.edges
+    for (int combinedGraphEdge : oldCG->nodes[graphListIndex][combinedGraphIndex].edges)
+    {
+        // make a recursive call to it in which you specify the index it's placed in
+        int indexOfNewChild = repeatSingleGraphNode(stepsLeft - 1, graphListIndex + 1, combinedGraphEdge, oldCG, singleGraphIndex, newCG, amountOfNodes);
+
+        if (indexOfNewChild >= 0)
+        {
+            newCGN.edges.push_back(indexOfNewChild);
+        }
+    }
+
+    // push newCGN object into newCG graphListIndex + 1's list
+    int newCGNIndex = newCG->nodes[graphListIndex].size();
+    newCG->nodes[graphListIndex].push_back(newCGN);
+
+    return newCGNIndex;
+}
+
+
+
 
 
 
@@ -182,7 +221,7 @@ Checks to be done;
 */
 
 // combines graph, deflects conflicing node pairs
-int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, Graph *g, CombinedGraph *newCG)
+int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, Graph *g, CombinedGraph *newCG, int singleGraphFinishID)
 {
     // return if no steps are allowed to be taken
     if (stepsLeft < 0)
@@ -202,6 +241,11 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
         cout << "repeat CGN from now on" << endl;
         return repeatCombinedNode(stepsLeft, graphListIndex, singleGraphIndex, g, newCG, newCGN.idList);
     }
+    // repeat singleGraphNode if needed
+    if(g->nodes[singleGraphIndex].id == singleGraphFinishID) {
+        cout << "repeat SGN from now on" << endl;
+        return repeatSingleGraphNode(stepsLeft, graphListIndex, combinedGraphIndex, oldCG, singleGraphIndex, newCG, g->nodes.size());
+    }
 
     // add id of singleGraphNode to new CGN
     newCGN.idList.push_back(g->nodes[singleGraphIndex].id);
@@ -213,7 +257,7 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
         for (int combinedGraphEdge : oldCG->nodes[graphListIndex][combinedGraphIndex].edges)
         {
             // make a recursive call to it in which you specify the index it's placed in
-            int indexOfNewChild = copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(stepsLeft - 1, graphListIndex + 1, combinedGraphIndex, oldCG, singleGraphEdge, g, newCG);
+            int indexOfNewChild = copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(stepsLeft - 1, graphListIndex + 1, combinedGraphIndex, oldCG, singleGraphEdge, g, newCG, singleGraphFinishID);
 
             if (indexOfNewChild >= 0)
             {

@@ -111,6 +111,10 @@ int repeatSingleGraphNode(int stepsLeft, int graphListIndex, int combinedGraphIn
     if (stepsLeft < 0)
         return -1;
 
+    // return -1 if SGN is the same as one of the ids in the idlist of the CGN
+    if(vectorContains(oldCG->nodes[graphListIndex][combinedGraphIndex].idList, singleGraphIndex))
+        return -1;
+
     // create new CGN object to store new data in
     CombinedGraphNode newCGN = CombinedGraphNode(amountOfNodes);
 
@@ -167,6 +171,10 @@ int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, 
     if (stepsLeft < 0)
         return -1;
 
+    // return -1 if SGN is the same as one of the ids in the idlist of the CGN
+    if(vectorContains(copyOfPreviousIdList, g->nodes[singleGraphIndex].id))
+        return -1;
+
     // create new CGN object to store new data in
     CombinedGraphNode newCGN = CombinedGraphNode(g->nodes.size());
 
@@ -210,21 +218,15 @@ int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, 
 
 
 
-
-
-
-/*
-Checks to be done;
-- on the same node
-- trying to use the same edge
-
-*/
-
 // combines graph, deflects conflicing node pairs
 int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, Graph *g, CombinedGraph *newCG, int singleGraphFinishID)
 {
     // return if no steps are allowed to be taken
     if (stepsLeft < 0)
+        return -1;
+
+    // return -1 if SGN is the same as one of the ids in the idlist of the CGN
+    if(vectorContains(oldCG->nodes[graphListIndex][combinedGraphIndex].idList, g->nodes[singleGraphIndex].id))
         return -1;
 
     // create new CGN object to store new data in

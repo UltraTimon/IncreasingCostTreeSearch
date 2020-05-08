@@ -27,6 +27,9 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
         return true;
     }
 
+    if (g->nodes[graphListIndex].empty())
+        return false;
+
     vector<int> edgesThatNeedToBeRemoved;
 
     if (stepsLeft > 0)
@@ -223,6 +226,9 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
 {
     // return if no steps are allowed to be taken
     if (stepsLeft < 0)
+        return -1;
+
+    if(oldCG->nodes[graphListIndex].empty())
         return -1;
 
     // return -1 if SGN is the same as one of the ids in the idlist of the CGN

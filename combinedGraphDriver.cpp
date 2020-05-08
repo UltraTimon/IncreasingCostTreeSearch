@@ -51,6 +51,9 @@ void createInitialCombinedGraph(vector<Agent> agentList, vector<int> optimalCost
         newVisited.push_back(temp);
     }
 
+    if(cg->nodes[0].empty())
+        return;
+
     cg->combinedNodeIsUseful(0, 0, endList, cost, cg);
 }
 
@@ -121,6 +124,8 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         return cg;
     }
 
+    CombinedGraph newCG = CombinedGraph(cost);
+
     // run the mill for each extra agent
     for (int i = 2; i < agentList.size(); i++)
     {
@@ -160,12 +165,15 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         vector<int> emptyList;
 
 
-        CombinedGraph newCG = CombinedGraph(cost);
         cg.copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, &cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
-        cg = newCG;
-        
+
+        // move data from newCG to cg
+        cg.clear();
+        cg.copy(newCG);
+        newCG.clear();
+
         combinedNodeIsUseful(0, 0, finishCombinedG, cost, &cg);
-        if(cg.nodes[0].front().useful)
+        if(!cg.nodes[0].empty() && cg.nodes[0].front().useful)
             printCombinedGraph(&cg, cost, false);
     }
 

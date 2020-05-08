@@ -24,6 +24,13 @@ Graph importGraph(string filename) {
         cout << "generatePaths: Unable to open file. Sorry" << endl;
     }
 
+    // add self edges
+    for (int i = 0; i < g.nodes.size(); i++)
+    {
+        g.nodes[i].edges.push_back(i);
+    }
+    
+
     return g;
 }
 

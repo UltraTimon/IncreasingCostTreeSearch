@@ -14,21 +14,12 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB)
 
 // for general CombinedGraph, no restrictions on number of nodes
 // remove illegal edges
-bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g, vector<vector<bool>> visited, int cost, int maxNodes)
+bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g)
 {
     if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList)))
     {
         return false;
     }
-
-    // \/\/ calculations for a 1D array if I need to use that
-
-    // graphListIndex ranges from 0 to cost, since g->nodes is an aray of vectors, and the array is cost + 1 size
-    // current is current index on the vector of the floor we're at
-    // to get to the graphListIndex-th floor, we do graphListIndex * maxNodes, since the floors lie on the ground after eachother
-    // int visitedIndex = graphListIndex * maxNodes + current;
-
-    visited.at(graphListIndex).at(current) = true;
 
     if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
     {
@@ -43,21 +34,7 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
         for (int edgeCounter = 0; edgeCounter < g->nodes[graphListIndex][current].edges.size(); edgeCounter++)
         {
             int edge = g->nodes[graphListIndex][current].edges[edgeCounter];
-            if (!visited.at(graphListIndex + 1).at(edge))
-            {
-                // make deepcopy of visited array s.t. other paths can still be discovered
-                vector<vector<bool>> newVisited;
-                for (int k = 0; k < cost + 1; k++)
-                {
-                    vector<bool> temp;
-                    for (int j = 0; j < maxNodes; j++)
-                    {
-                        temp.push_back(visited.at(k).at(j));
-                    }
-                    newVisited.push_back(temp);
-                }
-
-                if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g, newVisited, cost, maxNodes))
+                if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g))
                 {
                     g->nodes[graphListIndex][current].useful = true;
                 }
@@ -65,7 +42,7 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
                 {
                     edgesThatNeedToBeRemoved.push_back(edgeCounter);
                 }
-            }
+            // }
         }
     }
 
@@ -87,6 +64,8 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
     }
     g->nodes[graphListIndex][current].edges = checkedEdges;
 
+
+    // return whether this node is a beneficial member of society
     if (g->nodes[graphListIndex][current].useful)
     {
         return true;
@@ -135,8 +114,6 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
 Checks to be done;
 - on the same node
 - trying to use the same edge
-- nodes useful or not
-- visited
 
 */
 

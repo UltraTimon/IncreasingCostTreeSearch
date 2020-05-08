@@ -34,14 +34,14 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
         for (int edgeCounter = 0; edgeCounter < g->nodes[graphListIndex][current].edges.size(); edgeCounter++)
         {
             int edge = g->nodes[graphListIndex][current].edges[edgeCounter];
-                if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g))
-                {
-                    g->nodes[graphListIndex][current].useful = true;
-                }
-                else
-                {
-                    edgesThatNeedToBeRemoved.push_back(edgeCounter);
-                }
+            if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g))
+            {
+                g->nodes[graphListIndex][current].useful = true;
+            }
+            else
+            {
+                edgesThatNeedToBeRemoved.push_back(edgeCounter);
+            }
             // }
         }
     }
@@ -63,7 +63,6 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
         }
     }
     g->nodes[graphListIndex][current].edges = checkedEdges;
-
 
     // return whether this node is a beneficial member of society
     if (g->nodes[graphListIndex][current].useful)
@@ -110,6 +109,71 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, Graph *g, CombinedGraph *newCG, vector<int> copyOfPreviousIdList)
+{
+    // return if no steps are allowed to be taken
+    if (stepsLeft < 0)
+        return -1;
+
+    // create new CGN object to store new data in
+    CombinedGraphNode newCGN = CombinedGraphNode(g->nodes.size());
+
+    // copy attributes from copied IDList that is pointed to by the combinedGraphEdge to new CGN object
+    for (int i : copyOfPreviousIdList)
+    {
+        newCGN.idList.push_back(i);
+    }
+
+
+    // add id of singleGraphNode to new CGN
+    newCGN.idList.push_back(g->nodes[singleGraphIndex].id);
+
+    // for SingleGraphEdge :  SingleGraphNode.edges
+    for (int singleGraphEdge : g->nodes[singleGraphIndex].edges)
+    {
+        // make a recursive call to it in which you specify the index it's placed in
+        int indexOfNewChild = repeatCombinedNode(stepsLeft - 1, graphListIndex + 1, singleGraphEdge, g, newCG, copyOfPreviousIdList);
+
+        if (indexOfNewChild >= 0)
+        {
+            newCGN.edges.push_back(indexOfNewChild);
+        }
+    }
+
+    // push newCGN object into newCG graphListIndex + 1's list
+    int newCGNIndex = newCG->nodes[graphListIndex].size();
+    newCG->nodes[graphListIndex].push_back(newCGN);
+
+    return newCGNIndex;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 Checks to be done;
 - on the same node
@@ -127,54 +191,55 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
     // create new CGN object to store new data in
     CombinedGraphNode newCGN = CombinedGraphNode(g->nodes.size());
 
-    // copy attributes from CGN that is pointed to by the combinedGraphEdge to new CGN object
+    // copy over the idList
     for (int i : oldCG->nodes[graphListIndex][combinedGraphIndex].idList)
     {
         newCGN.idList.push_back(i);
     }
 
+    // repeat this CGN if needed
+    if(oldCG->nodes[graphListIndex + 1].size() == 0) {
+        cout << "repeat CGN from now on" << endl;
+        return repeatCombinedNode(stepsLeft, graphListIndex, singleGraphIndex, g, newCG, newCGN.idList);
+    }
+
     // add id of singleGraphNode to new CGN
     newCGN.idList.push_back(g->nodes[singleGraphIndex].id);
-
-
-    // push newCGN object into newCG graphListIndex + 1's list
 
     // for SingleGraphEdge :  SingleGraphNode.edges
     for (int singleGraphEdge : g->nodes[singleGraphIndex].edges)
     {
-
         // for CombinedGraphEdge :  CombinedGraphNode.edges
         for (int combinedGraphEdge : oldCG->nodes[graphListIndex][combinedGraphIndex].edges)
         {
-
             // make a recursive call to it in which you specify the index it's placed in
             int indexOfNewChild = copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(stepsLeft - 1, graphListIndex + 1, combinedGraphIndex, oldCG, singleGraphEdge, g, newCG);
 
-            if(indexOfNewChild >= 0) {
+            if (indexOfNewChild >= 0)
+            {
                 newCGN.edges.push_back(indexOfNewChild);
             }
         }
     }
 
+    // push newCGN object into newCG graphListIndex's list
     int newCGNIndex = newCG->nodes[graphListIndex].size();
     newCG->nodes[graphListIndex].push_back(newCGN);
 
     printf("Created a new node with id: ");
-    for(int id : newCG->nodes[graphListIndex][newCGNIndex].idList)
+    for (int id : newCG->nodes[graphListIndex][newCGNIndex].idList)
         cout << id << " ";
     printf(" and edges: ");
-    for(int edge : newCG->nodes[graphListIndex][newCGNIndex].edges)
+    for (int edge : newCG->nodes[graphListIndex][newCGNIndex].edges)
         cout << edge << " ";
     cout << endl;
 
     printf("returning index: %d\n", newCGNIndex);
+
+
+
     return newCGNIndex;
 }
-
-
-
-
-
 
 
 

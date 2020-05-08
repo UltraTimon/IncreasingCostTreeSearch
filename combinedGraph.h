@@ -24,8 +24,8 @@ class CombinedGraph
 
 
 
-        int addSingleGraphToCombinedGraph(int stepsTaken, int cost, int graphListIndex, int currentCG, int currentG, vector<int> finishCG, int finishG, vector<vector<bool>> visitedCG, bool *visitedG, int maxNodes, CombinedGraph *cg, Graph *g, bool newCGN, vector<int> repeatedIdListOldCG, bool repeatFinalCGN, vector<int> repeatedIdList);
-    
+        
+        
     public:
         CombinedGraph(int numberOfSteps) {
             // + 1 since you want to also store the first node. That one does require an index but does not require a step

@@ -53,6 +53,9 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     // if the combined source node has been marked as useful we know that there exists at least one path and we can return true
     // then we can add the paths to a given pointer that holds the path data (which is stored in ICTS() or even main()), and add it just like in getPathsFromGraph()
 
+
+    // TODO:    delete cg somewhere here
+
     if(finalCG.nodes[0].empty())
         return false;
     else

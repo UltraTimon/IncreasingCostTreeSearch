@@ -109,6 +109,14 @@ void printCombinedGraph(CombinedGraph *cg, int cost, bool alsoIncludeNonUsefulNo
     cout << "-- Done printing graph" << endl;
 }
 
+CombinedGraph handleExtraAgent(int cost, int start, int end, Graph *g, CombinedGraph *cg) {
+    CombinedGraph newCG = CombinedGraph(cost);
+    
+    cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, start, g, &newCG, end);
+
+    return newCG;
+}
+
 // ASSUMPTION: #agents >= 2
 CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList)
 {
@@ -117,6 +125,7 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         if (j > cost)
             cost = j;
 
+
     CombinedGraph cg = CombinedGraph(cost);
     createInitialCombinedGraph(agentList, optimalCostList, &cg);
 
@@ -124,7 +133,6 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         return cg;
     }
 
-    CombinedGraph newCG = CombinedGraph(cost);
 
     // run the mill for each extra agent
     for (int i = 2; i < agentList.size(); i++)
@@ -134,43 +142,12 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         {
             finishCombinedG.push_back(agentList[j].end);
         }
-        
-
-        int maxNodes = 0;
-        for (int j = 0; j < cost + 1; j++)
-        {
-            int size = cg.nodes[j].size() * 3;
-            if (size > maxNodes)
-                maxNodes = size;
-        }
-
-        vector<vector<bool>> newVisitedCG;
-        for (int k = 0; k < cost + 1; k++)
-        {
-            vector<bool> temp;
-            for (int j = 0; j < maxNodes; j++)
-            {
-                temp.push_back(false);
-            }
-            newVisitedCG.push_back(temp);
-        }
-
-        bool newVisitedG[agentList[i].graph.nodes.size()];
-
-        for (int j = 0; j < agentList[j].graph.nodes.size(); j++)
-        {
-            newVisitedG[j] = false;
-        }
-
         vector<int> emptyList;
 
 
-        cg.copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, &cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
+        cg = handleExtraAgent(cost, agentList[i].start, agentList[i].end, &agentList[i].graph, &cg);
 
-        // move data from newCG to cg
-        cg.clear();
-        cg.copy(newCG);
-        newCG.clear();
+        
 
         combinedNodeIsUseful(0, 0, finishCombinedG, cost, &cg);
         if(!cg.nodes[0].empty() && cg.nodes[0].front().useful)

@@ -19,6 +19,12 @@ class CombinedGraphNode
             idList.reserve(nrOfNodes * nrOfNodes);
             edges.reserve(nrOfNodes * nrOfNodes);
         }
+        CombinedGraphNode copy(CombinedGraphNode toCopy) {
+            numberOfNodes = toCopy.numberOfNodes;
+            idList = toCopy.idList;
+            edges = toCopy.edges;
+            useful = toCopy.useful;
+        }
 };
 
 class CombinedGraph
@@ -45,18 +51,13 @@ class CombinedGraph
         
         CombinedGraph createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList);
 
-        void copy(CombinedGraph cg) {
+        void copy(CombinedGraph *cg) {
             for (int i = 0; i <= steps; i++)
             {
-                for(auto cgn : cg.nodes[i]) {
-                    CombinedGraphNode newCGN = CombinedGraphNode(cgn.numberOfNodes);
-                    for(int x : cgn.idList)
-                        newCGN.idList.push_back(x);
-                    for(int x : cgn.edges)
-                        newCGN.idList.push_back(x);
-                    newCGN.useful = cgn.useful;
+                for(auto cgn : cg->nodes[i]) {
+                    // CombinedGraphNode newCGN = cgn;
                     
-                    nodes[i].push_back(newCGN);
+                    nodes[i].push_back(cgn);
                 }
             }
         }

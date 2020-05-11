@@ -12,6 +12,8 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB)
     return true;
 }
 
+// void removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, )
+
 // for general CombinedGraph, no restrictions on number of nodes
 // remove illegal edges
 bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g)

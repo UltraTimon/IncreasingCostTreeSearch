@@ -4,11 +4,11 @@
 bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
 {
     if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
-        return 0;
+        return false;
 
-    visited[current] = true;
+    // visited[current] = true;
 
-    if (stepsLeft == 0 && current == end)
+    if (current == end)
     {
         g->nodes[current].useful = true;
         return true;
@@ -19,8 +19,8 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
     {
         for (int i : g->nodes[current].edges)
         {
-            if (!visited[i])
-            {
+            // if (!visited[i])
+            // {
 
                 // make deepcopy of visited array s.t. other paths can still be discovered
                 bool *newVisited = new bool[g->nodes.size()];
@@ -33,16 +33,11 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
                 {
                     g->nodes[current].useful = true;
                 }
-            }
+            // }
         }
     }
 
-    if (g->nodes[current].useful)
-    {
-        return true;
-    } else {
-        return false;
-    }
+    return g->nodes[current].useful;
 }
 
 // Obsolete

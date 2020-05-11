@@ -1,7 +1,7 @@
 #include "generatePaths.h"
 #include "basics.h"
 
-bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
+bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
 {
     if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
         return false;
@@ -19,21 +19,10 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
     {
         for (int i : g->nodes[current].edges)
         {
-            // if (!visited[i])
-            // {
-
-                // make deepcopy of visited array s.t. other paths can still be discovered
-                bool *newVisited = new bool[g->nodes.size()];
-                for (int j = 0; j < g->nodes.size(); j++)
-                {
-                    newVisited[j] = visited[j];
-                }
-
-                if (nodeIsUseful(i, end, stepsLeft - 1, g, newVisited))
-                {
-                    g->nodes[current].useful = true;
-                }
-            // }
+            if (nodeIsUseful(i, end, stepsLeft - 1, g))
+            {
+                g->nodes[current].useful = true;
+            }
         }
     }
 
@@ -99,13 +88,7 @@ void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vecto
 // Returns true if at least one path is found, false otherwise
 bool generateUsefulGraph(Graph *g, int start, int end, int exactCost)
 {
-    // find paths
-    bool visited[g->nodes.size()];
-    for (int i = 0; i < g->nodes.size(); i++)
-    {
-        visited[i] = false;
-    }
-    return nodeIsUseful(start, end, exactCost, g, visited);
+    return nodeIsUseful(start, end, exactCost, g);
 }
 
 // generate paths for each agent, add paths to agent object

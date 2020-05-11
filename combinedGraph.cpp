@@ -273,6 +273,84 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
     return newCGNIndex;
 }
 
+int repeatA(int stepsTaken, int cost, int currentB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
+    // if we are out of steps, stop building the graph
+    if (stepsTaken > cost)
+    {
+        return -1;
+    }
+    // if the indices are the same, we have a conflict and we can't use this path
+    if (finishA == currentB)
+    {
+        return -1;
+    }
+    if(!g2->nodes[currentB].useful)
+        return -1;
+
+    // create the new node
+    CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());
+    cgn.idList.push_back(finishA);
+    cgn.idList.push_back(currentB);
+
+    if(currentB == finishB) {
+        cg->nodes[stepsTaken].push_back(cgn);
+        return cg->nodes[stepsTaken].size() - 1;
+    }
+
+    for(int edgeB : g2->nodes[currentB].edges) {
+        if(!(finishA == edgeB && finishA == currentB)) {
+            int indexOfChild = repeatA(stepsTaken + 1, cost, edgeB, finishA, finishB, g1, g2, cg);
+
+            if (indexOfChild >= 0)
+            {
+                cgn.edges.push_back(indexOfChild);
+            }
+        }
+    }
+
+    cg->nodes[stepsTaken].push_back(cgn);
+    return cg->nodes[stepsTaken].size() - 1;
+}
+
+int repeatB(int stepsTaken, int cost, int currentA, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
+    // if we are out of steps, stop building the graph
+    if (stepsTaken > cost)
+    {
+        return -1;
+    }
+    // if the indices are the same, we have a conflict and we can't use this path
+    if (finishB == currentA)
+    {
+        return -1;
+    }
+    if(!g1->nodes[currentA].useful)
+        return -1;
+
+    // create the new node
+    CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());
+    cgn.idList.push_back(finishB);
+    cgn.idList.push_back(currentA);
+
+    if(currentA == finishA) {
+        cg->nodes[stepsTaken].push_back(cgn);
+        return cg->nodes[stepsTaken].size() - 1;
+    }
+
+    for(int edgeA : g1->nodes[currentA].edges) {
+        if(!(finishB == edgeA && finishB == currentA)) {
+            int indexOfChild = repeatA(stepsTaken + 1, cost, edgeA, finishA, finishB, g1, g2, cg);
+
+            if (indexOfChild >= 0)
+            {
+                cgn.edges.push_back(indexOfChild);
+            }
+        }
+    }
+
+    cg->nodes[stepsTaken].push_back(cgn);
+    return cg->nodes[stepsTaken].size() - 1;
+}
+
 // combines graph, deflects conflicing node pairs
 int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, Graph *g1, Graph *g2,
                                   CombinedGraph *cg)
@@ -289,59 +367,38 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
         return -1;
     }
 
+    if(!g1->nodes[currentA].useful || !g2->nodes[currentB].useful)
+        return -1;
+
+    if(currentA == finishA)
+        repeatA(stepsTaken, cost, currentB, finishA, finishB, g1, g2, cg);
+
+    if(currentB == finishB)
+        repeatB(stepsTaken, cost, currentA, finishA, finishB, g1, g2, cg);
+
     CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());
     cgn.idList.push_back(currentA);
     cgn.idList.push_back(currentB);
 
-    // if one of them is already at the final node, allow it to stay there until the other one takes its last steps
-    bool aIsDone = currentA == finishA;
-    bool bIsDone = currentB == finishB;
-
-    vector<int> edgesA, edgesB;
-    if (aIsDone && !bIsDone)
-    {
-        edgesA.push_back(currentA);
-        edgesB = g2->nodes[currentB].edges;
-    }
-    else if (!aIsDone && bIsDone)
-    {
-        edgesA = g1->nodes[currentA].edges;
-        edgesB.push_back(currentB);
-    }
-    else
-    {
-        edgesA = g1->nodes[currentA].edges;
-        edgesB = g2->nodes[currentB].edges;
-    }
-
     // make recursive calls
-    for (int edgeA : edgesA)
+    for (int edgeA : g1->nodes[currentA].edges)
     {
-        for (int edgeB : edgesB)
+        for (int edgeB : g2->nodes[currentB].edges)
         {
             // 2 agents cannot use the same edge from opposite sides at the same time
             if (!(edgeA == currentB && edgeB == currentA))
             {
-                int indexOfChildX = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, g1, g2, cg);
+                int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, g1, g2, cg);
 
-                if (indexOfChildX >= 0)
+                if (indexOfChild >= 0)
                 {
-                    cgn.edges.push_back(indexOfChildX);
+                    cgn.edges.push_back(indexOfChild);
                 }
             }
         }
     }
 
-    bool thisIsTheFinalStep = stepsTaken == cost;
-
-    if (!thisIsTheFinalStep || (thisIsTheFinalStep && aIsDone && bIsDone))
-    {
-        int indexInMatrix = cg->nodes[stepsTaken].size();
-        cg->nodes[stepsTaken].push_back(cgn);
-        return indexInMatrix;
-    }
-    else
-    {
-        return -1;
-    }
+    cg->nodes[stepsTaken].push_back(cgn);
+    return cg->nodes[stepsTaken].size() - 1;
+   
 }

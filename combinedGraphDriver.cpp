@@ -119,12 +119,12 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         if (j > cost)
             cost = j;
 
-    CombinedGraph cg = CombinedGraph(cost);
+    CombinedGraph *cg = new CombinedGraph(cost);
 
-    createInitialCombinedGraph(agentList, optimalCostList, &cg);
+    createInitialCombinedGraph(agentList, optimalCostList, cg);
 
     if(agentList.size() == 2) {
-        return cg;
+        return *cg;
     }
 
 
@@ -134,18 +134,28 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
     {
         vector<int> finishCombinedG;
 
-        CombinedGraph newCG = CombinedGraph(cost);
-        cg.copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, &cg, agentList[i].start, &agentList[i].graph, &newCG, agentList[i].end);
+        CombinedGraph *newCG = new CombinedGraph(cost);
+        cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, agentList[i].start, &agentList[i].graph, newCG, agentList[i].end);
 
         for (int j = 0; j < agentList.size(); j++)
         {
             finishCombinedG.push_back(agentList[j].end);
         }
         
-        combinedNodeIsUseful(0, 0, finishCombinedG, cost, &newCG);
+        combinedNodeIsUseful(0, 0, finishCombinedG, cost, newCG);
         
-        printCombinedGraph(&newCG, cost, false);
+        printf("NEWCG: \n");
+        printCombinedGraph(newCG, cost, true);
+        // cg->clear();
+        CombinedGraph *temp = cg;
+        cg = newCG;
+        delete temp;
+
+        printf("Normal CG: \n");
+        printCombinedGraph(cg, cost, true);
+
+        // TODO: COPY NEWCG TO CG AND THEN CLEAR NEWCG, .clear() METHOD WORKS PERFECTLY, .copy() DOES NOT!
     }
 
-    return cg;
+    return *cg;
 }

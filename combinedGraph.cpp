@@ -41,31 +41,8 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
             {
                 g->nodes[graphListIndex][current].useful = true;
             }
-            else
-            {
-                edgesThatNeedToBeRemoved.push_back(edgeCounter);
-            }
-            // }
         }
     }
-
-    // remove bad edges
-    vector<int> edgesToCheck = g->nodes[graphListIndex][current].edges;
-    vector<int> checkedEdges;
-    for (int x = 0; x < edgesToCheck.size(); x++)
-    {
-        bool good = true;
-        for (int i : edgesThatNeedToBeRemoved)
-        {
-            if (i == x)
-                good = false;
-        }
-        if (good)
-        {
-            checkedEdges.push_back(x);
-        }
-    }
-    g->nodes[graphListIndex][current].edges = checkedEdges;
 
     // return whether this node is a beneficial member of society
     if (g->nodes[graphListIndex][current].useful)

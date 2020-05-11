@@ -9,6 +9,8 @@ using namespace std;
 #include <deque>
 #include <vector>
 #include <iostream>
+#include <cstdint>
+#include <cstring>
 
 extern bool verbose;
 

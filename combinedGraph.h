@@ -20,10 +20,14 @@ class CombinedGraphNode
             edges.reserve(nrOfNodes * nrOfNodes);
         }
         CombinedGraphNode copy(CombinedGraphNode toCopy) {
-            numberOfNodes = toCopy.numberOfNodes;
-            idList = toCopy.idList;
-            edges = toCopy.edges;
-            useful = toCopy.useful;
+            CombinedGraphNode newNode = CombinedGraphNode(toCopy.numberOfNodes);
+            for(int i : toCopy.idList)
+                newNode.idList.push_back(i);
+            for(int i : toCopy.edges)
+                newNode.edges.push_back(i);
+            newNode.useful = toCopy.useful;
+
+            return newNode;
         }
 };
 
@@ -55,9 +59,8 @@ class CombinedGraph
             for (int i = 0; i <= steps; i++)
             {
                 for(auto cgn : cg->nodes[i]) {
-                    // CombinedGraphNode newCGN = cgn;
-                    
-                    nodes[i].push_back(cgn);
+                    CombinedGraphNode newCGN = cgn.copy(cgn);
+                    nodes[i].push_back(newCGN);
                 }
             }
         }

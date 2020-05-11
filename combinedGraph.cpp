@@ -12,7 +12,25 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB)
     return true;
 }
 
-// void removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, )
+// an edge is illegal if two agents try to use it at the same time from opposite nodes
+void removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost) {
+    // the nodes at the last index have no edges
+    // maxCost is the last level since cg has maxCost + 1 node lists (see constructor)
+    if(graphListIndex == maxCost)
+        return;
+    
+    CombinedGraphNode *current = &cg->nodes[graphListIndex][currentCombinedGraphIndex];
+
+    vector<CombinedGraphNode> nodesToCheck;
+    for(int i : current->edges)
+        nodesToCheck.push_back(cg->nodes[graphListIndex + 1][i]);
+
+    // compare each id one for one (watch the index of the idList)
+
+    // do a for-for loop in which you compare each pair of (currentNode, nextNode) pairs against each (nextNode, currentNode) pair
+    //      if they conflict, remove that edge
+
+}
 
 // for general CombinedGraph, no restrictions on number of nodes
 // remove illegal edges

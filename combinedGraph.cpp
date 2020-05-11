@@ -108,14 +108,7 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
     }
 
     // return whether this node is a beneficial member of society
-    if (g->nodes[graphListIndex][current].useful)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return g->nodes[graphListIndex][current].useful;
 }
 
 bool vectorContains(vector<int> vec, int x)

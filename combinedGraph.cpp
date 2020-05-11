@@ -95,8 +95,6 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
     if (g->nodes[graphListIndex].empty())
         return false;
 
-    vector<int> edgesThatNeedToBeRemoved;
-
     if (stepsLeft > 0)
     {
         for (int edgeCounter = 0; edgeCounter < g->nodes[graphListIndex][current].edges.size(); edgeCounter++)

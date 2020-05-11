@@ -13,21 +13,30 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB)
 }
 
 // an edge is illegal if two agents try to use it at the same time from opposite nodes
-void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost) {
+void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost)
+{
     // the nodes at the last index have no edges
     // maxCost is the last level since cg has maxCost + 1 node lists (see constructor)
-    if(graphListIndex == maxCost)
+    if (graphListIndex == maxCost)
         return;
-    
+
     CombinedGraphNode currentNode = cg->nodes[graphListIndex][currentCombinedGraphIndex];
-    for(int i : currentNode.edges) {
+
+    for (int i : currentNode.edges)
+    {
         removeIllegalEdges(cg, graphListIndex + 1, i, maxCost);
     }
 
+    printf("Removing edges from node (");
+    for (int i : currentNode.idList)
+        cout << i << " ";
+    cout << ")" << endl;
+
     vector<int> goodEdges;
-    
-    for(int x : currentNode.edges) {
-        bool goodEdge = true;    
+
+    for (int x : currentNode.edges)
+    {
+        bool goodEdge = true;
         CombinedGraphNode checkNode = cg->nodes[graphListIndex + 1][x];
         for (int i = 0; i < currentNode.idList.size(); i++)
         {
@@ -39,23 +48,30 @@ void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, in
                 int nextA = currentNode.idList[j];
                 int nextB = checkNode.idList[j];
 
-                if(currentA == nextB && currentB == nextA) {
+                if (currentA == nextB && currentB == nextA)
+                {
                     // there exist two agents that want to use the same edge
                     goodEdge = false;
+
+                    printf("Removing edge (");
+                    for (int i : checkNode.idList)
+                        cout << i << " ";
+                    cout << ")" << endl;
+
                     break;
                 }
             }
 
-            if(!goodEdge)
+            if (!goodEdge)
                 break;
         }
-        if(goodEdge)
+        if (goodEdge)
             goodEdges.push_back(x);
     }
 
     // replace edges list for this node with good edges that have no conflict
     cg->nodes[graphListIndex][currentCombinedGraphIndex].edges.clear();
-    for(int i : goodEdges)
+    for (int i : goodEdges)
         cg->nodes[graphListIndex][currentCombinedGraphIndex].edges.push_back(i);
 }
 
@@ -126,12 +142,6 @@ bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int cur
     return false;
 }
 
-
-
-
-
-
-
 int repeatSingleGraphNode(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, CombinedGraph *newCG, int amountOfNodes)
 {
     // return if no steps are allowed to be taken
@@ -139,7 +149,7 @@ int repeatSingleGraphNode(int stepsLeft, int graphListIndex, int combinedGraphIn
         return -1;
 
     // return -1 if SGN is the same as one of the ids in the idlist of the CGN
-    if(vectorContains(oldCG->nodes[graphListIndex][combinedGraphIndex].idList, singleGraphIndex))
+    if (vectorContains(oldCG->nodes[graphListIndex][combinedGraphIndex].idList, singleGraphIndex))
         return -1;
 
     // create new CGN object to store new data in
@@ -173,25 +183,6 @@ int repeatSingleGraphNode(int stepsLeft, int graphListIndex, int combinedGraphIn
     return newCGNIndex;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, Graph *g, CombinedGraph *newCG, vector<int> copyOfPreviousIdList)
 {
     // return if no steps are allowed to be taken
@@ -199,7 +190,7 @@ int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, 
         return -1;
 
     // return -1 if SGN is the same as one of the ids in the idlist of the CGN
-    if(vectorContains(copyOfPreviousIdList, g->nodes[singleGraphIndex].id))
+    if (vectorContains(copyOfPreviousIdList, g->nodes[singleGraphIndex].id))
         return -1;
 
     // create new CGN object to store new data in
@@ -210,7 +201,6 @@ int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, 
     {
         newCGN.idList.push_back(i);
     }
-
 
     // add id of singleGraphNode to new CGN
     newCGN.idList.push_back(g->nodes[singleGraphIndex].id);
@@ -234,17 +224,6 @@ int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, 
     return newCGNIndex;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // combines graph, deflects conflicing node pairs
 int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, Graph *g, CombinedGraph *newCG, int singleGraphFinishID)
 {
@@ -252,11 +231,11 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
     if (stepsLeft < 0)
         return -1;
 
-    if(oldCG->nodes[graphListIndex].empty())
+    if (oldCG->nodes[graphListIndex].empty())
         return -1;
 
     // return -1 if SGN is the same as one of the ids in the idlist of the CGN
-    if(vectorContains(oldCG->nodes[graphListIndex][combinedGraphIndex].idList, g->nodes[singleGraphIndex].id))
+    if (vectorContains(oldCG->nodes[graphListIndex][combinedGraphIndex].idList, g->nodes[singleGraphIndex].id))
         return -1;
 
     // create new CGN object to store new data in
@@ -269,11 +248,13 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
     }
 
     // repeat this CGN if needed
-    if(oldCG->nodes[graphListIndex + 1].size() == 0) {
+    if (oldCG->nodes[graphListIndex + 1].size() == 0)
+    {
         return repeatCombinedNode(stepsLeft, graphListIndex, singleGraphIndex, g, newCG, newCGN.idList);
     }
     // repeat singleGraphNode if needed
-    if(g->nodes[singleGraphIndex].id == singleGraphFinishID) {
+    if (g->nodes[singleGraphIndex].id == singleGraphFinishID)
+    {
         return repeatSingleGraphNode(stepsLeft, graphListIndex, combinedGraphIndex, oldCG, singleGraphIndex, newCG, g->nodes.size());
     }
 
@@ -302,22 +283,6 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
 
     return newCGNIndex;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // combines graph, deflects conflicing node pairs
 int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,

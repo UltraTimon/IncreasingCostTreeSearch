@@ -54,6 +54,9 @@ void createInitialCombinedGraph(vector<Agent> agentList, vector<int> optimalCost
     if(cg->nodes[0].empty())
         return;
 
+    // Remove illegal edges s.t. they do not help nodes become useful while they use an illegal edge
+    cg->removeIllegalEdges(cg, 0, 0, cost);
+
     cg->combinedNodeIsUseful(0, 0, endList, cost, cg);
 }
 
@@ -109,6 +112,13 @@ void printCombinedGraph(CombinedGraph *cg, int cost, bool alsoIncludeNonUsefulNo
     cout << "-- Done printing graph" << endl;
 }
 
+void resetUsefulFlags(CombinedGraph *cg, int cost) {
+    for (int i = 0; i <= cost; i++)
+    {
+        for(auto node : cg->nodes[i])
+            node.useful = false;
+    }
+}
 
 // ASSUMPTION: #agents >= 2
 CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList)
@@ -123,34 +133,45 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
 
     createInitialCombinedGraph(agentList, optimalCostList, cg);
 
+    bool includeAlsoUselessEdges = true;
+    printCombinedGraph(cg, cost, includeAlsoUselessEdges);
+
     if(agentList.size() == 2) {
         return *cg;
     }
 
-
-
     // run the mill for each extra agent
     for (int i = 2; i < agentList.size(); i++)
     {
-        vector<int> finishCombinedG;
 
         CombinedGraph *newCG = new CombinedGraph(cost);
-        cg->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, agentList[i].start, &agentList[i].graph, newCG, agentList[i].end);
+        newCG->copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(cost, 0, 0, cg, agentList[i].start, &agentList[i].graph, newCG, agentList[i].end);
 
+        vector<int> finishCombinedG;
         for (int j = 0; j < agentList.size(); j++)
         {
             finishCombinedG.push_back(agentList[j].end);
         }
         
-        cg->removeIllegalEdges(newCG, 0, 0, cost);
-        combinedNodeIsUseful(0, 0, finishCombinedG, cost, newCG);
+        // Reset useful flags 
+        resetUsefulFlags(newCG, cost);
+
+        // Remove illegal edges s.t. they do not help nodes become useful while they use an illegal edge
+        newCG->removeIllegalEdges(newCG, 0, 0, cost);
         
+
+        // select useful nodes
+        combinedNodeIsUseful(0, 0, finishCombinedG, cost, newCG);
+
+
+        bool includeAlsoUselessEdges2 = true;
+        printCombinedGraph(newCG, cost, includeAlsoUselessEdges2);
+        
+
+        // copy newCG to cg
         CombinedGraph *temp = cg;
         cg = newCG;
         delete temp;
-
-        bool includeAlsoUselessEdges = false;
-        printCombinedGraph(cg, cost, includeAlsoUselessEdges);
     }
 
     return *cg;

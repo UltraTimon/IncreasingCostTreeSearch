@@ -43,7 +43,7 @@ void createInitialCombinedGraph(vector<Agent> agentList, vector<int> optimalCost
         return;
 
     // // Remove illegal edges s.t. they do not help nodes become useful while they use an illegal edge
-    // cg->removeIllegalEdges(cg, 0, 0, cost);
+    cg->removeIllegalEdges(cg, 0, 0, cost);
 
     cg->combinedNodeIsUseful(0, 0, endList, cost, cg);
 }
@@ -130,6 +130,8 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         return *cg;
     }
 
+
+    // Redundant, will focus on 2 agents and 1 waypoint for now
     // run the mill for each extra agent
     for (int i = 2; i < agentList.size(); i++)
     {

@@ -8,7 +8,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
 
     visited[current] = true;
 
-    if (stepsLeft >= 0 && current == end)
+    if (stepsLeft == 0 && current == end)
     {
         g->nodes[current].useful = true;
         return true;

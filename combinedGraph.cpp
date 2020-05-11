@@ -86,7 +86,7 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
         return false;
     }
 
-    if (stepsLeft >= 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
+    if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
     {
         g->nodes[graphListIndex][current].useful = true;
         return true;

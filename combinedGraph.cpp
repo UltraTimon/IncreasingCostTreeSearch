@@ -27,10 +27,12 @@ void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, in
         removeIllegalEdges(cg, graphListIndex + 1, i, maxCost);
     }
 
-    printf("Removing edges from node (");
-    for (int i : currentNode.idList)
-        cout << i << " ";
-    cout << ")" << endl;
+    if(verbose) {
+        printf("Removing edges from node (");
+        for (int i : currentNode.idList)
+            cout << i << " ";
+        cout << ")" << endl;
+    }
 
     vector<int> goodEdges;
 
@@ -84,7 +86,7 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
         return false;
     }
 
-    if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
+    if (stepsLeft >= 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
     {
         g->nodes[graphListIndex][current].useful = true;
         return true;

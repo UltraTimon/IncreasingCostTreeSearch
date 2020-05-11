@@ -121,8 +121,10 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
 
     createInitialCombinedGraph(agentList, optimalCostList, cg);
 
-    bool includeAlsoUselessEdges = !cg->nodes[0][0].useful;
-    printCombinedGraph(cg, cost, includeAlsoUselessEdges);
+    if(verbose) {
+        bool includeAlsoUselessEdges = !cg->nodes[0][0].useful;
+        printCombinedGraph(cg, cost, includeAlsoUselessEdges);
+    }
 
     if(agentList.size() == 2) {
         return *cg;
@@ -151,9 +153,10 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         // select useful nodes
         combinedNodeIsUseful(0, 0, finishCombinedG, cost, newCG);
 
-
-        bool includeAlsoUselessEdges2 = !newCG->nodes[0][0].useful;
-        printCombinedGraph(newCG, cost, includeAlsoUselessEdges2);
+        if(verbose) {
+            bool includeAlsoUselessEdges2 = !newCG->nodes[0][0].useful;
+            printCombinedGraph(newCG, cost, includeAlsoUselessEdges2);
+        }
         
 
         // copy newCG to cg

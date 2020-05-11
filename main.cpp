@@ -8,7 +8,7 @@ bool verbose;
 
 int main(int argc, char **argv)
 {
-    verbose = true;
+    verbose = false;
 
     /*
         Main questions for this algorithm:

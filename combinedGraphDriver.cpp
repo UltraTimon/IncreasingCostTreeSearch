@@ -142,19 +142,15 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
             finishCombinedG.push_back(agentList[j].end);
         }
         
+        cg->removeIllegalEdges(newCG, 0, 0, cost);
         combinedNodeIsUseful(0, 0, finishCombinedG, cost, newCG);
         
-        printf("NEWCG: \n");
-        printCombinedGraph(newCG, cost, true);
-        // cg->clear();
         CombinedGraph *temp = cg;
         cg = newCG;
         delete temp;
 
-        printf("Normal CG: \n");
-        printCombinedGraph(cg, cost, true);
-
-        // TODO: COPY NEWCG TO CG AND THEN CLEAR NEWCG, .clear() METHOD WORKS PERFECTLY, .copy() DOES NOT!
+        bool includeAlsoUselessEdges = false;
+        printCombinedGraph(cg, cost, includeAlsoUselessEdges);
     }
 
     return *cg;

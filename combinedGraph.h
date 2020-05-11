@@ -54,6 +54,7 @@ class CombinedGraph
         };
         
         CombinedGraph createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList);
+        void removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost);
 
         void copy(CombinedGraph *cg) {
             for (int i = 0; i <= steps; i++)

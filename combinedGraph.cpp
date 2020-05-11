@@ -13,23 +13,50 @@ bool vectorEquals(vector<int> vecA, vector<int> vecB)
 }
 
 // an edge is illegal if two agents try to use it at the same time from opposite nodes
-void removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost) {
+void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost) {
     // the nodes at the last index have no edges
     // maxCost is the last level since cg has maxCost + 1 node lists (see constructor)
     if(graphListIndex == maxCost)
         return;
     
-    CombinedGraphNode *current = &cg->nodes[graphListIndex][currentCombinedGraphIndex];
+    CombinedGraphNode currentNode = cg->nodes[graphListIndex][currentCombinedGraphIndex];
+    for(int i : currentNode.edges) {
+        removeIllegalEdges(cg, graphListIndex + 1, i, maxCost);
+    }
 
-    vector<CombinedGraphNode> nodesToCheck;
-    for(int i : current->edges)
-        nodesToCheck.push_back(cg->nodes[graphListIndex + 1][i]);
+    vector<int> goodEdges;
+    
+    for(int x : currentNode.edges) {
+        bool goodEdge = true;    
+        CombinedGraphNode checkNode = cg->nodes[graphListIndex + 1][x];
+        for (int i = 0; i < currentNode.idList.size(); i++)
+        {
+            int currentA = currentNode.idList[i];
+            int currentB = checkNode.idList[i];
 
-    // compare each id one for one (watch the index of the idList)
+            for (int j = i + 1; j < currentNode.idList.size(); j++)
+            {
+                int nextA = currentNode.idList[j];
+                int nextB = checkNode.idList[j];
 
-    // do a for-for loop in which you compare each pair of (currentNode, nextNode) pairs against each (nextNode, currentNode) pair
-    //      if they conflict, remove that edge
+                if(currentA == nextB && currentB == nextA) {
+                    // there exist two agents that want to use the same edge
+                    goodEdge = false;
+                    break;
+                }
+            }
 
+            if(!goodEdge)
+                break;
+        }
+        if(goodEdge)
+            goodEdges.push_back(x);
+    }
+
+    // replace edges list for this node with good edges that have no conflict
+    cg->nodes[graphListIndex][currentCombinedGraphIndex].edges.clear();
+    for(int i : goodEdges)
+        cg->nodes[graphListIndex][currentCombinedGraphIndex].edges.push_back(i);
 }
 
 // for general CombinedGraph, no restrictions on number of nodes

@@ -81,25 +81,21 @@ void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, in
 // remove illegal edges
 bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g)
 {
-    if (stepsLeft < 0 || (stepsLeft == 0 && !vectorEquals(g->nodes[graphListIndex][current].idList, endIdList)))
+    if (stepsLeft < 0)
     {
         return false;
     }
 
-    if (stepsLeft == 0 && vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
+    if (vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
     {
         g->nodes[graphListIndex][current].useful = true;
         return true;
     }
 
-    if (g->nodes[graphListIndex].empty())
-        return false;
-
     if (stepsLeft > 0)
     {
-        for (int edgeCounter = 0; edgeCounter < g->nodes[graphListIndex][current].edges.size(); edgeCounter++)
+        for (int edge : g->nodes[graphListIndex][current].edges)
         {
-            int edge = g->nodes[graphListIndex][current].edges[edgeCounter];
             if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g))
             {
                 g->nodes[graphListIndex][current].useful = true;

@@ -3,10 +3,8 @@
 
 bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
 {
-    if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
+    if (stepsLeft < 0)
         return false;
-
-    // visited[current] = true;
 
     if (current == end)
     {

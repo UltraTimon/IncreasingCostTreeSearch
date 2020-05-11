@@ -285,17 +285,11 @@ int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeInclud
 }
 
 // combines graph, deflects conflicing node pairs
-int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2,
+int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, Graph *g1, Graph *g2,
                                   CombinedGraph *cg)
 {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)
-    {
-        return -1;
-    }
-
-    // if the nodes are not useful, stop building the graph
-    if (!g1->nodes[currentA].useful || !g2->nodes[currentB].useful)
     {
         return -1;
     }
@@ -305,9 +299,6 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     {
         return -1;
     }
-
-    visitedA[currentA] = true;
-    visitedB[currentB] = true;
 
     CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());
     cgn.idList.push_back(currentA);
@@ -321,14 +312,12 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     if (aIsDone && !bIsDone)
     {
         edgesA.push_back(currentA);
-        visitedA[currentA] = false;
         edgesB = g2->nodes[currentB].edges;
     }
     else if (!aIsDone && bIsDone)
     {
         edgesA = g1->nodes[currentA].edges;
         edgesB.push_back(currentB);
-        visitedB[currentB] = false;
     }
     else
     {
@@ -341,29 +330,14 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
     {
         for (int edgeB : edgesB)
         {
-            if (!visitedA[edgeA] && !visitedB[edgeB])
+            // 2 agents cannot use the same edge from opposite sides at the same time
+            if (!(edgeA == currentB && edgeB == currentA))
             {
-                // 2 agents cannot use the same edge from opposite sides at the same time
-                if (!(edgeA == currentB && edgeB == currentA))
+                int indexOfChildX = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, g1, g2, cg);
+
+                if (indexOfChildX >= 0)
                 {
-                    // make deepcopy of visited arrays to allow for weird loopy paths
-                    bool *newVisitedA = new bool[g1->nodes.size()];
-                    for (int j = 0; j < g1->nodes.size(); j++)
-                    {
-                        newVisitedA[j] = visitedA[j];
-                    }
-                    bool *newVisitedB = new bool[g2->nodes.size()];
-                    for (int j = 0; j < g2->nodes.size(); j++)
-                    {
-                        newVisitedB[j] = visitedB[j];
-                    }
-
-                    int indexOfChildX = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, newVisitedA, newVisitedB, g1, g2, cg);
-
-                    if (indexOfChildX >= 0)
-                    {
-                        cgn.edges.push_back(indexOfChildX);
-                    }
+                    cgn.edges.push_back(indexOfChildX);
                 }
             }
         }

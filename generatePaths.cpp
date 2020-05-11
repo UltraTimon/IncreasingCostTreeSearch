@@ -33,11 +33,6 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g, bool visited[])
                 {
                     g->nodes[current].useful = true;
                 }
-                // also a recursive call to the current Node since not moving is also an option
-                if (nodeIsUseful(current, end, stepsLeft - 1, g, newVisited))
-                {
-                    g->nodes[current].useful = true;
-                }
             }
         }
     }
@@ -109,7 +104,6 @@ void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vecto
 // Returns true if at least one path is found, false otherwise
 bool generateUsefulGraph(Graph *g, int start, int end, int exactCost)
 {
-
     // find paths
     bool visited[g->nodes.size()];
     for (int i = 0; i < g->nodes.size(); i++)

@@ -5,18 +5,6 @@ void createInitialCombinedGraph(vector<Agent> agentList, vector<int> optimalCost
     Graph *g1 = &agentList[0].graph;
     Graph *g2 = &agentList[1].graph;
 
-    bool visitedA[g1->nodes.size()];
-    bool visitedB[g2->nodes.size()];
-
-    for (int i = 0; i < g1->nodes.size(); i++)
-    {
-        visitedA[i] = false;
-    }
-    for (int i = 0; i < g2->nodes.size(); i++)
-    {
-        visitedB[i] = false;
-    }
-
     int startA = agentList[0].start;
     int startB = agentList[1].start;
 
@@ -25,7 +13,7 @@ void createInitialCombinedGraph(vector<Agent> agentList, vector<int> optimalCost
 
     int cost = max(optimalCostList[0], optimalCostList[1]);
 
-    cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, visitedA, visitedB, g1, g2, cg);
+    cg->combine2Graphs(0, cost, startA, startB, finishA, finishB, g1, g2, cg);
 
     vector<int> endList;
     endList.push_back(agentList[0].end);
@@ -133,7 +121,7 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
 
     createInitialCombinedGraph(agentList, optimalCostList, cg);
 
-    bool includeAlsoUselessEdges = true;
+    bool includeAlsoUselessEdges = !cg->nodes[0][0].useful;
     printCombinedGraph(cg, cost, includeAlsoUselessEdges);
 
     if(agentList.size() == 2) {
@@ -164,7 +152,7 @@ CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector
         combinedNodeIsUseful(0, 0, finishCombinedG, cost, newCG);
 
 
-        bool includeAlsoUselessEdges2 = true;
+        bool includeAlsoUselessEdges2 = !newCG->nodes[0][0].useful;
         printCombinedGraph(newCG, cost, includeAlsoUselessEdges2);
         
 

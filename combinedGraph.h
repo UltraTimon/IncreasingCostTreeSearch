@@ -39,7 +39,7 @@ class CombinedGraph
     public: 
         vector<CombinedGraphNode> *nodes;
 
-        int combine2Graphs(int stepsTaken, int costA, int currentA, int currentB, int finishA, int finishB, bool *visitedA, bool *visitedB, Graph *g1, Graph *g2, CombinedGraph *cg);
+        int combine2Graphs(int stepsTaken, int costA, int currentA, int currentB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg);
         
         bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g);
 

@@ -11,5 +11,6 @@ void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vecto
 vector<int> calculateOptimalCost(vector<Agent> agentList);
 
 bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g);
+bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, Graph *g);
 
 #endif

@@ -34,10 +34,10 @@ Graph importGraph(string filename) {
     return g;
 }
 
-Agent::Agent(int givenStart, int givenEnd, int givenWaypoint) {
+Agent::Agent(int givenStart, int givenWaypoint, int givenEnd) {
     start = givenStart;
-    end = givenEnd;
     waypoint = givenWaypoint;
+    end = givenEnd;
 }
 
 void Agent::setPaths(vector<vector<int>> givenPaths) {

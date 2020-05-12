@@ -1,4 +1,5 @@
 #include "lowlevelsearch.h"
+#include "generatePaths.h"
 
 /* 2 paths have a conflict if either:
     - they visit the same node at the same time, i.e. at most one agent may
@@ -33,6 +34,51 @@ bool pathsHaveConflict(vector<int> pathA, vector<int> pathB)
         ++b;
     }
     return false;
+}
+
+// generate paths for each agent, add paths to agent object
+// This will first only determine what the optimal cost is for every agent by calculating paths with an iteratively increasing cost until
+//      each agent has at least one path with that cost
+vector<int> calculateOptimalCost(vector<Agent> agentList)
+{
+    vector<int> optimalCostList;
+
+    for (auto agent = agentList.begin(); agent != agentList.end(); ++agent)
+    {
+        int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
+
+        printf("agent with start %d waypoint %d end %d\n", agent->start, agent->waypoint, agent->end);
+
+        // testing
+        optimalCost = 4;
+
+        while (true)
+        {   
+            bool atLeastOnePathToWaypoint = nodeIsUsefulWaypoint(agent->start, agent->waypoint, optimalCost, &agent->graph);
+            int stepsLeft = agent->graph.stepsLeft;
+            printf("waypoint reached, #stepsLeft: %d\n", stepsLeft);
+            
+            if(atLeastOnePathToWaypoint && stepsLeft > 0) {
+            // the first part reached the end
+                bool atLeastOnePathWaypointToEnd = nodeIsUseful(agent->waypoint, agent->end, agent->graph.stepsLeft, &agent->graph);
+                
+                // the second part reached the end
+                if (atLeastOnePathWaypointToEnd)
+                {
+                    optimalCostList.push_back(optimalCost);
+                    break;
+                } else {
+                    optimalCost++;
+                }
+            }
+            else
+            {
+                optimalCost++;
+            }
+        }
+    }
+
+    return optimalCostList;
 }
 
 // ASSUMPTIONS:

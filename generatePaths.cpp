@@ -7,6 +7,7 @@
 //  otherwise the cost will be increased
 bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
 {
+    printf("standard niu, current: %d, end: %d, stepsLeft: %d\n", current, end, stepsLeft);
     if (stepsLeft < 0)
         return false;
 
@@ -41,24 +42,31 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
 // if nodeIsUsefulWaypoint uses up too many steps of the total available amount but does reach the waypoint the second half 
 //      of the trip from the waypoint to the end will be impossible to calculate because there are not enough steps, thus
 //      the cost will be increased
-bool nodeIsUsefulWaypoint(int current, int end, int *stepsLeft, Graph *g)
+bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, Graph *g)
 {
-    if (*stepsLeft < 0)
+    // TESTING
+    g->stepsLeft = 5;
+    return true;
+
+    // printf("niu, current: %d, end: %d, stepsLeft: %d\n", current, end, stepsLeft);
+
+    if (stepsLeft < 0) {
         return false;
+    }
 
     if (current == end)
     {
         g->nodes[current].usefulWaypoint = true;
+        g->stepsLeft = stepsLeft;
         return true;
     }
 
 
-    if (*stepsLeft > 0)
+    if (stepsLeft > 0)
     {
         for (int i : g->nodes[current].edges)
         {
-            *stepsLeft--;
-            if (nodeIsUsefulWaypoint(i, end, stepsLeft, g))
+            if (nodeIsUsefulWaypoint(i, end, stepsLeft - 1, g))
             {
                 g->nodes[current].usefulWaypoint = true;
             }
@@ -120,40 +128,4 @@ void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vecto
     }
     deque<int> pathUpToNow;
     getPathsFromGraphRecursivePart(start, end, exactCost, g, visited, pathUpToNow, paths);
-}
-
-// generate paths for each agent, add paths to agent object
-// This will first only determine what the optimal cost is for every agent by calculating paths with an iteratively increasing cost until
-//      each agent has at least one path with that cost
-vector<int> calculateOptimalCost(vector<Agent> agentList)
-{
-    vector<int> optimalCostList;
-
-    for (auto agent = agentList.begin(); agent != agentList.end(); ++agent)
-    {
-        int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
-        while (true)
-        {
-            int stepsLeft = optimalCost;
-            bool atLeastOnePathToWaypoint = nodeIsUsefulWaypoint(agent->start, agent->waypoint, &stepsLeft, &agent->graph);
-            
-            if(atLeastOnePathToWaypoint) {
-            // the first part reached the end
-                bool atLeastOnePathWaypointToEnd = nodeIsUseful(agent->waypoint, agent->end, stepsLeft, &agent->graph);
-                
-                // the second part reached the end
-                if (atLeastOnePathWaypointToEnd)
-                {
-                    optimalCostList.push_back(optimalCost);
-                    break;
-                }
-            }
-            else
-            {
-                optimalCost++;
-            }
-        }
-    }
-
-    return optimalCostList;
 }

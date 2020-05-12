@@ -65,6 +65,48 @@ void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, in
         cg->nodes[graphListIndex][currentCombinedGraphIndex].edges.push_back(i);
 }
 
+bool vectorEquals(vector<int> vecA, vector<int> vecB)
+{
+    if (vecA.size() != vecB.size())
+        return false;
+    for (int i = 0; i < vecA.size(); i++)
+    {
+        if (vecA[i] != vecB[i])
+            return false;
+    }
+    return true;
+}
+
+// for general CombinedGraph, no restrictions on number of nodes
+// remove illegal edges
+bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g)
+{
+    if (stepsLeft < 0)
+    {
+        return false;
+    }
+
+    if (vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
+    {
+        g->nodes[graphListIndex][current].useful = true;
+        return true;
+    }
+
+    if (stepsLeft > 0)
+    {
+        for (int edge : g->nodes[graphListIndex][current].edges)
+        {
+            if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g))
+            {
+                g->nodes[graphListIndex][current].useful = true;
+            }
+        }
+    }
+
+    // return whether this node is a beneficial member of society
+    return g->nodes[graphListIndex][current].useful;
+}
+
 int repeatA(int stepsTaken, int cost, int currentB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)

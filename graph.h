@@ -21,6 +21,7 @@ class Graph
 {
     public:
         vector<GraphNode> nodes;
+        int stepsLeft; // steps left after reaching the waypoint
         Graph(int nrOfNodes) {
             for (int i = 0; i < nrOfNodes; i++)
             {

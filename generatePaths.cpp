@@ -119,8 +119,6 @@ void getPathsFromCombinedGraphRecursivePart(int graphListIndex, int currentGraph
     pathUpToNowA.push_back(currentNode.idList.front());
     pathUpToNowB.push_back(currentNode.idList.back());
 
-    cout << "test" << endl;
-
     if (graphListIndex == end)
     {
         vector<int> tempA;

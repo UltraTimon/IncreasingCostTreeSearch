@@ -23,8 +23,6 @@ int main(int argc, char **argv)
         agentList[i].graph = importGraph("resources/graph.txt");
     }
 
-    cout << "test" << endl;
-
     vector<int> optimalCostList = calculateOptimalCost(agentList);
 
     Node root = generateRoot(optimalCostList);

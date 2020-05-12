@@ -9,11 +9,15 @@ class GraphNode
         int id;
         vector<int> edges;
         bool useful;
-        bool usefulWaypoint;
-        GraphNode(int i) {
+        bool *usefulWaypoint;
+        GraphNode(int i, int numberOfWaypoints) {
             id = i;
             useful = false;
-            usefulWaypoint = false;
+            bool usefulWaypoint[numberOfWaypoints];
+            for (int i = 0; i < numberOfWaypoints; i++)
+            {
+                usefulWaypoint[i] = false;
+            }
         }
 };
 

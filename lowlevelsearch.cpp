@@ -49,7 +49,7 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
 
         while (true)
         {   
-            if(usefulWrapper(agent->start, agent->waypoints.front(), agent->end, optimalCost, &agent->graph)) {
+            if(usefulWrapper(agent->start, agent->waypoints, agent->end, optimalCost, &agent->graph)) {
                 optimalCostList.push_back(optimalCost);
                 break;
             }

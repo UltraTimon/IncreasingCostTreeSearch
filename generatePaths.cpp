@@ -50,7 +50,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, bool *visited, Graph *g)
 // if nodeIsUsefulWaypoint uses up too many steps of the total available amount but does reach the waypoint the second half
 //      of the trip from the waypoint to the end will be impossible to calculate because there are not enough steps, thus
 //      the cost will be increased
-bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, bool *visited, Graph *g)
+bool nodeIsUsefulWaypoint(int current, int end, int waypointIndex, int stepsLeft, bool *visited, Graph *g)
 {
     if (stepsLeft < 0)
     {
@@ -61,7 +61,7 @@ bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, bool *visited, Gr
 
     if (current == end)
     {
-        g->nodes[current].usefulWaypoint[0] = true;
+        g->nodes[current].usefulWaypoint[waypointIndex] = true;
         g->stepsLeft = stepsLeft;
         return true;
     }
@@ -76,36 +76,56 @@ bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, bool *visited, Gr
                 newVisited[i] = visited[i];
             }
 
-            if (!visited[i] && nodeIsUsefulWaypoint(i, end, stepsLeft - 1, newVisited, g))
+            if (!visited[i] && nodeIsUsefulWaypoint(i, end, waypointIndex, stepsLeft - 1, newVisited, g))
             {
-                g->nodes[current].usefulWaypoint[0] = true;
+                g->nodes[current].usefulWaypoint[waypointIndex] = true;
             }
         }
     }
 
-    return g->nodes[current].usefulWaypoint[0];
+    return g->nodes[current].usefulWaypoint[waypointIndex];
 }
 
-bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
+bool usefulWrapper(int current, vector<int> waypoints, int end, int stepsLeft, Graph *g)
 {
+    // FIRST WAYPOINT
+    bool visited[g->nodes.size()];
+    for (int j = 0; j < g->nodes.size(); j++)
+    {
+        visited[j] = false;
+    }
+
+    bool reachedFirstWaypoint = nodeIsUsefulWaypoint(current, waypoints.front(), 0, stepsLeft, visited, g);
+
+    if(!reachedFirstWaypoint)
+    {
+        return false;
+    }
+
+    // SECOND UNTIL LAST WAYPOINT
+    for (int i = 0; i < waypoints.size() - 1; i++)
+    {
+        bool visited[g->nodes.size()];
+        for (int j = 0; j < g->nodes.size(); j++)
+        {
+            visited[j] = false;
+        }
+
+        bool reachedWaypoint = nodeIsUsefulWaypoint(waypoints[i], waypoints[i + 1], i + 1, stepsLeft, visited, g);
+        if(!reachedWaypoint) 
+        {
+            return false;
+        }
+        stepsLeft = g->stepsLeft;
+    }
+
+    // LAST WAYPOINT TO END
     bool visited[g->nodes.size()];
     for (int i = 0; i < g->nodes.size(); i++)
     {
         visited[i] = false;
     }
-
-    bool waypointReached = nodeIsUsefulWaypoint(current, waypoint, stepsLeft, visited, g);
-
-    if (waypointReached)
-    {
-        bool visited[g->nodes.size()];
-        for (int i = 0; i < g->nodes.size(); i++)
-        {
-            visited[i] = false;
-        }
-        int stepsLeftAfterWaypoint = g->stepsLeft;
-        return nodeIsUseful(waypoint, end, stepsLeftAfterWaypoint, visited, g);
-    }
+    return nodeIsUseful(waypoints.back(), end, stepsLeft, visited, g);
 }
 
 

@@ -11,6 +11,6 @@ void getPathsFromCombinedGraph(int exactCost, CombinedGraph *cg, vector<vector<i
 
 vector<int> calculateOptimalCost(vector<Agent> agentList);
 
-bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g);
+bool usefulWrapper(int current, vector<int> waypoints, int end, int stepsLeft, Graph *g);
 
 #endif

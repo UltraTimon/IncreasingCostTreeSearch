@@ -1,17 +1,5 @@
 #include "combinedGraph.h"
 
-bool vectorEquals(vector<int> vecA, vector<int> vecB)
-{
-    if (vecA.size() != vecB.size())
-        return false;
-    for (int i = 0; i < vecA.size(); i++)
-    {
-        if (vecA[i] != vecB[i])
-            return false;
-    }
-    return true;
-}
-
 // an edge is illegal if two agents try to use it at the same time from opposite nodes
 void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost)
 {

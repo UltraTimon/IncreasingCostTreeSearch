@@ -82,7 +82,7 @@ void createCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, C
     if(cg->nodes[0].empty())
         return;
 
-    // // Remove illegal edges s.t. they do not help nodes become useful while they use an illegal edge
+    // Remove illegal edges s.t. they do not help nodes become useful while they use an illegal edge
     cg->removeIllegalEdges(cg, 0, 0, cost);
 
     cg->combinedNodeIsUseful(0, 0, endList, cost, cg);

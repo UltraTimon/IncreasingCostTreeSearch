@@ -54,22 +54,9 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
 
         while (true)
         {   
-            bool atLeastOnePathToWaypoint = nodeIsUsefulWaypoint(agent->start, agent->waypoint, optimalCost, &agent->graph);
-            int stepsLeft = agent->graph.stepsLeft;
-            printf("waypoint reached, #stepsLeft: %d\n", stepsLeft);
-            
-            if(atLeastOnePathToWaypoint && stepsLeft > 0) {
-            // the first part reached the end
-                bool atLeastOnePathWaypointToEnd = nodeIsUseful(agent->waypoint, agent->end, stepsLeft, &agent->graph);
-                
-                // the second part reached the end
-                if (atLeastOnePathWaypointToEnd)
-                {
-                    optimalCostList.push_back(optimalCost);
-                    break;
-                } else {
-                    optimalCost++;
-                }
+            if(usefulWrapper(agent->start, agent->waypoint, agent->end, optimalCost, &agent->graph)) {
+                optimalCostList.push_back(optimalCost);
+                break;
             }
             else
             {
@@ -89,7 +76,7 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     // generate a useful graph for each agent and add to graphList
     for (int i = 0; i < agentList.size(); i++)
     {
-        nodeIsUseful(agentList[i].start, agentList[i].end, optimalCostList[i], &agentList[i].graph);
+        usefulWrapper(agentList[i].start, agentList[i].waypoint, agentList[i].end, optimalCostList[i], &agentList[i].graph);
 
         // print useful nodes
         if(verbose) {

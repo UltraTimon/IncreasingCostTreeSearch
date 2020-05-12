@@ -5,11 +5,13 @@
 
 // nodeIsUsefulWaypoint has to leave enough steps for this method to reach the end,
 //  otherwise the cost will be increased
-bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
+bool nodeIsUseful(int current, int end, int stepsLeft, bool *visited, Graph *g)
 {
     printf("standard niu, current: %d, end: %d, stepsLeft: %d\n", current, end, stepsLeft);
     if (stepsLeft < 0)
         return false;
+
+    visited[current] = true;
 
     if (current == end)
     {
@@ -17,12 +19,17 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
         return true;
     }
 
-
     if (stepsLeft > 0)
     {
         for (int i : g->nodes[current].edges)
         {
-            if (nodeIsUseful(i, end, stepsLeft - 1, g))
+            bool newVisited[g->nodes.size()];
+            for (int i = 0; i < g->nodes.size(); i++)
+            {
+                newVisited[i] = visited[i];
+            }
+
+            if (!visited[i] && nodeIsUseful(i, end, stepsLeft - 1, newVisited, g))
             {
                 g->nodes[current].useful = true;
             }
@@ -32,6 +39,7 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
     return g->nodes[current].useful;
 }
 
+
 // This method marks nodes useful based on whether they are needed for the way to the waypoint
 // This method traverses the graph from the start node to the waypoint node
 
@@ -39,20 +47,20 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
 
 // if nodeIsUsefulWaypoint is unable to reach the waypoint in the given amount of steps the cost will be increased
 
-// if nodeIsUsefulWaypoint uses up too many steps of the total available amount but does reach the waypoint the second half 
+// if nodeIsUsefulWaypoint uses up too many steps of the total available amount but does reach the waypoint the second half
 //      of the trip from the waypoint to the end will be impossible to calculate because there are not enough steps, thus
 //      the cost will be increased
-bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, Graph *g)
+bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, bool *visited, Graph *g)
 {
-    // TESTING
-    g->stepsLeft = 5;
-    return true;
+    printf("waypoint niu, current: %d, end: %d, stepsLeft: %d\n", current, end, stepsLeft);
 
-    // printf("niu, current: %d, end: %d, stepsLeft: %d\n", current, end, stepsLeft);
 
-    if (stepsLeft < 0) {
+    if (stepsLeft < 0)
+    {
         return false;
     }
+
+    visited[current] = true;
 
     if (current == end)
     {
@@ -61,12 +69,17 @@ bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, Graph *g)
         return true;
     }
 
-
     if (stepsLeft > 0)
     {
         for (int i : g->nodes[current].edges)
         {
-            if (nodeIsUsefulWaypoint(i, end, stepsLeft - 1, g))
+            bool newVisited[g->nodes.size()];
+            for (int i = 0; i < g->nodes.size(); i++)
+            {
+                newVisited[i] = visited[i];
+            }
+
+            if (!visited[i] && nodeIsUsefulWaypoint(i, end, stepsLeft - 1, newVisited, g))
             {
                 g->nodes[current].usefulWaypoint = true;
             }
@@ -75,6 +88,28 @@ bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, Graph *g)
 
     return g->nodes[current].usefulWaypoint;
 }
+
+bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
+{
+    bool visited[g->nodes.size()];
+    for (int i = 0; i < g->nodes.size(); i++)
+    {
+        visited[i] = false;
+    }
+
+    bool waypointReached = nodeIsUsefulWaypoint(current, waypoint, stepsLeft, visited, g);
+
+    if (waypointReached)
+    {
+        bool visited[g->nodes.size()];
+        for (int i = 0; i < g->nodes.size(); i++)
+        {
+            visited[i] = false;
+        }
+        return nodeIsUseful(waypoint, end, stepsLeft, visited, g);
+    }
+}
+
 
 // Obsolete
 void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *g, bool visited[], deque<int> pathUpToNow, vector<vector<int>> *paths)
@@ -117,8 +152,9 @@ void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *
 }
 
 // Obsolete
-void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths) {
-    if(verbose)
+void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths)
+{
+    if (verbose)
         cout << "Getting paths from graph -- start: " << start << ", end: " << end << ", exactCost: " << exactCost << endl;
 
     bool visited[g->nodes.size()];

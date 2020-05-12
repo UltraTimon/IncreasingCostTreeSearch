@@ -69,7 +69,6 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
 // - 2 agents
 bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg, int maxCost)
 {
-
     // generate a useful graph for each agent and add to graphList
     for (int i = 0; i < agentList.size(); i++)
     {
@@ -77,6 +76,12 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
 
         // print useful nodes
         if(verbose) {
+            printf("UsefulWaypoint nodes: ");
+            for(auto node : agentList[i].graph.nodes) {
+                if(node.useful)
+                    cout << node.id << " ";
+            }
+            cout << endl;
             printf("Useful nodes: ");
             for(auto node : agentList[i].graph.nodes) {
                 if(node.useful)

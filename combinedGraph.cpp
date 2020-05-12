@@ -142,7 +142,7 @@ int repeatA(int stepsTaken, int cost, int currentB, int waypointB, int reachedWa
 
     for(int edgeB : g2->nodes[currentB].edges) {
         if(!(finishA == edgeB && finishA == currentB)) {
-            int indexOfChild = repeatA(stepsTaken + 1, cost, edgeB, finishA, finishB, g1, g2, cg);
+            int indexOfChild = repeatA(stepsTaken + 1, cost, edgeB, waypointB, reachedWaypointB, finishA, finishB, g1, g2, cg);
 
             if (indexOfChild >= 0)
             {
@@ -190,7 +190,7 @@ int repeatB(int stepsTaken, int cost, int currentA, int waypointA, int reachedWa
 
     for(int edgeA : g1->nodes[currentA].edges) {
         if(!(finishB == edgeA && finishB == currentA)) {
-            int indexOfChild = repeatA(stepsTaken + 1, cost, edgeA, finishA, finishB, g1, g2, cg);
+            int indexOfChild = repeatA(stepsTaken + 1, cost, edgeA, waypointA, reachedWaypointA, finishA, finishB, g1, g2, cg);
 
             if (indexOfChild >= 0)
             {
@@ -256,7 +256,7 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
             // 2 agents cannot use the same edge from opposite sides at the same time
             if (!(edgeA == currentB && edgeB == currentA))
             {
-                int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, g1, g2, cg);
+                int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, waypointA, waypointB, reachedWaypointA, reachedWaypointB, finishA, finishB, g1, g2, cg);
 
                 if (indexOfChild >= 0) // check if child is useful and not conflicting
                 {

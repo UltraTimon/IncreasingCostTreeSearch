@@ -60,8 +60,8 @@ void createCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, C
     int startA = agentList[0].start;
     int startB = agentList[1].start;
 
-    int waypointA = agentList[0].waypoint;
-    int waypointB = agentList[1].waypoint;
+    int waypointA = agentList[0].waypoints.front();
+    int waypointB = agentList[1].waypoints.front();
 
     int finishA = agentList[0].end;
     int finishB = agentList[1].end;

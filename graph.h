@@ -9,15 +9,14 @@ public:
     int id;
     vector<int> edges;
     bool useful;
-    bool *usefulWaypoint;
+    vector<bool> usefulWaypoint;
     GraphNode(int i, int numberOfWaypoints)
     {
         id = i;
         useful = false;
-        bool usefulWaypoint[numberOfWaypoints];
         for (int i = 0; i < numberOfWaypoints; i++)
         {
-            usefulWaypoint[i] = false;
+            usefulWaypoint.push_back(false);
         }
     }
 };
@@ -45,22 +44,15 @@ class Agent
 {
 public:
     int start;
-    int *waypoints;
+    vector<int> waypoints;
     int end;
     vector<vector<int>> paths;
     Graph graph;
     void setPaths(vector<vector<int>> paths);
 
-    Agent(int givenStart, vector<int> givenWaypoints, int givenEnd, int numberOfWaypoints)
+    Agent(int givenStart, int givenEnd)
     {
         start = givenStart;
-
-        int waypoints[numberOfWaypoints];
-        for (int i = 0; i < numberOfWaypoints; i++)
-        {
-            waypoints[i] = givenWaypoints[i];
-        }
-
         end = givenEnd;
     }
 };

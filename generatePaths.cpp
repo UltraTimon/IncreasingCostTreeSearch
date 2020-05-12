@@ -61,7 +61,7 @@ bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, bool *visited, Gr
 
     if (current == end)
     {
-        g->nodes[current].usefulWaypoint = true;
+        g->nodes[current].usefulWaypoint[0] = true;
         g->stepsLeft = stepsLeft;
         return true;
     }
@@ -78,12 +78,12 @@ bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, bool *visited, Gr
 
             if (!visited[i] && nodeIsUsefulWaypoint(i, end, stepsLeft - 1, newVisited, g))
             {
-                g->nodes[current].usefulWaypoint = true;
+                g->nodes[current].usefulWaypoint[0] = true;
             }
         }
     }
 
-    return g->nodes[current].usefulWaypoint;
+    return g->nodes[current].usefulWaypoint[0];
 }
 
 bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
@@ -93,6 +93,8 @@ bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
     {
         visited[i] = false;
     }
+
+    cout << "hi" << endl;
 
     bool waypointReached = nodeIsUsefulWaypoint(current, waypoint, stepsLeft, visited, g);
 

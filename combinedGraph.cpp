@@ -124,7 +124,7 @@ int repeatA(int stepsTaken, int cost, int currentB, int waypointB, int reachedWa
         reachedWaypointB = true;
 
     // Check for all the usefuls based on whether or not waypoint has been reached and return -1 if one of them is not
-    if(!reachedWaypointB && !g2->nodes[currentB].usefulWaypoint)
+    if(!reachedWaypointB && !g2->nodes[currentB].usefulWaypoint[0])
         return -1;
 
     if(reachedWaypointB && !g2->nodes[currentB].useful)
@@ -172,7 +172,7 @@ int repeatB(int stepsTaken, int cost, int currentA, int waypointA, int reachedWa
         reachedWaypointA = true;
 
     // Check for all the usefuls based on whether or not waypoint has been reached and return -1 if one of them is not
-    if(!reachedWaypointA && !g1->nodes[currentA].usefulWaypoint)
+    if(!reachedWaypointA && !g1->nodes[currentA].usefulWaypoint[0])
         return -1;
 
     if(reachedWaypointA && !g1->nodes[currentA].useful)
@@ -227,9 +227,9 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
         reachedWaypointB = true;
 
     // Check for all the usefuls based on whether or not waypoint has been reached and return -1 if one of them is not
-    if(!reachedWaypointA && !g1->nodes[currentA].usefulWaypoint)
+    if(!reachedWaypointA && !g1->nodes[currentA].usefulWaypoint[0])
         return -1;
-    if(!reachedWaypointB && !g2->nodes[currentB].usefulWaypoint)
+    if(!reachedWaypointB && !g2->nodes[currentB].usefulWaypoint[0])
         return -1;
 
     if(reachedWaypointA && !g1->nodes[currentA].useful)

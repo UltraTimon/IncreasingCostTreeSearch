@@ -18,6 +18,13 @@ int main(int argc, char **argv)
     */
 
     vector<Agent> agentList = importAgents("resources/agents.txt");
+    for(auto agent : agentList) {
+        cout << "hi" << endl;
+        for(int i : agent.waypoints)
+            cout << i << " ";
+        cout << endl;
+    }
+
 
     for(int i = 0; i < agentList.size(); i++) {
         agentList[i].graph = importGraph("resources/graph.txt");
@@ -27,15 +34,15 @@ int main(int argc, char **argv)
 
     Node root = generateRoot(optimalCostList);
 
-    printTree(&root, 3);
+    printTree(&root);
 
-    
+/*        
     list<Node> queue;
     queue.push_back(root);
     
     // Run ICTS algorithm
     ICTS(agentList, queue);
-
+*/
 
     return 0;
 }

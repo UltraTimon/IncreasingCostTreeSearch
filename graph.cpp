@@ -11,6 +11,7 @@ Graph importGraph(string filename) {
         myfile >> nrOfNodes;
         myfile >> nrOfWaypoints;
     }
+    printf("nrNodes: %d, nrWaypoints: %d\n", nrOfNodes, nrOfWaypoints);
     Graph g = Graph(nrOfNodes, nrOfWaypoints);
     if (myfile.is_open())
     {
@@ -52,6 +53,7 @@ vector<Agent> importAgents(string filename) {
     if (myfile.is_open())
     {   
         myfile >> nrOfWaypoints;
+        printf("#waypoints: %d\n", nrOfWaypoints);
         while(myfile.peek() != EOF) {
             myfile >> start;
             vector<int> waypoints;
@@ -60,7 +62,14 @@ vector<Agent> importAgents(string filename) {
                 myfile >> waypoint;
                 waypoints.push_back(waypoint);
             }
-            Agent agent = Agent(start, waypoints, end, nrOfWaypoints);
+            myfile >> end;
+            printf("start: %d, end: %d, waypoints: ", start, end);
+            for(int i : waypoints)
+                cout << i << " ";
+            cout << endl;
+
+            Agent agent = Agent(start, end);
+            agent.waypoints = waypoints;
             agentList.push_back(agent);
         }
         

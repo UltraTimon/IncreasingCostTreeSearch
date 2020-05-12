@@ -47,11 +47,14 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
     {
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
 
-        printf("agent with start %d waypoint %d end %d\n", agent->start, agent->waypoint, agent->end);
+        printf("agent with start %d, end %d and waypoint size: %lu ", agent->start, agent->end, agent->waypoints.size());
+        for(int i : agent->waypoints)
+            cout << i << " ";
+        cout << endl;
 
         while (true)
         {   
-            if(usefulWrapper(agent->start, agent->waypoint, agent->end, optimalCost, &agent->graph)) {
+            if(usefulWrapper(agent->start, agent->waypoints.front(), agent->end, optimalCost, &agent->graph)) {
                 optimalCostList.push_back(optimalCost);
                 break;
             }
@@ -72,13 +75,13 @@ CombinedGraph getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, 
     // generate a useful graph for each agent and add to graphList
     for (int i = 0; i < agentList.size(); i++)
     {
-        usefulWrapper(agentList[i].start, agentList[i].waypoint, agentList[i].end, optimalCostList[i], &agentList[i].graph);
+        usefulWrapper(agentList[i].start, agentList[i].waypoints.front(), agentList[i].end, optimalCostList[i], &agentList[i].graph);
 
         // print useful nodes
         if(verbose) {
             printf("UsefulWaypoint nodes: ");
             for(auto node : agentList[i].graph.nodes) {
-                if(node.usefulWaypoint)
+                if(node.usefulWaypoint[0])
                     cout << node.id << " ";
             }
             cout << endl;

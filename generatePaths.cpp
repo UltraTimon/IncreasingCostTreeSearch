@@ -1,5 +1,6 @@
 #include "generatePaths.h"
 #include "basics.h"
+#include "combinedGraph.h"
 
 // This method traverses the graph from the waypoint until the end node
 
@@ -108,56 +109,47 @@ bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
 }
 
 
-// Obsolete
-void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *g, bool visited[], deque<int> pathUpToNow, vector<vector<int>> *paths)
+// Asumption: 2 agents
+void getPathsFromCombinedGraphRecursivePart(int graphListIndex, int currentGraphIndex, int end, CombinedGraph *cg, deque<int> pathUpToNowA, deque<int> pathUpToNowB, vector<vector<int>> *pathsA, vector<vector<int>> *pathsB)
 {
-    if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
+    CombinedGraphNode currentNode = cg->nodes[graphListIndex][currentGraphIndex];
+    pathUpToNowA.push_back(currentNode.idList.front());
+    pathUpToNowA.push_back(currentNode.idList.back());
+
+    if (graphListIndex == end)
     {
+        vector<int> tempA;
+        for (int i : pathUpToNowA)
+            tempA.push_back(i);
+
+        pathsA->push_back(tempA);
+
+        vector<int> tempB;
+        for (int i : pathUpToNowB)
+            tempB.push_back(i);
+
+        pathsB->push_back(tempB);
         return;
     }
 
-    visited[current] = true;
-    pathUpToNow.push_back(current);
-
-    if (stepsLeft == 0 && current == end)
+    if (graphListIndex < end)
     {
-        vector<int> temp;
-        for (int i : pathUpToNow)
-            temp.push_back(i);
-
-        paths->push_back(temp);
-        return;
-    }
-
-    if (stepsLeft > 0)
-    {
-        for (int i : g->nodes[current].edges)
+        for (int i : cg->nodes[graphListIndex][currentGraphIndex].edges)
         {
-            if (g->nodes[i].useful && !visited[i])
+            if (cg->nodes[graphListIndex + 1][i].useful)
             {
-                // make deepcopy of visited array s.t. other paths can still be discovered
-                bool *newVisited = new bool[g->nodes.size()];
-                for (int j = 0; j < g->nodes.size(); j++)
-                {
-                    newVisited[j] = visited[j];
-                }
-                getPathsFromGraphRecursivePart(i, end, stepsLeft - 1, g, newVisited, pathUpToNow, paths);
+                getPathsFromCombinedGraphRecursivePart(graphListIndex + 1, i, end, cg, pathUpToNowA, pathUpToNowB, pathsA, pathsB);
             }
         }
     }
 }
 
-// Obsolete
-void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths)
+// Asumption: 2 agents
+void getPathsFromGraph(int start, int end, int exactCost, CombinedGraph *cg, vector<vector<int>> *pathsA, vector<vector<int>> *pathsB, int nrOfNodes)
 {
     if (verbose)
-        cout << "Getting paths from graph -- start: " << start << ", end: " << end << ", exactCost: " << exactCost << endl;
+        cout << "Getting paths from graph -- start graphlistIndex: " << start << ", end graphlistIndex: " << end << ", exactCost: " << exactCost << endl;
 
-    bool visited[g->nodes.size()];
-    for (int i = 0; i < g->nodes.size(); i++)
-    {
-        visited[i] = false;
-    }
-    deque<int> pathUpToNow;
-    getPathsFromGraphRecursivePart(start, end, exactCost, g, visited, pathUpToNow, paths);
+    deque<int> pathUpToNowA, pathUpToNowB;
+    getPathsFromCombinedGraphRecursivePart(start, end, exactCost, cg, pathUpToNowA, pathUpToNowB, pathsA, pathsB);
 }

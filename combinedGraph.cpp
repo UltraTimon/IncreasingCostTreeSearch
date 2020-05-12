@@ -213,66 +213,6 @@ int repeatCombinedNode(int stepsLeft, int graphListIndex, int singleGraphIndex, 
     return newCGNIndex;
 }
 
-// combines graph, deflects conflicing node pairs
-int CombinedGraph::copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *oldCG, int singleGraphIndex, Graph *g, CombinedGraph *newCG, int singleGraphFinishID)
-{
-    // return if no steps are allowed to be taken
-    if (stepsLeft < 0)
-        return -1;
-
-    if (oldCG->nodes[graphListIndex].empty())
-        return -1;
-
-    // return -1 if SGN is the same as one of the ids in the idlist of the CGN
-    if (vectorContains(oldCG->nodes[graphListIndex][combinedGraphIndex].idList, g->nodes[singleGraphIndex].id))
-        return -1;
-
-    // create new CGN object to store new data in
-    CombinedGraphNode newCGN = CombinedGraphNode(g->nodes.size());
-
-    // copy over the idList
-    for (int i : oldCG->nodes[graphListIndex][combinedGraphIndex].idList)
-    {
-        newCGN.idList.push_back(i);
-    }
-
-    // repeat this CGN if needed
-    if (oldCG->nodes[graphListIndex + 1].size() == 0)
-    {
-        return repeatCombinedNode(stepsLeft, graphListIndex, singleGraphIndex, g, newCG, newCGN.idList);
-    }
-    // repeat singleGraphNode if needed
-    if (g->nodes[singleGraphIndex].id == singleGraphFinishID)
-    {
-        return repeatSingleGraphNode(stepsLeft, graphListIndex, combinedGraphIndex, oldCG, singleGraphIndex, newCG, g->nodes.size());
-    }
-
-    // add id of singleGraphNode to new CGN
-    newCGN.idList.push_back(g->nodes[singleGraphIndex].id);
-
-    // for SingleGraphEdge :  SingleGraphNode.edges
-    for (int singleGraphEdge : g->nodes[singleGraphIndex].edges)
-    {
-        // for CombinedGraphEdge :  CombinedGraphNode.edges
-        for (int combinedGraphEdge : oldCG->nodes[graphListIndex][combinedGraphIndex].edges)
-        {
-            // make a recursive call to it in which you specify the index it's placed in
-            int indexOfNewChild = copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(stepsLeft - 1, graphListIndex + 1, combinedGraphIndex, oldCG, singleGraphEdge, g, newCG, singleGraphFinishID);
-
-            if (indexOfNewChild >= 0)
-            {
-                newCGN.edges.push_back(indexOfNewChild);
-            }
-        }
-    }
-
-    // push newCGN object into newCG graphListIndex's list
-    int newCGNIndex = newCG->nodes[graphListIndex].size();
-    newCG->nodes[graphListIndex].push_back(newCGN);
-
-    return newCGNIndex;
-}
-
 int repeatA(int stepsTaken, int cost, int currentB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)

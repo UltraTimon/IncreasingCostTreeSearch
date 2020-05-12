@@ -21,6 +21,9 @@ int main(int argc, char **argv)
 
     // for some reason this loop needs to be here, otherwise it crashes
     for(auto agent : agentList) {
+        for(int i : agent.waypoints)
+            cout << i << " ";
+        cout << endl;
     }
 
 
@@ -28,7 +31,9 @@ int main(int argc, char **argv)
         agentList[i].graph = importGraph("resources/graph.txt");
     }
 
-    vector<int> optimalCostList = calculateOptimalCost(agentList);
+    vector<int> optimalCostList = calculateOptimalCost(&agentList);
+    
+    
 
     Node root = generateRoot(optimalCostList);
 

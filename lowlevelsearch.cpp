@@ -39,17 +39,18 @@ bool pathsHaveConflict(vector<int> pathA, vector<int> pathB)
 // generate paths for each agent, add paths to agent object
 // This will first only determine what the optimal cost is for every agent by calculating paths with an iteratively increasing cost until
 //      each agent has at least one path with that cost
-vector<int> calculateOptimalCost(vector<Agent> agentList)
+vector<int> calculateOptimalCost(vector<Agent> *agentList)
 {
     vector<int> optimalCostList;
 
-    for (auto agent = agentList.begin(); agent != agentList.end(); ++agent)
+    for (auto agent : *agentList)
     {
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
 
         while (true)
-        {   
-            if(usefulWrapper(agent->start, agent->waypoints, agent->end, optimalCost, &agent->graph)) {
+        {
+            if (usefulWrapper(agent.start, agent.waypoints, agent.end, optimalCost, &agent.graph))
+            {
                 optimalCostList.push_back(optimalCost);
                 break;
             }
@@ -72,17 +73,34 @@ CombinedGraph getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, 
     {
         usefulWrapper(agentList[i].start, agentList[i].waypoints, agentList[i].end, optimalCostList[i], &agentList[i].graph);
 
+        for (auto agent : agentList)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                printf("useful waypoint %d: ", i);
+                for (auto nnode : agent.graph.nodes)
+                {
+                    if (nnode.usefulWaypoint[i])
+                        cout << nnode.id << " ";
+                }
+                cout << endl;
+            }
+        }
+
         // print useful nodes
-        if(verbose) {
+        if (verbose)
+        {
             printf("UsefulWaypoint nodes: ");
-            for(auto node : agentList[i].graph.nodes) {
-                if(node.usefulWaypoint[0])
+            for (auto node : agentList[i].graph.nodes)
+            {
+                if (node.usefulWaypoint[0])
                     cout << node.id << " ";
             }
             cout << endl;
             printf("Useful nodes: ");
-            for(auto node : agentList[i].graph.nodes) {
-                if(node.useful)
+            for (auto node : agentList[i].graph.nodes)
+            {
+                if (node.useful)
                     cout << node.id << " ";
             }
             cout << endl;

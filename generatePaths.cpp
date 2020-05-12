@@ -61,7 +61,8 @@ bool nodeIsUsefulWaypoint(int current, int end, int waypointIndex, int stepsLeft
 
     if (current == end)
     {
-        g->nodes[current].usefulWaypoint[waypointIndex] = true;
+        printf("Node %d is useful for waypoint %d\n", current, waypointIndex);
+        g->nodes.at(current).usefulWaypoint.at(waypointIndex) = true;
         g->stepsLeft = stepsLeft;
         return true;
     }
@@ -78,7 +79,8 @@ bool nodeIsUsefulWaypoint(int current, int end, int waypointIndex, int stepsLeft
 
             if (!visited[i] && nodeIsUsefulWaypoint(i, end, waypointIndex, stepsLeft - 1, newVisited, g))
             {
-                g->nodes[current].usefulWaypoint[waypointIndex] = true;
+                g->nodes.at(current).usefulWaypoint.at(waypointIndex) = true;
+                printf("Node %d is useful for waypoint %d\n", current, waypointIndex);
             }
         }
     }

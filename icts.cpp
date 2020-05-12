@@ -37,12 +37,14 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
 
         bool getOnlyTheFirstPath = true;
         
-        // get Only the first path, remove all others
-        int nrOfPaths = pathsA.size();
-        for (int i = 0; i < nrOfPaths - 1; i++)
-        {
-            pathsA.pop_back();
-            pathsB.pop_back();
+        if(getOnlyTheFirstPath) {
+            // get Only the first path, remove all others
+            int nrOfPaths = pathsA.size();
+            for (int i = 0; i < nrOfPaths - 1; i++)
+            {
+                pathsA.pop_back();
+                pathsB.pop_back();
+            }
         }
         
         printPaths(pathsA);

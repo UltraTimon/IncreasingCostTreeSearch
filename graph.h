@@ -3,17 +3,17 @@
 
 #include "basics.h"
 
-
-
 class GraphNode 
 {
     public:
         int id;
         vector<int> edges;
         bool useful;
+        bool usefulWaypoint;
         GraphNode(int i) {
             id = i;
             useful = false;
+            usefulWaypoint = false;
         }
 };
 
@@ -37,9 +37,10 @@ class Agent {
     public:
         int start;
         int end;
+        int waypoint;
         vector<vector<int>> paths;
         Graph graph;
-        Agent(int start, int end);
+        Agent(int start, int end, int waypoint);
         void setPaths(vector<vector<int>> paths);
 };
 

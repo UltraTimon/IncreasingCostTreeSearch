@@ -34,9 +34,10 @@ Graph importGraph(string filename) {
     return g;
 }
 
-Agent::Agent(int givenStart, int givenEnd) {
+Agent::Agent(int givenStart, int givenEnd, int givenWaypoint) {
     start = givenStart;
     end = givenEnd;
+    waypoint = givenWaypoint;
 }
 
 void Agent::setPaths(vector<vector<int>> givenPaths) {
@@ -48,13 +49,13 @@ vector<Agent> importAgents(string filename) {
     vector<Agent> agentList;
 
     ifstream myfile(filename);
-    int start, end;
+    int start, end, waypoint;
 
     if (myfile.is_open())
     {
-        while (myfile >> start >> end)
+        while (myfile >> start >> waypoint >> end)
         {
-            Agent newAgent = Agent(start, end);
+            Agent newAgent = Agent(start, waypoint, end);
             agentList.push_back(newAgent);
         }
         myfile.close();

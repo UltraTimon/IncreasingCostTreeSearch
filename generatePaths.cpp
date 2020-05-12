@@ -1,6 +1,10 @@
 #include "generatePaths.h"
 #include "basics.h"
 
+// This method traverses the graph from the waypoint until the end node
+
+// nodeIsUsefulWaypoint has to leave enough steps for this method to reach the end,
+//  otherwise the cost will be increased
 bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
 {
     if (stepsLeft < 0)
@@ -25,6 +29,43 @@ bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g)
     }
 
     return g->nodes[current].useful;
+}
+
+// This method marks nodes useful based on whether they are needed for the way to the waypoint
+// This method traverses the graph from the start node to the waypoint node
+
+// The number of stepsLeft is passed as a pointer s.t. the caller can keep track of the amount of steps that are left
+
+// if nodeIsUsefulWaypoint is unable to reach the waypoint in the given amount of steps the cost will be increased
+
+// if nodeIsUsefulWaypoint uses up too many steps of the total available amount but does reach the waypoint the second half 
+//      of the trip from the waypoint to the end will be impossible to calculate because there are not enough steps, thus
+//      the cost will be increased
+bool nodeIsUsefulWaypoint(int current, int end, int *stepsLeft, Graph *g)
+{
+    if (*stepsLeft < 0)
+        return false;
+
+    if (current == end)
+    {
+        g->nodes[current].usefulWaypoint = true;
+        return true;
+    }
+
+
+    if (*stepsLeft > 0)
+    {
+        for (int i : g->nodes[current].edges)
+        {
+            *stepsLeft--;
+            if (nodeIsUsefulWaypoint(i, end, stepsLeft, g))
+            {
+                g->nodes[current].usefulWaypoint = true;
+            }
+        }
+    }
+
+    return g->nodes[current].usefulWaypoint;
 }
 
 // Obsolete
@@ -93,11 +134,19 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
         while (true)
         {
-            bool atLeastOnePath = nodeIsUseful(agent->start, agent->end, optimalCost, &agent->graph);
-            if (atLeastOnePath)
-            {
-                optimalCostList.push_back(optimalCost);
-                break;
+            int stepsLeft = optimalCost;
+            bool atLeastOnePathToWaypoint = nodeIsUsefulWaypoint(agent->start, agent->waypoint, &stepsLeft, &agent->graph);
+            
+            if(atLeastOnePathToWaypoint) {
+            // the first part reached the end
+                bool atLeastOnePathWaypointToEnd = nodeIsUseful(agent->waypoint, agent->end, stepsLeft, &agent->graph);
+                
+                // the second part reached the end
+                if (atLeastOnePathWaypointToEnd)
+                {
+                    optimalCostList.push_back(optimalCost);
+                    break;
+                }
             }
             else
             {

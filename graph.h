@@ -26,12 +26,14 @@ class Graph
     public:
         vector<GraphNode> nodes;
         int stepsLeft; // steps left after reaching the waypoint
-        Graph(int nrOfNodes) {
+        int numberOfWaypoints;
+        Graph(int nrOfNodes, int nrOfWaypoints) {
             for (int i = 0; i < nrOfNodes; i++)
             {
-                GraphNode node = GraphNode(i);
+                GraphNode node = GraphNode(i, numberOfWaypoints);
                 nodes.push_back(node);
             }
+            numberOfWaypoints = nrOfWaypoints;
         }
         // for Agent initialization
         Graph() {}

@@ -70,7 +70,7 @@ CombinedGraph getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, 
     // generate a useful graph for each agent and add to graphList
     for (int i = 0; i < agentList.size(); i++)
     {
-        usefulWrapper(agentList[i].start, agentList[i].waypoints.front(), agentList[i].end, optimalCostList[i], &agentList[i].graph);
+        usefulWrapper(agentList[i].start, agentList[i].waypoints, agentList[i].end, optimalCostList[i], &agentList[i].graph);
 
         // print useful nodes
         if(verbose) {

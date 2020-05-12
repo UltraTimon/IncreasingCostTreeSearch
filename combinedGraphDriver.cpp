@@ -60,15 +60,23 @@ void createCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, C
     int startA = agentList[0].start;
     int startB = agentList[1].start;
 
-    int waypointA = agentList[0].waypoints.front();
-    int waypointB = agentList[1].waypoints.front();
+    vector<int> waypointsA = agentList[0].waypoints;
+    vector<int> waypointsB = agentList[1].waypoints;
 
     int finishA = agentList[0].end;
     int finishB = agentList[1].end;
 
     int cost = max(optimalCostList[0], optimalCostList[1]);
 
-    cg->combine2Graphs(0, cost, startA, startB, waypointA, waypointB, false, false, finishA, finishB, g1, g2, cg);
+    vector<bool> reachedWaypointsA, reachedWaypointsB;
+    for (int i = 0; i < waypointsA.size(); i++)
+    {
+        reachedWaypointsA.push_back(false);
+        reachedWaypointsB.push_back(false);
+    }
+    
+
+    cg->combine2Graphs(0, cost, startA, startB, 0, 0, waypointsA, waypointsB, false, false, finishA, finishB, g1, g2, cg);
 
     vector<int> endList;
     endList.push_back(agentList[0].end);

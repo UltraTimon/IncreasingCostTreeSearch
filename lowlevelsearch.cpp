@@ -47,11 +47,6 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
     {
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
 
-        printf("agent with start %d, end %d and waypoint size: %lu ", agent->start, agent->end, agent->waypoints.size());
-        for(int i : agent->waypoints)
-            cout << i << " ";
-        cout << endl;
-
         while (true)
         {   
             if(usefulWrapper(agent->start, agent->waypoints.front(), agent->end, optimalCost, &agent->graph)) {

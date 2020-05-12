@@ -62,9 +62,6 @@ vector<Agent> importAgents(string filename) {
                 waypoints.push_back(waypoint);
             }
             myfile >> end;
-            for(int i : waypoints)
-                cout << i << " ";
-            cout << endl;
 
             Agent agent = Agent(start, end);
             agent.waypoints = waypoints;

@@ -5,11 +5,13 @@ Graph importGraph(string filename) {
     ifstream myfile(filename);
     int nodeA, nodeB;
     int nrOfNodes = 999;
+    int nrOfWaypoints = 999;
     if (myfile.is_open())
     {
         myfile >> nrOfNodes;
+        myfile >> nrOfWaypoints;
     }
-    Graph g = Graph(nrOfNodes);
+    Graph g = Graph(nrOfNodes, nrOfWaypoints);
     if (myfile.is_open())
     {
         while (myfile >> nodeA >> nodeB)
@@ -29,7 +31,6 @@ Graph importGraph(string filename) {
     {
         g.nodes[i].edges.push_back(i);
     }
-    
 
     return g;
 }

@@ -11,7 +11,7 @@ void printPaths(vector<vector<int>> paths) {
     }
 }
 
-void ICTS(vector<Agent> agentList, list<Node> queue, int nrOfNodex) {
+void ICTS(vector<Agent> agentList, list<Node> queue) {
     Node currentNode = queue.front();
     queue.pop_front();
     vector<int> optimalCostList = currentNode.data;
@@ -25,7 +25,8 @@ void ICTS(vector<Agent> agentList, list<Node> queue, int nrOfNodex) {
             maxCost = i;
 
     CombinedGraph cg = CombinedGraph(maxCost); 
-    if(getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg, maxCost)) 
+    cg = getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg, maxCost);
+    if(cg.nodes[0][0].useful) 
     {
         // announce the happy news
         cout << "Ladies and Gentleman, we've got a solution!!" << endl;

@@ -3,6 +3,7 @@
 
 #include "basics.h"
 #include "graph.h"
+#include "combinedGraph.h"
 
 // generatePaths.cpp
 

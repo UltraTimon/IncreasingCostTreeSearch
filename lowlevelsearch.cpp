@@ -67,7 +67,7 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
 
 // ASSUMPTIONS:
 // - 2 agents
-bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg, int maxCost)
+CombinedGraph getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<int> optimalCostList, CombinedGraph *cg, int maxCost)
 {
     // generate a useful graph for each agent and add to graphList
     for (int i = 0; i < agentList.size(); i++)
@@ -78,7 +78,7 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
         if(verbose) {
             printf("UsefulWaypoint nodes: ");
             for(auto node : agentList[i].graph.nodes) {
-                if(node.useful)
+                if(node.usefulWaypoint)
                     cout << node.id << " ";
             }
             cout << endl;
@@ -95,14 +95,8 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     // modified nodeIsUseful method that marks nodes as useful based on whether or not they do or do not conflict
     // -> we need a special graph structure for this, CombinedGraph or something like that
 
-    CombinedGraph finalCG = cg->createCombinedgraph(agentList, optimalCostList, maxCost);
+    return cg->createCombinedgraph(agentList, optimalCostList, maxCost);
 
     // if the combined source node has been marked as useful we know that there exists at least one path and we can return true
     // then we can add the paths to a given pointer that holds the path data (which is stored in ICTS() or even main()), and add it just like in getPathsFromGraph()
-
-    // TODO:    delete cg somewhere here
-
-    return finalCG.nodes[0].front().useful;
-
-    // And then we're done... Sounds good, right?
 }

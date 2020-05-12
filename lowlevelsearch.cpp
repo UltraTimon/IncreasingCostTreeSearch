@@ -60,7 +60,7 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
             
             if(atLeastOnePathToWaypoint && stepsLeft > 0) {
             // the first part reached the end
-                bool atLeastOnePathWaypointToEnd = nodeIsUseful(agent->waypoint, agent->end, agent->graph.stepsLeft, &agent->graph);
+                bool atLeastOnePathWaypointToEnd = nodeIsUseful(agent->waypoint, agent->end, stepsLeft, &agent->graph);
                 
                 // the second part reached the end
                 if (atLeastOnePathWaypointToEnd)

@@ -53,26 +53,8 @@ class CombinedGraph
             nodes = new vector<CombinedGraphNode>[numberOfSteps + 1];
         };
         
-        CombinedGraph createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList);
+        CombinedGraph createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, int maxCost);
         void removeIllegalEdges(CombinedGraph *cg, int graphListIndex, int currentCombinedGraphIndex, int maxCost);
-
-        void copy(CombinedGraph *cg) {
-            for (int i = 0; i <= steps; i++)
-            {
-                for(auto cgn : cg->nodes[i]) {
-                    CombinedGraphNode newCGN = cgn.copy(cgn);
-                    nodes[i].push_back(newCGN);
-                }
-            }
-        }
-        
-        void clear() {
-            for (int i = 0; i <= steps; i++)
-            {
-                nodes[i].clear();
-            }
-        }
-
 
 };
 

@@ -89,21 +89,16 @@ void createCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, C
 }
 
 // ASSUMPTION: #agents >= 2
-CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList)
+CombinedGraph CombinedGraph::createCombinedgraph(vector<Agent> agentList, vector<int> optimalCostList, int maxCost)
 {
 
-    int cost = 0;
-    for (int j : optimalCostList)
-        if (j > cost)
-            cost = j;
-
-    CombinedGraph *cg = new CombinedGraph(cost);
+    CombinedGraph *cg = new CombinedGraph(maxCost);
 
     createCombinedGraph(agentList, optimalCostList, cg);
 
     if(verbose) {
         bool includeAlsoUselessEdges = !cg->nodes[0][0].useful;
-        printCombinedGraph(cg, cost, includeAlsoUselessEdges);
+        printCombinedGraph(cg, maxCost, includeAlsoUselessEdges);
     }
 
     return *cg;

@@ -44,15 +44,26 @@ vector<Agent> importAgents(string filename) {
     vector<Agent> agentList;
 
     ifstream myfile(filename);
+    int nrOfWaypoints;
     int start, end, waypoint;
 
+
+
     if (myfile.is_open())
-    {
-        while (myfile >> start >> waypoint >> end)
-        {
-            Agent newAgent = Agent(start, waypoint, end);
-            agentList.push_back(newAgent);
+    {   
+        myfile >> nrOfWaypoints;
+        while(myfile.peek() != EOF) {
+            myfile >> start;
+            vector<int> waypoints;
+            for (int i = 0; i < nrOfWaypoints; i++)
+            {
+                myfile >> waypoint;
+                waypoints.push_back(waypoint);
+            }
+            Agent agent = Agent(start, waypoints, end, nrOfWaypoints);
+            agentList.push_back(agent);
         }
+        
         myfile.close();
     }
     else

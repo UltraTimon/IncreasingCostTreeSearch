@@ -51,7 +51,7 @@ public:
     Graph graph;
     void setPaths(vector<vector<int>> paths);
 
-    Agent(int givenStart, int *givenWaypoints, int givenEnd, int numberOfWaypoints)
+    Agent(int givenStart, vector<int> givenWaypoints, int givenEnd, int numberOfWaypoints)
     {
         start = givenStart;
 
@@ -60,7 +60,7 @@ public:
         {
             waypoints[i] = givenWaypoints[i];
         }
-        
+
         end = givenEnd;
     }
 };

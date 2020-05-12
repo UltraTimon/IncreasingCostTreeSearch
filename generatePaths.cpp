@@ -7,7 +7,6 @@
 //  otherwise the cost will be increased
 bool nodeIsUseful(int current, int end, int stepsLeft, bool *visited, Graph *g)
 {
-    printf("standard niu, current: %d, end: %d, stepsLeft: %d\n", current, end, stepsLeft);
     if (stepsLeft < 0)
         return false;
 
@@ -52,9 +51,6 @@ bool nodeIsUseful(int current, int end, int stepsLeft, bool *visited, Graph *g)
 //      the cost will be increased
 bool nodeIsUsefulWaypoint(int current, int end, int stepsLeft, bool *visited, Graph *g)
 {
-    printf("waypoint niu, current: %d, end: %d, stepsLeft: %d\n", current, end, stepsLeft);
-
-
     if (stepsLeft < 0)
     {
         return false;
@@ -106,7 +102,8 @@ bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
         {
             visited[i] = false;
         }
-        return nodeIsUseful(waypoint, end, stepsLeft, visited, g);
+        int stepsLeftAfterWaypoint = g->stepsLeft;
+        return nodeIsUseful(waypoint, end, stepsLeftAfterWaypoint, visited, g);
     }
 }
 
@@ -116,7 +113,6 @@ void getPathsFromGraphRecursivePart(int current, int end, int stepsLeft, Graph *
 {
     if (stepsLeft < 0 || (stepsLeft == 0 && current != end))
     {
-        // pathUpToNow.pop_back();
         return;
     }
 

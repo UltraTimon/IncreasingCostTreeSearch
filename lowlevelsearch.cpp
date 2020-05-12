@@ -49,9 +49,6 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
 
         printf("agent with start %d waypoint %d end %d\n", agent->start, agent->waypoint, agent->end);
 
-        // testing
-        optimalCost = 4;
-
         while (true)
         {   
             if(usefulWrapper(agent->start, agent->waypoint, agent->end, optimalCost, &agent->graph)) {

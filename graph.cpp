@@ -11,7 +11,6 @@ Graph importGraph(string filename) {
         myfile >> nrOfNodes;
         myfile >> nrOfWaypoints;
     }
-    printf("nrNodes: %d, nrWaypoints: %d\n", nrOfNodes, nrOfWaypoints);
     Graph g = Graph(nrOfNodes, nrOfWaypoints);
     if (myfile.is_open())
     {

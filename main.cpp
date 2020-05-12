@@ -18,11 +18,9 @@ int main(int argc, char **argv)
     */
 
     vector<Agent> agentList = importAgents("resources/agents.txt");
+
+    // for some reason this loop needs to be here, otherwise it crashes
     for(auto agent : agentList) {
-        cout << "hi" << endl;
-        for(int i : agent.waypoints)
-            cout << i << " ";
-        cout << endl;
     }
 
 
@@ -36,13 +34,13 @@ int main(int argc, char **argv)
 
     printTree(&root);
 
-/*        
+      
     list<Node> queue;
     queue.push_back(root);
     
     // Run ICTS algorithm
     ICTS(agentList, queue);
-*/
+
 
     return 0;
 }

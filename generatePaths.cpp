@@ -94,8 +94,6 @@ bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
         visited[i] = false;
     }
 
-    cout << "hi" << endl;
-
     bool waypointReached = nodeIsUsefulWaypoint(current, waypoint, stepsLeft, visited, g);
 
     if (waypointReached)

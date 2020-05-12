@@ -107,7 +107,7 @@ bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector
     return g->nodes[graphListIndex][current].useful;
 }
 
-int repeatA(int stepsTaken, int cost, int currentB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
+int repeatA(int stepsTaken, int cost, int currentB, int waypointB, int reachedWaypointB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)
     {
@@ -118,7 +118,16 @@ int repeatA(int stepsTaken, int cost, int currentB, int finishA, int finishB, Gr
     {
         return -1;
     }
-    if(!g2->nodes[currentB].useful)
+    
+    // check for waypoints reached, set bools
+    if(!reachedWaypointB && currentB == waypointB)
+        reachedWaypointB = true;
+
+    // Check for all the usefuls based on whether or not waypoint has been reached and return -1 if one of them is not
+    if(!reachedWaypointB && !g2->nodes[currentB].usefulWaypoint)
+        return -1;
+
+    if(reachedWaypointB && !g2->nodes[currentB].useful)
         return -1;
 
     // create the new node
@@ -146,7 +155,7 @@ int repeatA(int stepsTaken, int cost, int currentB, int finishA, int finishB, Gr
     return cg->nodes[stepsTaken].size() - 1;
 }
 
-int repeatB(int stepsTaken, int cost, int currentA, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
+int repeatB(int stepsTaken, int cost, int currentA, int waypointA, int reachedWaypointA, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)
     {
@@ -157,7 +166,16 @@ int repeatB(int stepsTaken, int cost, int currentA, int finishA, int finishB, Gr
     {
         return -1;
     }
-    if(!g1->nodes[currentA].useful)
+    
+    // check for waypoints reached, set bools
+    if(!reachedWaypointA && currentA == waypointA)
+        reachedWaypointA = true;
+
+    // Check for all the usefuls based on whether or not waypoint has been reached and return -1 if one of them is not
+    if(!reachedWaypointA && !g1->nodes[currentA].usefulWaypoint)
+        return -1;
+
+    if(reachedWaypointA && !g1->nodes[currentA].useful)
         return -1;
 
     // create the new node
@@ -186,7 +204,7 @@ int repeatB(int stepsTaken, int cost, int currentA, int finishA, int finishB, Gr
 }
 
 // combines graph, deflects conflicing node pairs
-int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int finishA, int finishB, Graph *g1, Graph *g2,
+int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int waypointA, int waypointB, bool reachedWaypointA, bool reachedWaypointB, int finishA, int finishB, Graph *g1, Graph *g2,
                                   CombinedGraph *cg)
 {
     // if we are out of steps, stop building the graph
@@ -201,14 +219,30 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
         return -1;
     }
 
-    if(!g1->nodes[currentA].useful || !g2->nodes[currentB].useful)
+    // check for waypoints reached, set bools
+    if(!reachedWaypointA && currentA == waypointA)
+        reachedWaypointA = true;
+
+    if(!reachedWaypointB && currentB == waypointB)
+        reachedWaypointB = true;
+
+    // Check for all the usefuls based on whether or not waypoint has been reached and return -1 if one of them is not
+    if(!reachedWaypointA && !g1->nodes[currentA].usefulWaypoint)
+        return -1;
+    if(!reachedWaypointB && !g2->nodes[currentB].usefulWaypoint)
         return -1;
 
+    if(reachedWaypointA && !g1->nodes[currentA].useful)
+        return -1;
+    if(reachedWaypointB && !g2->nodes[currentB].useful)
+        return -1;
+
+
     if(currentA == finishA)
-        repeatA(stepsTaken, cost, currentB, finishA, finishB, g1, g2, cg);
+        return repeatA(stepsTaken, cost, currentB, waypointB, reachedWaypointB, finishA, finishB, g1, g2, cg);
 
     if(currentB == finishB)
-        repeatB(stepsTaken, cost, currentA, finishA, finishB, g1, g2, cg);
+        return repeatB(stepsTaken, cost, currentA, waypointA, reachedWaypointA, finishA, finishB, g1, g2, cg);
 
     CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());
     cgn.idList.push_back(currentA);
@@ -224,7 +258,7 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
             {
                 int indexOfChild = combine2Graphs(stepsTaken + 1, cost, edgeA, edgeB, finishA, finishB, g1, g2, cg);
 
-                if (indexOfChild >= 0)
+                if (indexOfChild >= 0) // check if child is useful and not conflicting
                 {
                     cgn.edges.push_back(indexOfChild);
                 }
@@ -234,5 +268,4 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 
     cg->nodes[stepsTaken].push_back(cgn);
     return cg->nodes[stepsTaken].size() - 1;
-   
 }

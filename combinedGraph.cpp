@@ -254,10 +254,10 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
 
 
     if(currentA == finishA && reachedWaypointA[indexWaypointA])
-        return repeatA(stepsTaken, cost, currentB, waypointB, reachedWaypointB, finishA, finishB, g1, g2, cg);
+        return repeatA(stepsTaken, cost, currentB, indexWaypointB, waypointsB, reachedWaypointB, finishA, finishB, g1, g2, cg);
 
     if(currentB == finishB && reachedWaypointB[indexWaypointB])
-        return repeatB(stepsTaken, cost, currentA, waypointA, reachedWaypointA, finishA, finishB, g1, g2, cg);
+        return repeatB(stepsTaken, cost, currentA, indexWaypointA, waypointsA, reachedWaypointA, finishA, finishB, g1, g2, cg);
 
     CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());
     cgn.idList.push_back(currentA);

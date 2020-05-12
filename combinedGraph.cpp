@@ -77,61 +77,6 @@ void CombinedGraph::removeIllegalEdges(CombinedGraph *cg, int graphListIndex, in
         cg->nodes[graphListIndex][currentCombinedGraphIndex].edges.push_back(i);
 }
 
-// for general CombinedGraph, no restrictions on number of nodes
-// remove illegal edges
-bool CombinedGraph::combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g)
-{
-    if (stepsLeft < 0)
-    {
-        return false;
-    }
-
-    if (vectorEquals(g->nodes[graphListIndex][current].idList, endIdList))
-    {
-        g->nodes[graphListIndex][current].useful = true;
-        return true;
-    }
-
-    if (stepsLeft > 0)
-    {
-        for (int edge : g->nodes[graphListIndex][current].edges)
-        {
-            if (combinedNodeIsUseful(edge, graphListIndex + 1, endIdList, stepsLeft - 1, g))
-            {
-                g->nodes[graphListIndex][current].useful = true;
-            }
-        }
-    }
-
-    // return whether this node is a beneficial member of society
-    return g->nodes[graphListIndex][current].useful;
-}
-
-bool vectorContains(vector<int> vec, int x)
-{
-    for (int i = 0; i < vec.size(); i++)
-    {
-        if (vec.at(i) == x)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool usingTheSameEdge(vector<int> currentIdList, vector<int> nextIdList, int currentId, int nextId)
-{
-    for (int i = 0; i < currentIdList.size(); i++)
-    {
-        if (currentIdList[i] == nextId && nextIdList[i] == currentId)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 int repeatA(int stepsTaken, int cost, int currentB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg) {
     // if we are out of steps, stop building the graph
     if (stepsTaken > cost)

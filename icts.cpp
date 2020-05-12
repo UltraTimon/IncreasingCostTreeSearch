@@ -31,7 +31,7 @@ void ICTS(vector<Agent> agentList, list<Node> queue, int nrOfNodex) {
         cout << "Ladies and Gentleman, we've got a solution!!" << endl;
 
         vector<vector<int>> pathsA, pathsB;
-        getPathsFromCombinedGraph(maxCost, cg, &pathsA, &pathsB);
+        getPathsFromCombinedGraph(maxCost, &cg, &pathsA, &pathsB);
 
         printPaths(pathsA);
         printPaths(pathsB);

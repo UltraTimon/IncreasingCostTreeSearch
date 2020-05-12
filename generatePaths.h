@@ -5,10 +5,11 @@
 #include "graph.h"
 
 // generatePaths.cpp
-bool generateUsefulGraph(Graph *g, int start, int end, int exactCost);
 
 void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vector<int>> *paths);
 
 vector<int> calculateOptimalCost(vector<Agent> agentList);
+
+bool nodeIsUseful(int current, int end, int stepsLeft, Graph *g);
 
 #endif

@@ -81,14 +81,6 @@ void getPathsFromGraph(int start, int end, int exactCost, Graph *g, vector<vecto
     getPathsFromGraphRecursivePart(start, end, exactCost, g, visited, pathUpToNow, paths);
 }
 
-
-// Generates paths from a given start to end node
-// Returns true if at least one path is found, false otherwise
-bool generateUsefulGraph(Graph *g, int start, int end, int exactCost)
-{
-    return nodeIsUseful(start, end, exactCost, g);
-}
-
 // generate paths for each agent, add paths to agent object
 // This will first only determine what the optimal cost is for every agent by calculating paths with an iteratively increasing cost until
 //      each agent has at least one path with that cost
@@ -101,7 +93,7 @@ vector<int> calculateOptimalCost(vector<Agent> agentList)
         int optimalCost = 1; //  assuming a minimal cost of 1 for each agent
         while (true)
         {
-            bool atLeastOnePath = generateUsefulGraph(&agent->graph, agent->start, agent->end, optimalCost);
+            bool atLeastOnePath = nodeIsUseful(agent->start, agent->end, optimalCost, &agent->graph);
             if (atLeastOnePath)
             {
                 optimalCostList.push_back(optimalCost);

@@ -43,7 +43,7 @@ bool getAtLeastOnePathPerAgentWithoutConflict(vector<Agent> agentList, vector<in
     // generate a useful graph for each agent and add to graphList
     for (int i = 0; i < agentList.size(); i++)
     {
-        generateUsefulGraph(&agentList[i].graph, agentList[i].start, agentList[i].end, optimalCostList[i]);
+        nodeIsUseful(agentList[i].start, agentList[i].end, optimalCostList[i], &agentList[i].graph);
 
         // print useful nodes
         if(verbose) {

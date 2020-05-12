@@ -1,6 +1,17 @@
 #include "icts.h"
 
-void ICTS(vector<Agent> agentList, list<Node> queue) {
+void printPaths(vector<vector<int>> paths) {
+    cout << "Paths:" << endl;
+
+    for(auto path : paths) {
+        for(int node : path) {
+            cout << node << " ";
+        }
+        cout << endl;
+    }
+}
+
+void ICTS(vector<Agent> agentList, list<Node> queue, int nrOfNodex) {
     Node currentNode = queue.front();
     queue.pop_front();
     vector<int> optimalCostList = currentNode.data;
@@ -18,6 +29,12 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
     {
         // announce the happy news
         cout << "Ladies and Gentleman, we've got a solution!!" << endl;
+
+        vector<vector<int>> pathsA, pathsB;
+        getPathsFromCombinedGraph(maxCost, cg, &pathsA, &pathsB);
+
+        printPaths(pathsA);
+        printPaths(pathsB);
     }
     else {
         // give error message

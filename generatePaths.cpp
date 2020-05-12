@@ -145,11 +145,11 @@ void getPathsFromCombinedGraphRecursivePart(int graphListIndex, int currentGraph
 }
 
 // Asumption: 2 agents
-void getPathsFromCombinedGraph(int start, int end, int exactCost, CombinedGraph *cg, vector<vector<int>> *pathsA, vector<vector<int>> *pathsB, int nrOfNodes)
+void getPathsFromCombinedGraph(int exactCost, CombinedGraph *cg, vector<vector<int>> *pathsA, vector<vector<int>> *pathsB)
 {
     if (verbose)
-        cout << "Getting paths from graph -- start graphlistIndex: " << start << ", end graphlistIndex: " << end << ", exactCost: " << exactCost << endl;
+        cout << "Getting paths from graph" << endl;
 
     deque<int> pathUpToNowA, pathUpToNowB;
-    getPathsFromCombinedGraphRecursivePart(start, end, exactCost, cg, pathUpToNowA, pathUpToNowB, pathsA, pathsB);
+    getPathsFromCombinedGraphRecursivePart(0, 0, exactCost, cg, pathUpToNowA, pathUpToNowB, pathsA, pathsB);
 }

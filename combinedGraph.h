@@ -39,8 +39,8 @@ class CombinedGraph
     public: 
         vector<CombinedGraphNode> *nodes;
 
-        int combine2Graphs(int stepsTaken, int costA, int currentA, int currentB, int indexWaypointA, int indexWaypointB, vector<int> waypointA, vector<int> waypointB, vector<bool> reachedWaypointsA, vector<bool> reachedWaypointsB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg);
-        
+        int combine2Graphs(int stepsTaken, int cost, int currentA, int currentB, int indexWaypointA, int indexWaypointB, vector<int> waypointsA, vector<int> waypointsB, vector<bool> reachedWaypointA, vector<bool> reachedWaypointB, int finishA, int finishB, Graph *g1, Graph *g2, CombinedGraph *cg);
+
         bool combinedNodeIsUseful(int current, int graphListIndex, vector<int> endIdList, int stepsLeft, CombinedGraph *g);
 
         int copyOldCombinedNodeToNewCombinedNodeWithSingleGraphNodeIncluded(int stepsLeft, int graphListIndex, int combinedGraphIndex, CombinedGraph *cg, int singleGraphIndex, Graph *g, CombinedGraph *newCG, int singleGraphFinishID);

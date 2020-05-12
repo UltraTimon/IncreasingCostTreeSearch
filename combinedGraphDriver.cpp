@@ -1,4 +1,5 @@
 #include "combinedGraph.h"
+
 void printCombinedGraph(CombinedGraph *cg, int cost, bool alsoIncludeNonUsefulNodes)
 {
     if(alsoIncludeNonUsefulNodes) {
@@ -70,14 +71,13 @@ void createCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, C
     endList.push_back(agentList[0].end);
     endList.push_back(agentList[1].end);
 
-    int tempMax = 0;
+    int maxNodes = 0;
     for (int i = 0; i < cost + 1; i++)
     {
         int size = cg->nodes[i].size();
-        if (size > tempMax)
-            tempMax = size;
+        if (size > maxNodes)
+            maxNodes = size;
     }
-    int maxNodes = tempMax;
 
     if(cg->nodes[0].empty())
         return;
@@ -86,15 +86,6 @@ void createCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, C
     cg->removeIllegalEdges(cg, 0, 0, cost);
 
     cg->combinedNodeIsUseful(0, 0, endList, cost, cg);
-}
-
-
-void resetUsefulFlags(CombinedGraph *cg, int cost) {
-    for (int i = 0; i <= cost; i++)
-    {
-        for(auto node : cg->nodes[i])
-            node.useful = false;
-    }
 }
 
 // ASSUMPTION: #agents >= 2

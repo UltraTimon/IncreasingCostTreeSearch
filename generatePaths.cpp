@@ -120,12 +120,12 @@ bool usefulWrapper(int current, vector<int> waypoints, int end, int stepsLeft, G
     }
 
     // LAST WAYPOINT TO END
-    bool visited[g->nodes.size()];
+    bool visited2[g->nodes.size()];
     for (int i = 0; i < g->nodes.size(); i++)
     {
-        visited[i] = false;
+        visited2[i] = false;
     }
-    return nodeIsUseful(waypoints.back(), end, stepsLeft, visited, g);
+    return nodeIsUseful(waypoints.back(), end, stepsLeft, visited2, g);
 }
 
 

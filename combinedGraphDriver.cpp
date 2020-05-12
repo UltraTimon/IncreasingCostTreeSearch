@@ -76,7 +76,7 @@ void createCombinedGraph(vector<Agent> agentList, vector<int> optimalCostList, C
     }
     
 
-    cg->combine2Graphs(0, cost, startA, startB, 0, 0, waypointsA, waypointsB, false, false, finishA, finishB, g1, g2, cg);
+    cg->combine2Graphs(0, cost, startA, startB, 0, 0, waypointsA, waypointsB, reachedWaypointsA, reachedWaypointsB, finishA, finishB, g1, g2, cg);
 
     vector<int> endList;
     endList.push_back(agentList[0].end);

@@ -1,3 +1,4 @@
 Welcome to the IncreasingCostTreeSearch project! This is the readme.
 
-Source code altered from the path-finding algorithm from https://www.geeksforgeeks.org/find-paths-given-source-destination/
+This repository provides a limited implementation of the Increasing Cost Tree Search algorithm.
+It calculates paths for 2 agents with one waypoint.

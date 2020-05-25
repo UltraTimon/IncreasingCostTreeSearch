@@ -22,6 +22,7 @@ class Graph
     public:
         vector<GraphNode> nodes;
         int stepsLeft; // steps left after reaching the waypoint
+        int width; // width of the grid
         Graph(int nrOfNodes) {
             for (int i = 0; i < nrOfNodes; i++)
             {
@@ -41,11 +42,14 @@ class Agent {
         int waypoint;
         vector<vector<int>> paths;
         Graph graph;
-        Agent(int start, int end, int waypoint);
+        Agent(int givenStart, int givenWaypoint, int givenEnd);
         void setPaths(vector<vector<int>> paths);
 };
 
 Graph importGraph(string filename);
+Graph importGraphFromPythonOutput(string filename);
+
 vector<Agent> importAgents(string filename);
+vector<Agent> importAgentsFromPythonOutput(string filename);
 
 #endif

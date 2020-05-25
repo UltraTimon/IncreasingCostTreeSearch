@@ -25,17 +25,31 @@ void ICTS(vector<Agent> agentList, list<Node> queue) {
             maxCost = i;
 
     CombinedGraph cg = CombinedGraph(maxCost); 
-    cg = getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg, maxCost);
-    if(cg.nodes[0][0].useful) 
+    if(getAtLeastOnePathPerAgentWithoutConflict(agentList, optimalCostList, &cg, maxCost)) 
     {
         // announce the happy news
         cout << "Ladies and Gentleman, we've got a solution!!" << endl;
 
         vector<vector<int>> pathsA, pathsB;
+
         getPathsFromCombinedGraph(maxCost, &cg, &pathsA, &pathsB);
 
+        bool getOnlyTheFirstPath = true;
+        
+        // get Only the first path, remove all others
+        int nrOfPaths = pathsA.size();
+        for (int i = 0; i < nrOfPaths - 1; i++)
+        {
+            pathsA.pop_back();
+            pathsB.pop_back();
+        }
+        
         printPaths(pathsA);
         printPaths(pathsB);
+
+        vector<vector<int>> finalPaths;
+        finalPaths.push_back(pathsA[0]);
+        finalPaths.push_back(pathsB[0]);
     }
     else {
         // give error message

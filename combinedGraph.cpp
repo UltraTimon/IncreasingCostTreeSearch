@@ -135,7 +135,7 @@ int repeatA(int stepsTaken, int cost, int currentB, int waypointB, int reachedWa
     cgn.idList.push_back(finishA);
     cgn.idList.push_back(currentB);
 
-    if(currentB == finishB) {
+    if(currentB == finishB && reachedWaypointB) {
         cg->nodes[stepsTaken].push_back(cgn);
         return cg->nodes[stepsTaken].size() - 1;
     }
@@ -183,7 +183,7 @@ int repeatB(int stepsTaken, int cost, int currentA, int waypointA, int reachedWa
     cgn.idList.push_back(finishB);
     cgn.idList.push_back(currentA);
 
-    if(currentA == finishA) {
+    if(currentA == finishA && reachedWaypointA) {
         cg->nodes[stepsTaken].push_back(cgn);
         return cg->nodes[stepsTaken].size() - 1;
     }
@@ -238,10 +238,10 @@ int CombinedGraph::combine2Graphs(int stepsTaken, int cost, int currentA, int cu
         return -1;
 
 
-    if(currentA == finishA)
+    if(currentA == finishA && reachedWaypointA)
         return repeatA(stepsTaken, cost, currentB, waypointB, reachedWaypointB, finishA, finishB, g1, g2, cg);
 
-    if(currentB == finishB)
+    if(currentB == finishB && reachedWaypointB)
         return repeatB(stepsTaken, cost, currentA, waypointA, reachedWaypointA, finishA, finishB, g1, g2, cg);
 
     CombinedGraphNode cgn = CombinedGraphNode(g1->nodes.size());

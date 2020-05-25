@@ -112,14 +112,9 @@ bool usefulWrapper(int current, int waypoint, int end, int stepsLeft, Graph *g)
 // Asumption: 2 agents
 void getPathsFromCombinedGraphRecursivePart(int graphListIndex, int currentGraphIndex, int end, CombinedGraph *cg, deque<int> pathUpToNowA, deque<int> pathUpToNowB, vector<vector<int>> *pathsA, vector<vector<int>> *pathsB)
 {
-    
     CombinedGraphNode currentNode = cg->nodes[graphListIndex][currentGraphIndex];
-
-
     pathUpToNowA.push_back(currentNode.idList.front());
-    pathUpToNowB.push_back(currentNode.idList.back());
-
-    cout << "test" << endl;
+    pathUpToNowA.push_back(currentNode.idList.back());
 
     if (graphListIndex == end)
     {
